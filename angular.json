@@ -2,11 +2,12 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "packageManager": "npm"
+    "packageManager": "npm",
+    "analytics": false
   },
   "newProjectRoot": "projects",
   "projects": {
-    "spotgoo": {
+    "spotgo-frontend": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -59,10 +60,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "spotgoo:build:production"
+              "buildTarget": "spotgo-frontend:build:production"
             },
             "development": {
-              "buildTarget": "spotgoo:build:development"
+              "buildTarget": "spotgo-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"
