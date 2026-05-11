@@ -1,0 +1,41 @@
+<!--
+  This renders the ToolbarContent component.
+
+  We can use <app-toolbar-content /> here because:
+  1. ToolbarContent has a selector like: selector: 'app-toolbar-content'
+  2. Layout imports ToolbarContent in its @Component imports array.
+
+  The class name is ToolbarContent, but the HTML tag comes from its selector.
+  Angular will replace this tag with the HTML from toolbar-content.html.
+-->
+<app-toolbar-content />
+
+<!--
+  layout-body is a container used to organize the main layout structure.
+
+  In our design, the toolbar is at the top.
+  Below the toolbar, we need two main sections:
+  - sidebar on the left
+  - changing page content on the right
+
+  Similar to this structure:
+    ┌───────────────────────────────┐
+    │          toolbar              │
+    ├──────────────┬────────────────┤
+    │   sidebar    │    content     │
+    ┌───────────────────────────────┐
+    │           footer              │
+     ───────────────────────────────
+    
+  This div groups the sidebar and the main content together,
+  so we can style them with CSS, for example using display: flex.
+-->
+<div class="layout-body">
+  <app-sidebar-content />
+
+  <main class="layout-content">
+    <router-outlet />
+  </main>
+</div>
+
+<app-footer-content />

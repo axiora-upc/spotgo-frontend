@@ -1,0 +1,119 @@
+<!--
+  mat-toolbar creates the top toolbar of the application.
+
+  This is the main horizontal bar at the top of the page.
+-->
+<mat-toolbar class="toolbar">
+
+  <!--
+    mat-toolbar-row creates one horizontal row inside the toolbar.
+
+    Everything inside this row is placed in the same line:
+    logo/name, search box, notification icon, user icon, and language switcher.
+  -->
+  <mat-toolbar-row class="toolbar-row">
+
+    <!--
+      brand is the left section of the toolbar.
+
+      It contains:
+      - the SpotGo logo image
+      - the SpotGo application name
+
+      The class "brand" is used in CSS to align the logo and text horizontally.
+    -->
+    <div class="brand">
+
+      <!--
+        logo-container is the box that holds the logo image.
+
+        It helps control the logo size and spacing.
+      -->
+      <div class="logo-container">
+
+        <!--
+          This image loads the SpotGo logo from the assets folder.
+
+          The leading slash (/) makes it an absolute path from the app root,
+          ensuring it works correctly in both development and production builds.
+
+          alt describes the image for accessibility.
+        -->
+        <img src="/assets/spotgo-logo.png" alt="SpotGo logo" class="logo-image" />
+
+      </div>
+
+      <!--
+        brand-name shows the application name next to the logo.
+      -->
+      <span class="brand-name">SpotGo</span>
+    </div>
+
+    <!--
+      search-box is the center search section of the toolbar.
+
+      It contains:
+      - a Material search icon
+      - a normal HTML input
+
+      The class "search-box" is used in CSS to style the whole search container.
+    -->
+    <div class="search-box">
+
+      <!--
+        mat-icon shows an Angular Material icon.
+
+        The text "search" tells Angular Material to show the search icon.
+      -->
+      <mat-icon class="search-icon">search</mat-icon>
+
+      <!--
+        This input lets the user type a search.
+
+        This is a normal HTML input, not an Angular Material input.
+
+        [placeholder] means Angular calculates the placeholder value.
+
+        'toolbar.search-placeholder' is a translation key.
+
+        | translate replaces that key with the text from the active language file.
+      -->
+      <input type="text" [placeholder]="'toolbar.search-placeholder' | translate" />
+
+    </div>
+
+    <!--
+      toolbar-actions is the right section of the toolbar.
+
+      It contains:
+      - notification button
+      - user account button
+      - language switcher
+    -->
+    <div class="toolbar-actions">
+
+      <!--
+        Notification button.
+
+        mat-button gives this button Angular Material button behavior.
+      -->
+      <button mat-icon-button class="icon-button" type="button" aria-label="Notifications">
+        <mat-icon>notifications</mat-icon>
+      </button>
+
+      <!--
+        User account button.
+      -->
+      <button mat-icon-button class="icon-button" type="button" aria-label="Account">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+
+      <!--
+        This renders the LanguageSwitcher component.
+      -->
+      <app-language-switcher></app-language-switcher>
+
+    </div>
+
+  </mat-toolbar-row>
+</mat-toolbar>

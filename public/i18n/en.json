@@ -1,0 +1,20 @@
+{
+  "footer": {
+    "rights": "All rights reserved.",
+    "powered-by": "Powered by",
+    "and": "and"
+  },
+
+  "toolbar": {
+    "search-placeholder": "Search for parking spots..."
+  },
+
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "reservations": "Reservations",
+    "subscription": "Suscriptions",
+    "receipts": "Receipts",
+    "favorites": "Favorites",
+    "history": "History"
+  }
+}

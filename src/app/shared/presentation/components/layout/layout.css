@@ -1,0 +1,56 @@
+/*
+  :host represents the whole Layout component.
+
+  In this case, :host means:
+  <app-layout></app-layout>
+
+  display: flex allows us to organize the direct children of the layout:
+  - toolbar
+  - layout-body
+  - footer
+
+  flex-direction: column places those children vertically:
+  toolbar on top, layout-body in the middle, and footer at the bottom.
+
+  min-height: 100vh makes the layout take at least the full height
+  of the browser window.
+*/
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/*
+  .layout-body is the container that holds:
+  - the sidebar
+  - the main content area (which is going to change)
+
+  display: flex places its direct children next to each other horizontally.
+
+  In this case:
+  <app-sidebar-content> goes on the left.
+  <main class="layout-content"> goes on the right.
+
+  flex: 1 makes .layout-body take the remaining vertical space
+  between the toolbar and the footer.
+*/
+.layout-body {
+  display: flex;
+  flex: 1;
+}
+
+/*
+  .layout-content is the main area where Angular renders
+  the current page through <router-outlet>.
+
+  flex: 1 makes this content area take all the remaining horizontal space
+  after the sidebar.
+
+  padding: 24px adds internal space inside the content area,
+  so the page content is not stuck to the borders.
+*/
+.layout-content {
+  flex: 1;
+  padding: 24px;
+}

@@ -1,0 +1,75 @@
+<!--
+  mat-button-toggle-group is an Angular Material component.
+
+  It creates a group of selectable buttons.
+  In this case, the group is used to show the available languages.
+
+  [value]="currentLanguage" means:
+  the selected button depends on the currentLanguage property
+  from language-switcher.ts.
+
+  Example:
+  if currentLanguage is 'en', the EN button appears selected.
+  if currentLanguage is 'es', the ES button appears selected.
+
+  appearance="standard" defines the visual style of the toggle group.
+
+  aria-label="Preferred Language" gives an accessible name to the group.
+  This text is mainly used by screen readers and usually is not visible.
+
+  name="language" gives a name to this group of related buttons.
+-->
+<mat-button-toggle-group class="language-toggle" [value]="currentLanguage" appearance="standard" aria-label="Preferred Language" name="language">
+
+  <!--
+    @for repeats the HTML inside it for each value in the languages array.
+
+    In language-switcher.ts we have:
+    languages = ['en', 'es'];
+
+    This means Angular will create:
+    - one button for 'en'
+    - one button for 'es'
+
+    The @for does not change the language by itself.
+    It only creates the buttons on the screen.
+
+    track language helps Angular identify each item in the list.
+    Since 'en' and 'es' are unique values, we can track by language.
+  -->
+  @for (language of languages; track language) {
+
+    <!--
+      mat-button-toggle is one selectable button inside the group.
+
+      Because this button is inside the @for, Angular creates one button
+      for each language.
+
+      (click)="useLanguage(language)" means:
+      when the user clicks this button, call the useLanguage method
+      from language-switcher.ts and send the current language value.
+
+      Example:
+      for 'en', it calls useLanguage('en').
+      for 'es', it calls useLanguage('es').
+
+      [aria-label]="language" gives this specific button an accessibility label.
+      Example:
+      for 'en', aria-label becomes "en".
+      for 'es', aria-label becomes "es".
+
+      [value]="language" gives this button its value.
+      The group compares this value with currentLanguage to know
+      which button should appear selected.
+
+      {{ language.toUpperCase() }} displays the language code in uppercase.
+      Example:
+      'en' becomes 'EN'.
+      'es' becomes 'ES'.
+    -->
+    <mat-button-toggle (click)="useLanguage(language)"
+                       [aria-label]="language"
+                       [value]="language">{{ language.toUpperCase() }}
+    </mat-button-toggle>
+  }
+</mat-button-toggle-group>

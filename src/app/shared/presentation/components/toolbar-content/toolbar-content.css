@@ -1,0 +1,234 @@
+/*
+  Styles the whole toolbar container.
+
+  This class belongs to:
+  <mat-toolbar class="toolbar">
+
+  Even though mat-toolbar is Angular Material, here we only control
+  layout things like background, border and size of our toolbar area.
+*/
+.toolbar {
+  background-color: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/*
+  Styles the row inside the toolbar.
+
+  This class belongs to:
+  <mat-toolbar-row class="toolbar-row">
+
+  display: flex places the main sections in one horizontal line:
+  - brand on the left
+  - search box in the center
+  - actions on the right
+*/
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 74px;
+  padding: 0 20px 0 18px;
+}
+
+/*
+  brand is the left section of the toolbar.
+
+  It contains:
+  - logo-container
+  - brand-name
+
+  display: flex places the logo and the text next to each other.
+*/
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+/*
+  logo-container is the box that holds the logo image.
+
+  It controls the space used by the logo.
+*/
+.logo-container {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/*
+  logo-image is the actual image from assets.
+
+  object-fit: contain makes the image fit inside its box
+  without being cut or stretched badly.
+*/
+.logo-image {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+/*
+  brand-name styles only the SpotGo title text.
+
+  This is not Angular Material.
+  It is just normal text inside a span.
+*/
+.brand-name {
+  font-size: 28px;
+  font-weight: 700;
+  color: #151970;
+  letter-spacing: 0.2px;
+}
+
+/*
+  search-box is the visual container of the search input.
+
+  It contains:
+  - mat-icon search
+  - normal HTML input
+
+  The icon color should be handled in styles.scss using Angular Material.
+  Here we only style the box around the search.
+*/
+.search-box {
+  flex: 0 1 530px;
+  width: 100%;
+  max-width: 620px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin: 0 auto;
+  background-color: #f8fafc;
+  border-radius: 10px;
+  padding: 0 12px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+/*
+  This styles the normal HTML input inside search-box.
+
+  This input is NOT Angular Material.
+  That is why its text color, placeholder, border, and background
+  are styled here with normal CSS.
+*/
+.search-box input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #5f6673;
+  font-size: 16px;
+}
+
+/*
+  This styles the placeholder text of the normal HTML input.
+
+  Example placeholder:
+  Search parking locations...
+*/
+.search-box input::placeholder {
+  color: #5f6673;
+}
+
+/*
+  toolbar-actions is the right section.
+
+  It contains:
+  - notification button
+  - user account button
+  - language switcher
+
+  display: flex places them horizontally.
+*/
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex: 1;
+}
+
+/*
+  icon-button styles the toolbar icon buttons.
+
+  The button has no visible border or square background.
+  Angular Material will still provide the circular ripple effect
+  when the user clicks the button.
+*/
+.icon-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+
+  border: none;
+  outline: none;
+  background-color: transparent;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/*
+  Removes the square browser outline when the button is focused.
+*/
+.icon-button:focus,
+.icon-button:focus-visible {
+  outline: none;
+}
+
+/*
+  Optional: keeps the button clean when hovering.
+*/
+.icon-button:hover {
+  background-color: transparent;
+}
+
+/*
+  This gives a soft circular effect when clicking.
+*/
+.icon-button:active {
+  background-color: #eef2f7;
+}
+
+/*
+  Styles only the icon size.
+*/
+.icon-button mat-icon {
+  width: 24px;
+  height: 24px;
+  font-size: 24px;
+  line-height: 24px;
+}
+
+/*
+  This styles the search icon inside the search box.
+
+  The search icon is inside an absolute positioned container, so it just
+  needs its size and flex centering.
+*/
+.search-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  font-size: 22px;
+}
+
+/*
+  The language switcher is a separate component, but it still needs a little
+  visual balance inside the toolbar.
+*/
+app-language-switcher {
+  display: inline-flex;
+  align-items: center;
+}

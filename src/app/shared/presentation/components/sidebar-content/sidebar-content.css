@@ -1,0 +1,135 @@
+/*
+  :host represents the whole sidebar component.
+
+  In this case, :host means:
+  <app-sidebar-content></app-sidebar-content>
+
+  display: block lets the component behave like a normal section
+  inside the layout flex container.
+
+  flex controls the real width of the sidebar because the host element is the
+  direct child of .layout-body.
+*/
+:host {
+  display: block;
+  flex: 0 0 clamp(220px, 18vw, 280px);
+}
+
+/*
+  .sidebar-content is the visual container of the menu.
+
+  It keeps the sidebar aligned as a vertical panel and separates it
+  from the main content area with a right border.
+*/
+.sidebar-content {
+  display: flex;
+  min-height: 100%;
+  box-sizing: border-box;
+  padding: 16px 10px 18px 8px;
+  background-color: #ffffff;
+  border-right: 1px solid #e5e7eb;
+}
+
+/*
+  .sidebar-menu groups all navigation options in one vertical column.
+
+  display: flex and flex-direction: column stack the links one under another.
+  gap: 8px provides minimal spacing between compact buttons.
+*/
+.sidebar-menu {
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+/*
+  .sidebar-option styles every navigation link.
+
+  It is a normal anchor tag enhanced with routerLinkActive.
+  The default state is neutral, so only the selected option gets the strong
+  background color.
+
+  min-height: 40px keeps buttons very compact.
+  padding is minimal (6px vertical) to keep buttons slim and close together.
+  border-radius reduces to 12px for a less rounded look on inactive buttons.
+*/
+.sidebar-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 35px;
+  padding: 6px 16px 6px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #5f6673;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+/*
+  Hover is subtle so the user can see interactivity
+  without confusing it with the selected state.
+*/
+.sidebar-option:hover {
+  background-color: #eef2f7;
+  transform: translateX(2px);
+}
+
+/*
+  .selected is added by routerLinkActive when the route matches.
+
+  This is the active state of the sidebar button.
+  Here we paint the full button, the icon and the text.
+
+  border-radius increases to 16px for a more rounded pill effect on selected.
+*/
+.sidebar-option.selected {
+  background-color: #151970;
+  color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 24px rgba(21, 25, 112, 0.18);
+}
+
+/*
+  The icon is a Material icon, but its active color is controlled here
+  because it depends on the selected navigation state.
+*/
+.sidebar-option.selected .sidebar-icon {
+  color: #ffffff;
+}
+
+/*
+  The label inherits the text color from .sidebar-option.
+
+  This rule is here to keep the intent explicit and easy to read.
+*/
+.sidebar-label {
+  line-height: 1.2;
+}
+
+/*
+  mat-icon inside the sidebar uses the Material icon font, but its size and
+  alignment belong to this component's layout.
+
+  display: flex ensures the icon is always centered, even when the color changes
+  in the selected state.
+
+  Removing line-height prevents vertical misalignment.
+*/
+.sidebar-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}

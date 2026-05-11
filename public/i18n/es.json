@@ -1,0 +1,20 @@
+{
+  "footer": {
+    "rights": "Todos los derechos reservados.",
+    "powered-by": "Desarrollado con",
+    "and": "y"
+  },
+
+  "toolbar": {
+    "search-placeholder": "Buscar estacionamientos..."
+  },
+
+  "sidebar": {
+    "dashboard": "Paneles",
+    "reservations": "Reservas",
+    "subscription": "Suscripciones",
+    "receipts": "Recibos",
+    "favorites": "Favoritos",
+    "history": "Historial"
+  }
+}

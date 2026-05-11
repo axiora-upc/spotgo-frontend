@@ -1,0 +1,64 @@
+<!--
+  aside represents the sidebar section of the page.
+  It contains the navigation menu shown on the left side.
+-->
+<aside class="sidebar-content">
+
+  <!--
+    nav represents the navigation area of the sidebar.
+    Inside it, we show all the sidebar options.
+  -->
+  <nav class="sidebar-menu">
+
+    <!--
+      @for repeats one <a> element for each option
+      inside the options signal from sidebar-content.ts.
+
+      options() is used because options is a signal.
+      track option.label helps Angular identify each option.
+    -->
+    @for (option of options(); track option.label) {
+
+      <!--
+        a is the clickable navigation option.
+
+        [routerLink]="option.link" sends the user to that route.
+
+        routerLinkActive="selected" adds the class selected
+        when the current route matches this option.
+
+        That selected class is what you use in CSS to make
+        the button blue and the icon/text white.
+      -->
+      <a
+        class="sidebar-option"
+        [routerLink]="option.link"
+        routerLinkActive="selected"
+        [routerLinkActiveOptions]="{ exact: true }">
+
+        <!--
+          mat-icon shows the Angular Material icon.
+
+          The icon name comes from option.icon in sidebar-content.ts.
+        -->
+        <mat-icon class="sidebar-icon">
+          {{ option.icon }}
+        </mat-icon>
+
+        <!--
+          This shows the translated text.
+
+          option.label is not the final text.
+          It is the translation key, for example:
+          sidebar.dashboard
+        -->
+        <span class="sidebar-label">
+          {{ option.label | translate }}
+        </span>
+
+      </a>
+    }
+
+  </nav>
+
+</aside>

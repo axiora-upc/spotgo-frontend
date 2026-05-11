@@ -1,0 +1,43 @@
+<div class="footer-content">
+
+  <!--
+    This paragraph shows the copyright text.
+
+    &copy; is an HTML entity that displays the copyright symbol: ©
+
+    'footer.rights' is a translation key.
+    The translate pipe looks for this key in the current language file
+    and replaces it with the translated text.
+
+    Example:
+    English: "All rights reserved."
+    Spanish: "Todos los derechos reservados."
+  -->
+  <p>
+    Copyright &copy; 2026 Axoria Labs.
+    {{ 'footer.rights' | translate }}
+  </p>
+
+  <!--
+    This paragraph shows the technologies used by the application.
+
+    'footer.powered-by' is a translation key.
+    Example: "Powered by" or "Desarrollado con".
+
+    The first <a> tag is a link to Angular Material.
+
+    'footer.and' is another translation key.
+    Example: "and" or "y".
+
+    The second <a> tag is a link to ngx-translate.
+
+    target="_blank" opens the link in a new browser tab.
+  -->
+  <p>
+    {{ 'footer.powered-by' | translate }}
+    <a href="https://material.angular.dev/">Angular Material</a>
+    {{ 'footer.and' | translate }}
+    <a href="https://ngx-translate.org" target="_blank">ngx-translate</a>
+  </p>
+
+</div>

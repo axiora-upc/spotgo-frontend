@@ -1,0 +1,114 @@
+/*
+  .footer-content styles the main footer container.
+
+  This class is used in footer-content.html, for example:
+  <div class="footer-content"> ... </div>
+*/
+.footer-content {
+  /*
+    width: 100% makes the footer take the full width
+    of its parent container.
+  */
+  width: 100%;
+
+  /*
+    min-height: 80px gives the footer a minimum height.
+    It can grow if the content needs more space.
+  */
+  min-height: 50px;
+
+  /*
+    background-color sets the footer background color.
+    This dark blue is similar to the color from your reference image.
+  */
+  background-color: #11176d;
+
+  /*
+    color sets the text color inside the footer.
+  */
+  color: white;
+
+  /*
+    text-align: center centers the text horizontally.
+  */
+  text-align: center;
+
+  /*
+    margin: 0 removes outside spacing.
+  */
+  margin: 0;
+
+  /*
+    padding adds internal space inside the footer,
+    so the text is not stuck to the edges.
+  */
+  padding: 4px;
+
+  /*
+    box-sizing: border-box makes padding be included
+    inside the element's total width and height.
+
+    This helps prevent the footer from becoming wider
+    than 100% because of padding.
+  */
+  box-sizing: border-box;
+
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/*
+  This styles the paragraphs inside the footer.
+
+  It affects:
+  <p>...</p>
+
+  only when those paragraphs are inside:
+  <div class="footer-content">...</div>
+*/
+.footer-content p {
+  /*
+    Removes most of the default paragraph spacing.
+
+    2px 0 means:
+    - 2px margin on top and bottom
+    - 0 margin on left and right
+  */
+  margin: 2px 0;
+
+  /*
+    Makes the footer text smaller.
+  */
+  font-size: 10px;
+
+  /*
+    Controls the vertical space of each text line.
+
+    A smaller line-height makes the footer more compact.
+  */
+  line-height: 1.2;
+}
+
+/*
+  This styles all links inside the footer.
+
+  It affects normal links, visited links, hover links,
+  and active links so they always keep the same color.
+*/
+.footer-content a,
+.footer-content a:visited,
+.footer-content a:hover,
+.footer-content a:active {
+  /*
+    Keeps the links white instead of the browser default blue or purple.
+  */
+  color: white;
+
+  /*
+    Removes the underline from the links.
+  */
+  text-decoration: none;
+}

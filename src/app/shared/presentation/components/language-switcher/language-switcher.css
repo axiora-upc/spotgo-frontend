@@ -1,0 +1,90 @@
+/*
+  This is just in case we want to do it in css. But we are using Angular material to styling
+  the language switcher, so we will not use this file for now.
+
+  :host represents the whole LanguageSwitcher component:
+  <app-language-switcher></app-language-switcher>
+
+  display: inline-block makes it behave like a small element,
+  useful when it is placed inside a toolbar.
+
+    :host {
+    display: inline-block;
+    }
+
+  Styles the Angular Material toggle group container.
+
+  This is the box that contains the EN and ES buttons.
+
+    mat-button-toggle-group {
+    border: 1px solid #151970;
+    border-radius: 999px;
+    overflow: hidden;
+    background-color: white;
+    }
+
+
+  Styles each language button.
+
+  These buttons are:
+  - EN
+  - ES
+
+    mat-button-toggle {
+    color: #151970;
+    font-weight: 600;
+    border: none;
+    }
+
+  Styles the selected language button.
+
+  Angular Material adds the class .mat-button-toggle-checked
+  to the selected option.
+
+    mat-button-toggle.mat-button-toggle-checked {
+    background-color: #151970;
+    color: white;
+    }
+
+*/
+
+/*
+  :host represents the whole LanguageSwitcher component:
+  <app-language-switcher></app-language-switcher>
+
+  display: inline-flex keeps it aligned with the toolbar actions.
+*/
+:host {
+  display: inline-flex;
+  align-items: center;
+}
+
+/*
+  .language-toggle is the Material group that contains EN and ES.
+
+  The global Angular Material overrides live in material-theme.scss, while
+  these styles control the compact layout and spacing of this component.
+*/
+.language-toggle {
+  display: inline-flex;
+  align-items: stretch;
+  transform: scale(0.88);
+  transform-origin: right center;
+}
+
+/*
+  Each toggle button should feel compact and balanced inside the toolbar.
+*/
+.language-toggle mat-button-toggle {
+  min-width: 42px;
+  height: 36px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/*
+  The internal button content is centered so the labels stay visually neat.
+*/
+.language-toggle mat-button-toggle .mat-button-toggle-button {
+  padding: 0 12px;
+}
