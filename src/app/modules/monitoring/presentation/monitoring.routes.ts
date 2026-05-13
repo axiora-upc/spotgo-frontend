@@ -31,16 +31,35 @@ const dashboard = () =>
   import('./views/dashboard/dashboard.component').then((m) => m.DashboardComponent);
 
 /*
+  This function loads the RealtimeMapComponent asynchronously.
+
+  This is the admin-only view that shows a live map
+  with active parking spots and reservations.
+*/
+const realtimeMap = () =>
+  import('./views/realtime-map/realtime-map.component').then((m) => m.RealtimeMapComponent);
+
+/*
+  This function loads the AnalyticsComponent asynchronously.
+
+  This is the admin-only view that shows charts and statistics.
+*/
+const analytics = () =>
+  import('./views/analytics/analytics.component').then((m) => m.AnalyticsComponent);
+
+/*
   Define all monitoring bounded context routes.
 
   These are child routes of the 'monitoring' path from app.routes.ts.
 
   This means:
   app.routes.ts gives the parent path: /monitoring
-  this file gives the child path: /dashboard
+  this file gives the child paths: /dashboard, /realtime-map, /analytics
 
-  Final route:
+  Final routes:
   /monitoring/dashboard
+  /monitoring/realtime-map
+  /monitoring/analytics
 */
 export const MONITORING_ROUTES: Routes = [
   /*
@@ -70,4 +89,26 @@ export const MONITORING_ROUTES: Routes = [
     to lazy load the component.
   */
   { path: 'dashboard', loadComponent: dashboard },
+
+  /*
+    Real-time Map route. Admin-only view.
+
+    When the user navigates to:
+    /monitoring/realtime-map
+
+    Angular loads:
+    RealtimeMapComponent
+  */
+  { path: 'realtime-map', loadComponent: realtimeMap },
+
+  /*
+    Analytics route. Admin-only view.
+
+    When the user navigates to:
+    /monitoring/analytics
+
+    Angular loads:
+    AnalyticsComponent
+  */
+  { path: 'analytics', loadComponent: analytics },
 ];

@@ -6,7 +6,9 @@
   },
 
   "toolbar": {
-    "search-placeholder": "Buscar estacionamientos..."
+    "search-placeholder": "Buscar estacionamientos...",
+    "user-view": "Vista Usuario",
+    "admin-view": "Vista Administrador"
   },
 
   "sidebar": {
@@ -15,6 +17,9 @@
     "subscription": "Suscripciones",
     "receipts": "Recibos",
     "favorites": "Favoritos",
-    "history": "Historial"
+    "history": "Historial",
+    "realtime-map": "Mapa en Tiempo Real",
+    "analytics": "Análisis",
+    "settings": "Configuración"
   }
 }

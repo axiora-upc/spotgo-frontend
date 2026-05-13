@@ -87,7 +87,7 @@
 
       It contains:
       - notification button
-      - user account button
+      - user account button (with view mode menu)
       - language switcher
     -->
     <div class="toolbar-actions">
@@ -103,10 +103,57 @@
 
       <!--
         User account button.
+
+        [matMenuTriggerFor]="accountMenu" connects this button to the
+        mat-menu defined below. When clicked, the dropdown appears.
       -->
-      <button mat-icon-button class="icon-button" type="button" aria-label="Account">
+      <button
+        mat-icon-button
+        class="icon-button"
+        type="button"
+        aria-label="Account"
+        [matMenuTriggerFor]="accountMenu">
         <mat-icon>account_circle</mat-icon>
       </button>
+
+      <!--
+        accountMenu is the dropdown that appears when clicking the account button.
+
+        It shows two options:
+        - User View: switches the sidebar to show user navigation items.
+        - Admin View: switches the sidebar to show admin navigation items.
+
+        Each option calls setMode() from toolbar-content.ts,
+        which updates the ViewModeService signal.
+
+        The sidebar reacts automatically to that signal change.
+      -->
+      <mat-menu #accountMenu="matMenu">
+
+        <!--
+          User View option.
+
+          Clicking this calls setMode('user'), which switches
+          the sidebar back to the standard user navigation items.
+        -->
+        <button mat-menu-item (click)="setMode('user')">
+          <mat-icon>person</mat-icon>
+          <span>{{ 'toolbar.user-view' | translate }}</span>
+        </button>
+
+        <!--
+          Admin View option.
+
+          Clicking this calls setMode('admin'), which switches
+          the sidebar to the admin navigation items:
+          Real-time Map, Analytics, and Settings.
+        -->
+        <button mat-menu-item (click)="setMode('admin')">
+          <mat-icon>admin_panel_settings</mat-icon>
+          <span>{{ 'toolbar.admin-view' | translate }}</span>
+        </button>
+
+      </mat-menu>
 
       <!--
         This renders the LanguageSwitcher component.

@@ -6,7 +6,9 @@
   },
 
   "toolbar": {
-    "search-placeholder": "Search for parking spots..."
+    "search-placeholder": "Search for parking spots...",
+    "user-view": "User View",
+    "admin-view": "Admin View"
   },
 
   "sidebar": {
@@ -15,6 +17,9 @@
     "subscription": "Suscriptions",
     "receipts": "Receipts",
     "favorites": "Favorites",
-    "history": "History"
+    "history": "History",
+    "realtime-map": "Real-time Map",
+    "analytics": "Analytics",
+    "settings": "Settings"
   }
 }

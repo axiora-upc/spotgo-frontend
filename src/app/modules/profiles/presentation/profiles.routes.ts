@@ -34,16 +34,25 @@ const favorites = () =>
   import('./views/favorites/favorites.component').then((m) => m.FavoritesComponent);
 
 /*
+  This function loads the SettingsComponent asynchronously.
+
+  This is the admin-only view that allows configuring application settings.
+*/
+const settings = () =>
+  import('./views/settings/settings.component').then((m) => m.SettingsComponent);
+
+/*
   Define all profiles bounded context routes.
 
   These are child routes of the 'profiles' path from app.routes.ts.
 
   This means:
   app.routes.ts gives the parent path: /profiles
-  this file gives the child path: /favorites
+  this file gives the child paths: /favorites and /settings
 
-  Final route:
+  Final routes:
   /profiles/favorites
+  /profiles/settings
 */
 export const PROFILES_ROUTES: Routes = [
   /*
@@ -73,4 +82,15 @@ export const PROFILES_ROUTES: Routes = [
     to lazy load the component.
   */
   { path: 'favorites', loadComponent: favorites },
+
+  /*
+    Settings view route. Admin-only view.
+
+    When the user navigates to:
+    /profiles/settings
+
+    Angular loads:
+    SettingsComponent
+  */
+  { path: 'settings', loadComponent: settings },
 ];

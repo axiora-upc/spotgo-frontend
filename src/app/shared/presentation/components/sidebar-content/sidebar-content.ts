@@ -1,8 +1,10 @@
 /*
   Component is used to declare that this class is an Angular component.
   signal is used to create reactive state variables.
+  computed is used to derive a value from other signals automatically.
+  inject is used to get an injectable service inside the class.
 */
-import { Component, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 
 /*
   RouterLink is used to navigate to another route.
@@ -22,6 +24,18 @@ import { MatIcon } from '@angular/material/icon';
   For translations, we use the TranslatePipe from @ngx-translate/core.
 */
 import { TranslatePipe } from '@ngx-translate/core';
+
+/*
+  ViewModeService is a shared service that holds the current view mode.
+
+  It has a signal called mode that can be either 'user' or 'admin'.
+
+  When the admin clicks the account button in the toolbar and selects
+  "Admin View", the mode changes to 'admin'.
+
+  When the user selects "User View", the mode changes back to 'user'.
+*/
+import { ViewModeService } from '../../services/view-mode.service';
 
 @Component({
   /*
@@ -64,7 +78,17 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class SidebarContent {
 
   /*
-    options contains the sidebar navigation items.
+    inject(ViewModeService) gives this component access to the
+    shared service that tracks whether the app is in 'user' or 'admin' mode.
+
+    When the mode changes in the toolbar, this component reacts automatically
+    because options is a computed signal that depends on viewMode.mode().
+  */
+  private viewMode = inject(ViewModeService);
+
+  /*
+    userOptions contains the sidebar navigation items shown
+    when the app is in 'user' mode.
 
     Each option has:
     - link: the route where the user will navigate.
@@ -76,11 +100,8 @@ export class SidebarContent {
 
     - icon: the Angular Material icon name.
       These are the Material Design icon names.
-
-    When the user clicks a link, routerLink navigates to that path.
-    routerLinkActive adds the "selected" CSS class when the current route matches.
   */
-  options = signal([
+  private userOptions = signal([
     /*
       Dashboard: part of the monitoring module.
       Shows application overview and statistics.
@@ -117,5 +138,50 @@ export class SidebarContent {
     */
     { link: '/parking/history', label: 'sidebar.history', icon: 'history' }
   ]);
+
+  /*
+    adminOptions contains the sidebar navigation items shown
+    when the app is in 'admin' mode.
+
+    These routes belong to the monitoring and profiles modules,
+    following the same /{module-name}/{view-name} pattern.
+  */
+  private adminOptions = signal([
+    /*
+      Real-time Map: part of the monitoring module.
+      Shows a live map with active parking spots and reservations.
+    */
+    { link: '/monitoring/realtime-map', label: 'sidebar.realtime-map', icon: 'map' },
+
+    /*
+      Analytics: part of the monitoring module.
+      Shows charts and statistics for admin analysis.
+    */
+    { link: '/monitoring/analytics', label: 'sidebar.analytics', icon: 'bar_chart' },
+
+    /*
+      Settings: part of the profiles module.
+      Allows the admin to configure application settings.
+    */
+    { link: '/profiles/settings', label: 'sidebar.settings', icon: 'settings' }
+  ]);
+
+  /*
+    options is a computed signal.
+
+    A computed signal recalculates its value automatically
+    whenever the signals it reads change.
+
+    In this case, options reads viewMode.mode().
+
+    When mode() is 'admin', options returns adminOptions.
+    When mode() is 'user', options returns userOptions.
+
+    This means the sidebar updates instantly when the user
+    switches between views in the toolbar account menu.
+  */
+  options = computed(() =>
+    this.viewMode.mode() === 'admin' ? this.adminOptions() : this.userOptions()
+  );
 
 }
