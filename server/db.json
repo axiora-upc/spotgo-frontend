@@ -274,12 +274,7 @@
       "monthlyPrice": 0,
       "description": "Designed for occasional users.",
       "reservationsPerMonth": 3,
-      "features": [
-        "Real-time parking availability",
-        "Parking search",
-        "Spot reservation",
-        "Pay-per-use (hourly payment)"
-      ]
+      "features": []
     },
     {
       "id": "pln-002",
@@ -288,13 +283,7 @@
       "monthlyPrice": 150,
       "description": "Designed for frequent users.",
       "reservationsPerMonth": null,
-      "features": [
-        "Unlimited usage for 30 days",
-        "Entry and exit without hourly payment",
-        "Access to usage history receipts",
-        "Free reservation extensions",
-        "Faster reservation process"
-      ]
+      "features": []
     },
     {
       "id": "pln-003",
@@ -303,13 +292,7 @@
       "monthlyPrice": 400,
       "description": "Designed for long-term or high-frequency users.",
       "reservationsPerMonth": null,
-      "features": [
-        "All Monthly Plan benefits",
-        "Valid for 12 months",
-        "Discount compared to monthly payments",
-        "Higher priority during peak hours",
-        "Preferred access to specific zones"
-      ]
+      "features": []
     }
   ],
   "parkingSnapshot": {
@@ -528,6 +511,73 @@
       "autoRenewal": false,
       "paymentMethodLastFour": "1234",
       "paymentMethodExpiry": "12/28"
+    }
+  ],
+  "receipts": [
+    {
+      "id": "rec-001",
+      "clientId": "cli-001",
+      "invoiceNumber": "INV-2026-0412",
+      "locationName": "Central Plaza Parking",
+      "date": "2026-04-12",
+      "durationHours": 4,
+      "durationMinutes": 0,
+      "paymentMethod": "Visa •• 4242",
+      "bookingCode": "SPG-A1B2C3",
+      "amount": 12,
+      "status": "paid"
+    },
+    {
+      "id": "rec-002",
+      "clientId": "cli-001",
+      "invoiceNumber": "INV-2026-0410",
+      "locationName": "Downtown Garage",
+      "date": "2026-04-10",
+      "durationHours": 4,
+      "durationMinutes": 0,
+      "paymentMethod": "Mastercard •• 8821",
+      "bookingCode": "SPG-D4E5F6",
+      "amount": 20,
+      "status": "paid"
+    },
+    {
+      "id": "rec-003",
+      "clientId": "cli-001",
+      "invoiceNumber": "INV-2026-0408",
+      "locationName": "Mall Parking Complex",
+      "date": "2026-04-08",
+      "durationHours": 2,
+      "durationMinutes": 0,
+      "paymentMethod": "Apple Pay",
+      "bookingCode": "SPG-G7H8I9",
+      "amount": 8,
+      "status": "paid"
+    },
+    {
+      "id": "rec-004",
+      "clientId": "cli-001",
+      "invoiceNumber": "INV-2026-0405",
+      "locationName": "Riverside Lot",
+      "date": "2026-04-05",
+      "durationHours": 9,
+      "durationMinutes": 0,
+      "paymentMethod": "Visa •• 4242",
+      "bookingCode": "SPG-J1K2L3",
+      "amount": 18,
+      "status": "paid"
+    },
+    {
+      "id": "rec-005",
+      "clientId": "cli-001",
+      "invoiceNumber": "INV-2026-0401",
+      "locationName": "Station Parking",
+      "date": "2026-04-01",
+      "durationHours": 2,
+      "durationMinutes": 0,
+      "paymentMethod": "Mastercard •• 8821",
+      "bookingCode": "SPG-M4N5O6",
+      "amount": 5,
+      "status": "refunded"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

@@ -1,0 +1,319 @@
+/* ── Page layout ──────────────────────────────────────────────────────────── */
+
+.receipts-page {
+  padding: 32px 40px;
+  max-width: 1100px;
+}
+
+/* ── Page header ──────────────────────────────────────────────────────────── */
+
+.page-header {
+  margin-bottom: 28px;
+}
+
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 4px;
+}
+
+.page-subtitle {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* ── Loading / error states ───────────────────────────────────────────────── */
+
+.loading-text,
+.error-text {
+  font-size: 0.9rem;
+  color: #6b7280;
+  padding: 16px 0;
+}
+
+.error-text {
+  color: #ef4444;
+}
+
+/* ── Summary stat cards ───────────────────────────────────────────────────── */
+
+.stats-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px 24px;
+}
+
+.stat-card__label {
+  font-size: 0.82rem;
+  color: #6b7280;
+  margin: 0 0 8px;
+}
+
+.stat-card__value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+}
+
+/* Accent card — "This month" */
+.stat-card--accent {
+  border-color: #e5e7eb;
+}
+
+.stat-card__value--accent {
+  color: #1d3f7a;
+}
+
+/* ── Search bar ───────────────────────────────────────────────────────────── */
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin-bottom: 20px;
+}
+
+.search-bar__icon {
+  width: 18px;
+  height: 18px;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.search-bar__input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  color: #374151;
+  background: transparent;
+}
+
+.search-bar__input::placeholder {
+  color: #9ca3af;
+}
+
+/* ── Receipt list ─────────────────────────────────────────────────────────── */
+
+.receipt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Receipt card ─────────────────────────────────────────────────────────── */
+
+.receipt-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 18px 24px;
+  gap: 16px;
+}
+
+/* Left section */
+.receipt-card__left {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Dollar icon box */
+.receipt-card__icon {
+  width: 40px;
+  height: 40px;
+  background: #eff6ff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.receipt-card__icon svg {
+  width: 20px;
+  height: 20px;
+  color: #1d3f7a;
+}
+
+/* Info block */
+.receipt-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.receipt-card__title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.receipt-card__location {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+/* Status badges */
+.badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+.badge--paid {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge--refunded {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge--pending {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+/* Meta row: invoice · date · duration · payment */
+.receipt-card__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.meta-icon {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+/* Booking code */
+.receipt-card__booking {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Right section */
+.receipt-card__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.receipt-card__amount {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.receipt-card__actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* PDF / Email action buttons */
+.btn-action {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  font-size: 0.8rem;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-action svg {
+  width: 14px;
+  height: 14px;
+}
+
+.btn-action:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+/* ── Empty state ──────────────────────────────────────────────────────────── */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 24px;
+  color: #9ca3af;
+  gap: 12px;
+}
+
+.empty-state__icon {
+  width: 48px;
+  height: 48px;
+}
+
+.empty-state__text {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 700px) {
+  .receipts-page {
+    padding: 20px 16px;
+  }
+
+  .stats-row {
+    flex-direction: column;
+  }
+
+  .receipt-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .receipt-card__right {
+    align-items: flex-start;
+    width: 100%;
+  }
+}

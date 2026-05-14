@@ -1,9 +1,9 @@
 <div class="page">
-  <h1 class="page-title">Subscription</h1>
-  <p class="page-subtitle">Manage your monthly parking pass and billing preferences</p>
+  <h1 class="page-title">{{ 'subscription.title' | translate }}</h1>
+  <p class="page-subtitle">{{ 'subscription.subtitle' | translate }}</p>
 
   @if (store.loading()) {
-    <p class="loading-text">Loading...</p>
+    <p class="loading-text">{{ 'subscription.loading' | translate }}</p>
   }
 
   @if (!store.loading() && store.subscription(); as sub) {
@@ -12,37 +12,37 @@
     <div class="current-card">
       <div class="current-card__header">
         <div class="current-card__title-row">
-          <span class="current-card__plan-name">{{ currentPlan()?.name ?? sub.planId }}</span>
-          <span class="current-card__badge">Active</span>
+          <span class="current-card__plan-name">{{ currentPlanNameKey() | translate }}</span>
+          <span class="current-card__badge">{{ 'subscription.status.active' | translate }}</span>
         </div>
         <p class="current-card__renews">
-          Renews on {{ renewsOnFormatted() }} · S/.{{ sub.pricePerMonth }}/month
+          {{ 'subscription.renews-on' | translate }} {{ renewsOnFormatted() }} · S/.{{ sub.pricePerMonth }}{{ 'subscription.per-month' | translate }}
         </p>
-        <span class="current-card__price">S/.{{ sub.pricePerMonth }} <small>/mo</small></span>
+        <span class="current-card__price">S/.{{ sub.pricePerMonth }} <small>{{ 'subscription.per-mo' | translate }}</small></span>
       </div>
 
       <div class="usage">
         <div class="usage__label">
-          <span>This month's usage</span>
+          <span>{{ 'subscription.usage.label' | translate }}</span>
           <span>{{ sub.usageHours }}h / {{ sub.maxHours }}h</span>
         </div>
         <div class="usage__bar">
           <div class="usage__fill" [style.width.%]="usagePercent()"></div>
         </div>
-        <p class="usage__remaining">{{ hoursRemaining() }} hours remaining · resets on May 1</p>
+        <p class="usage__remaining">{{ hoursRemaining() }} {{ 'subscription.usage.hours-remaining' | translate }}</p>
       </div>
 
       <div class="stats">
         <div class="stats__item">
-          <span class="stats__label">Sessions</span>
+          <span class="stats__label">{{ 'subscription.stats.sessions' | translate }}</span>
           <span class="stats__value">{{ sub.sessions }}</span>
         </div>
         <div class="stats__item">
-          <span class="stats__label">Saved this month</span>
+          <span class="stats__label">{{ 'subscription.stats.saved' | translate }}</span>
           <span class="stats__value stats__value--green">S/.{{ sub.savedThisMonth }}</span>
         </div>
         <div class="stats__item">
-          <span class="stats__label">Member since</span>
+          <span class="stats__label">{{ 'subscription.stats.member-since' | translate }}</span>
           <span class="stats__value">{{ memberSinceFormatted() }}</span>
         </div>
       </div>
@@ -53,8 +53,8 @@
       <div class="info-card">
         <div class="info-card__icon">&#128197;</div>
         <div class="info-card__content">
-          <p class="info-card__title">Auto-renewal</p>
-          <p class="info-card__subtitle">Your pass renews automatically each month</p>
+          <p class="info-card__title">{{ 'subscription.auto-renewal.title' | translate }}</p>
+          <p class="info-card__subtitle">{{ 'subscription.auto-renewal.subtitle' | translate }}</p>
         </div>
         <label class="toggle">
           <input
@@ -69,12 +69,14 @@
       <div class="info-card">
         <div class="info-card__icon">&#128179;</div>
         <div class="info-card__content">
-          <p class="info-card__title">Payment method</p>
+          <p class="info-card__title">{{ 'subscription.payment-method.title' | translate }}</p>
           <p class="info-card__subtitle">
-            Visa ending in {{ sub.paymentMethodLastFour }} · expires {{ sub.paymentMethodExpiry }}
+            {{ 'subscription.payment-method.subtitle' | translate: { lastFour: sub.paymentMethodLastFour, expiry: sub.paymentMethodExpiry } }}
           </p>
         </div>
-        <button class="btn-outline" type="button" (click)="openPaymentModal()">Update payment method</button>
+        <button class="btn-outline" type="button" (click)="openPaymentModal()">
+          {{ 'subscription.payment-method.update-btn' | translate }}
+        </button>
       </div>
     </div>
 
@@ -82,31 +84,31 @@
 
   <!-- Available plans -->
   @if (store.plans().length > 0) {
-    <h2 class="section-title">Available Plans</h2>
-    <p class="section-subtitle">Upgrade or change your monthly pass</p>
+    <h2 class="section-title">{{ 'subscription.plans.title' | translate }}</h2>
+    <p class="section-subtitle">{{ 'subscription.plans.subtitle' | translate }}</p>
 
     <div class="plans-grid">
       @for (plan of store.plans(); track plan.id) {
         <div class="plan-card" [class.plan-card--active]="isCurrentPlan(plan.id)">
 
           <div class="plan-card__header">
-            <p class="plan-card__name">{{ plan.name }}</p>
-            <p class="plan-card__description">{{ plan.description }}</p>
+            <p class="plan-card__name">{{ ('subscription.plans.' + plan.type + '.name') | translate }}</p>
+            <p class="plan-card__description">{{ ('subscription.plans.' + plan.type + '.description') | translate }}</p>
           </div>
 
           <p class="plan-card__price">
             @if (plan.monthlyPrice === 0) {
               <span class="plan-card__amount">$0</span>
-              <span class="plan-card__period">/month</span>
+              <span class="plan-card__period">{{ 'subscription.per-month' | translate }}</span>
             } @else {
               <span class="plan-card__amount">S/.{{ plan.monthlyPrice }}</span>
-              <span class="plan-card__period">/month</span>
+              <span class="plan-card__period">{{ 'subscription.per-month' | translate }}</span>
             }
           </p>
 
           <ul class="plan-card__features">
-            @for (feature of plan.features; track feature) {
-              <li class="plan-card__feature">{{ feature }}</li>
+            @for (feature of getPlanFeatures(plan.type); track feature) {
+              <li class="plan-card__feature">{{ feature | translate }}</li>
             }
           </ul>
 
@@ -118,11 +120,11 @@
             type="button"
           >
             @if (isCurrentPlan(plan.id)) {
-              Current Plan
+              {{ 'subscription.plans.current' | translate }}
             } @else if (plan.type === 'free') {
-              Switch Plan
+              {{ 'subscription.plans.switch' | translate }}
             } @else {
-              Upgrade
+              {{ 'subscription.plans.upgrade' | translate }}
             }
           </button>
 
@@ -137,50 +139,50 @@
 @if (showPaymentModal()) {
   <div class="modal-backdrop" (click)="closePaymentModal()">
     <div class="modal" (click)="$event.stopPropagation()">
-      <h3 class="modal__title">Update payment method</h3>
+      <h3 class="modal__title">{{ 'subscription.modal.payment.title' | translate }}</h3>
 
       <form [formGroup]="paymentForm" (ngSubmit)="onSubmitPayment()" class="payment-form">
 
         <div class="form-field">
-          <label class="form-label">Card number</label>
+          <label class="form-label">{{ 'subscription.modal.payment.card-number' | translate }}</label>
           <input class="form-input" formControlName="cardNumber" placeholder="1234567890123456" maxlength="16" />
           @if (getError('cardNumber'); as err) {
-            <span class="form-error">{{ err }}</span>
+            <span class="form-error">{{ err | translate }}</span>
           }
         </div>
 
         <div class="form-field">
-          <label class="form-label">Cardholder name</label>
+          <label class="form-label">{{ 'subscription.modal.payment.card-holder' | translate }}</label>
           <input class="form-input" formControlName="cardHolder" placeholder="María García" />
           @if (getError('cardHolder'); as err) {
-            <span class="form-error">{{ err }}</span>
+            <span class="form-error">{{ err | translate }}</span>
           }
         </div>
 
         <div class="form-row">
           <div class="form-field">
-            <label class="form-label">Expiry date</label>
+            <label class="form-label">{{ 'subscription.modal.payment.expiry' | translate }}</label>
             <input class="form-input" formControlName="expiry" placeholder="MM/YY" maxlength="5" />
             @if (getError('expiry'); as err) {
-              <span class="form-error">{{ err }}</span>
+              <span class="form-error">{{ err | translate }}</span>
             }
           </div>
 
           <div class="form-field">
-            <label class="form-label">CVV</label>
+            <label class="form-label">{{ 'subscription.modal.payment.cvv' | translate }}</label>
             <input class="form-input" formControlName="cvv" placeholder="123" maxlength="4" type="password" />
             @if (getError('cvv'); as err) {
-              <span class="form-error">{{ err }}</span>
+              <span class="form-error">{{ err | translate }}</span>
             }
           </div>
         </div>
 
         <div class="modal__actions">
           <button class="modal__btn modal__btn--cancel" type="button" (click)="closePaymentModal()">
-            Cancel
+            {{ 'subscription.modal.cancel' | translate }}
           </button>
           <button class="modal__btn modal__btn--confirm" type="submit">
-            Save
+            {{ 'subscription.modal.save' | translate }}
           </button>
         </div>
 
@@ -193,17 +195,16 @@
 @if (selectedPlan(); as plan) {
   <div class="modal-backdrop" (click)="onCancelSwitch()">
     <div class="modal" (click)="$event.stopPropagation()">
-      <h3 class="modal__title">Change Plan</h3>
+      <h3 class="modal__title">{{ 'subscription.modal.plan.title' | translate }}</h3>
       <p class="modal__body">
-        Are you sure you want to switch to <strong>{{ plan.name }}</strong>?
-        Your billing will update on your next renewal date.
+        {{ 'subscription.modal.plan.confirm-prefix' | translate }}<strong>{{ ('subscription.plans.' + plan.type + '.name') | translate }}</strong>{{ 'subscription.modal.plan.confirm-suffix' | translate }}
       </p>
       <div class="modal__actions">
         <button class="modal__btn modal__btn--cancel" type="button" (click)="onCancelSwitch()">
-          Cancel
+          {{ 'subscription.modal.cancel' | translate }}
         </button>
         <button class="modal__btn modal__btn--confirm" type="button" (click)="onConfirmSwitch()">
-          Confirm
+          {{ 'subscription.modal.confirm' | translate }}
         </button>
       </div>
     </div>

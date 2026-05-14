@@ -37,8 +37,10 @@ import { BaseApi } from '../../../shared/infrastructure/base-api';
 */
 import { SubscriptionsApiEndpoint } from './subscriptions-api-endpoint';
 import { ClientPlansApiEndpoint } from './client-plans-api-endpoint';
+import { ReceiptsApiEndpoint } from './receipts-api-endpoint';
 import { Subscription } from '../domain/model/subscription.entity';
 import { ClientPlan } from '../domain/model/client-plan.entity';
+import { Receipt } from '../domain/model/receipt.entity';
 
 @Injectable({ providedIn: 'root' })
 export class PaymentApi extends BaseApi {
@@ -49,6 +51,7 @@ export class PaymentApi extends BaseApi {
   */
   private readonly subscriptionsEndpoint: SubscriptionsApiEndpoint;
   private readonly clientPlansEndpoint: ClientPlansApiEndpoint;
+  private readonly receiptsEndpoint: ReceiptsApiEndpoint;
 
   /*
     Angular calls this constructor automatically and passes HttpClient.
@@ -60,6 +63,7 @@ export class PaymentApi extends BaseApi {
     super();
     this.subscriptionsEndpoint = new SubscriptionsApiEndpoint(http);
     this.clientPlansEndpoint = new ClientPlansApiEndpoint(http);
+    this.receiptsEndpoint = new ReceiptsApiEndpoint(http);
   }
 
   /*
@@ -86,5 +90,13 @@ export class PaymentApi extends BaseApi {
   */
   getClientPlans(): Observable<ClientPlan[]> {
     return this.clientPlansEndpoint.getAll();
+  }
+
+  /*
+    Receipts are read-only from the client's perspective.
+    The store filters the full list by clientId after loading.
+  */
+  getReceipts(): Observable<Receipt[]> {
+    return this.receiptsEndpoint.getAll();
   }
 }

@@ -20,6 +20,7 @@ import { retry } from 'rxjs';
 
 import { Subscription } from '../domain/model/subscription.entity';
 import { ClientPlan } from '../domain/model/client-plan.entity';
+import { Receipt } from '../domain/model/receipt.entity';
 
 /*
   PaymentApi is the injectable class that holds all the endpoints.
@@ -48,6 +49,7 @@ export class PaymentStore {
   */
   private readonly subscriptionSignal = signal<Subscription | null>(null);
   private readonly plansSignal        = signal<ClientPlan[]>([]);
+  private readonly receiptsSignal     = signal<Receipt[]>([]);
   private readonly loadingSignal      = signal(false);
   private readonly errorSignal        = signal<string | null>(null);
 
@@ -58,6 +60,7 @@ export class PaymentStore {
   */
   readonly subscription = this.subscriptionSignal.asReadonly();
   readonly plans        = this.plansSignal.asReadonly();
+  readonly receipts     = this.receiptsSignal.asReadonly();
   readonly loading      = this.loadingSignal.asReadonly();
   readonly error        = this.errorSignal.asReadonly();
 
@@ -223,6 +226,37 @@ export class PaymentStore {
     If the error is a known Error object, uses its message.
     Otherwise uses the fallback string provided by the caller.
   */
+  /*
+    Called by ReceiptsComponent on init, passing the logged-in client id.
+
+    What happens:
+      1. loading is set to true so the view can show a loading state
+      2. store calls paymentApi.getReceipts()
+      3. paymentApi delegates to ReceiptsApiEndpoint
+      4. endpoint does GET /receipts and returns Receipt[]
+      5. store filters the list to keep only the client's receipts
+      6. store sorts them by date descending (newest first)
+      7. view reads the signal and updates automatically
+  */
+  loadReceiptsByClientId(clientId: string): void {
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+
+    this.paymentApi.getReceipts().subscribe({
+      next: (receipts) => {
+        const filtered = receipts
+          .filter((r) => r.clientId === clientId)
+          .sort((a, b) => b.date.localeCompare(a.date));   // newest first
+        this.receiptsSignal.set(filtered);
+        this.loadingSignal.set(false);
+      },
+      error: (err) => {
+        this.errorSignal.set(this.formatError(err, 'Failed to load receipts'));
+        this.loadingSignal.set(false);
+      },
+    });
+  }
+
   private formatError(err: unknown, fallback: string): string {
     if (err instanceof Error) {
       return err.message.includes('Resource not found')
