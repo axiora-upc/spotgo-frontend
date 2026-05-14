@@ -1,0 +1,94 @@
+<!--
+  Contenedor principal del dialog.
+  Apila el título, la zona de drop/preview, el campo de nombre y los botones.
+-->
+<div class="dialog-container">
+
+  <h2 class="dialog-title">{{ 'settings.blueprint.dialog-title' | translate }}</h2>
+
+  <!--
+    Zona de drag & drop: visible solo cuando no hay imagen seleccionada.
+    [ngClass] agrega 'dragging' para resaltar el borde cuando se arrastra.
+    (click) abre el input nativo oculto.
+  -->
+  @if (!previewUrl()) {
+    <div
+      class="drop-zone"
+      [ngClass]="{ 'dragging': isDragging() }"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave()"
+      (drop)="onDrop($event)"
+      (click)="fileInput.click()">
+
+      <mat-icon class="drop-icon">image</mat-icon>
+      <p class="drop-hint">{{ 'settings.blueprint.drop-hint-short' | translate }}</p>
+    </div>
+  }
+
+  <!--
+    Vista previa: visible solo cuando ya hay una imagen seleccionada.
+    Muestra la imagen antes de que el admin confirme la subida.
+  -->
+  @if (previewUrl()) {
+    <div class="preview-container">
+      <img class="preview-image" [src]="previewUrl()" alt="Preview" />
+    </div>
+  }
+
+  <!--
+    Input nativo oculto. Se activa programáticamente con fileInput.click().
+    accept="image/*" restringe la selección solo a imágenes.
+  -->
+  <input
+    #fileInput
+    type="file"
+    accept="image/*"
+    class="hidden-input"
+    (change)="onFileSelected($event)" />
+
+  <!--
+    Campo de nombre: aparece solo cuando hay imagen seleccionada.
+    El admin puede cambiar el nombre antes de subir.
+    (input) limpia el error cada vez que el admin escribe.
+  -->
+  @if (selectedFile()) {
+    <div class="name-field">
+      <label class="name-label">{{ 'settings.blueprint.name-label' | translate }}</label>
+      <input
+        class="name-input"
+        [(ngModel)]="imageName"
+        [placeholder]="'settings.blueprint.name-placeholder' | translate"
+        (input)="errorMessage.set('')" />
+    </div>
+  }
+
+  <!--
+    Mensaje de error: aparece cuando el nombre ya existe.
+    errorMessage contiene la clave de traducción del mensaje.
+  -->
+  @if (errorMessage()) {
+    <p class="error-message">{{ errorMessage() | translate }}</p>
+  }
+
+  <!-- Botones de acción -->
+  <div class="dialog-actions">
+
+    <!--
+      Botón Subir: deshabilitado mientras no haya imagen y nombre válido.
+      [disabled] es un binding de Angular que Angular Material respeta
+      para deshabilitar el botón visualmente y funcionalmente.
+    -->
+    <button
+      mat-flat-button
+      class="btn-upload"
+      [disabled]="!canUpload"
+      (click)="confirm()">
+      {{ 'settings.blueprint.upload-btn' | translate }}
+    </button>
+
+    <button mat-stroked-button class="btn-cancel" (click)="cancel()">
+      {{ 'settings.blueprint.cancel-btn' | translate }}
+    </button>
+
+  </div>
+</div>
