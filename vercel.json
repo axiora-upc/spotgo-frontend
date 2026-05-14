@@ -4,23 +4,25 @@
     {
       "src": "index.js",
       "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["server/db.json"]
-      }
+      "config": { "includeFiles": ["server/db.json"] }
     },
     {
       "src": "package.json",
-      "use": "@vercel/angular"
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist/spotgo-frontend/browser", "buildCommand": "npm run build" }
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/:path*",
-      "destination": "/index.js"
+      "src": "/api/(.*)",
+      "dest": "/index.js"
     },
     {
-      "source": "/((?!api/).*)",
-      "destination": "/index.html"
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
