@@ -4,7 +4,7 @@
       "name": "Main Terminal Hub",
       "sector": "Sector 04-A Smart Grid",
       "floor": "G01 (Ground)",
-      "lastUpdated": "23:08:35",
+      "lastUpdated": "04:10:01",
       "live": true
     },
     "stats": {
@@ -51,7 +51,7 @@
         "spots": [
           {
             "id": "A01-01",
-            "status": "occupied"
+            "status": "available"
           },
           {
             "id": "A01-02",
