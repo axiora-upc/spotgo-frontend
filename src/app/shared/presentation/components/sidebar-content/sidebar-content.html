@@ -34,7 +34,7 @@
         class="sidebar-option"
         [routerLink]="option.link"
         routerLinkActive="selected"
-        [routerLinkActiveOptions]="{ exact: true }">
+        [routerLinkActiveOptions]="{ exact: option.exact ?? true }">
 
         <!--
           mat-icon shows the Angular Material icon.

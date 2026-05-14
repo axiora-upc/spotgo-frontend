@@ -37,6 +37,30 @@ import { TranslatePipe } from '@ngx-translate/core';
 */
 import { ViewModeService } from '../../services/view-mode.service';
 
+/*
+  Shape of one sidebar navigation option.
+
+  An explicit interface is required so both userOptions and adminOptions
+  share the same element type. Without it, TypeScript would infer two
+  different array types and the template would not accept option.exact
+  on user options (the union would only expose properties common to
+  both arrays).
+
+  exact controls how routerLinkActive matches the current URL:
+  - exact: true  → the link is active only when the URL matches exactly.
+  - exact: false → the link stays active for any child route.
+
+  Most options use exact: true. Real-time Map uses exact: false because
+  its URL becomes /monitoring/realtime-map/overview after the default
+  child redirect, so we still want the parent item highlighted.
+*/
+interface SidebarOption {
+  link: string;
+  label: string;
+  icon: string;
+  exact?: boolean;
+}
+
 @Component({
   /*
     selector is the HTML tag used to render this component
@@ -101,7 +125,7 @@ export class SidebarContent {
     - icon: the Angular Material icon name.
       These are the Material Design icon names.
   */
-  private userOptions = signal([
+  private userOptions = signal<SidebarOption[]>([
     /*
       Dashboard: part of the monitoring module.
       Shows application overview and statistics.
@@ -146,12 +170,17 @@ export class SidebarContent {
     These routes belong to the monitoring and profiles modules,
     following the same /{module-name}/{view-name} pattern.
   */
-  private adminOptions = signal([
+  private adminOptions = signal<SidebarOption[]>([
     /*
       Real-time Map: part of the monitoring module.
       Shows a live map with active parking spots and reservations.
+
+      exact: false keeps the link highlighted while the user navigates
+      between its child tabs (overview, reports, employees), since the
+      URL becomes /monitoring/realtime-map/overview after the default
+      redirect.
     */
-    { link: '/monitoring/realtime-map', label: 'sidebar.realtime-map', icon: 'map' },
+    { link: '/monitoring/realtime-map', label: 'sidebar.realtime-map', icon: 'map', exact: false },
 
     /*
       Analytics: part of the monitoring module.

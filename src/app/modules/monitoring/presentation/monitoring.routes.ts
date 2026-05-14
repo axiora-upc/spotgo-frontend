@@ -37,7 +37,7 @@ const dashboard = () =>
   with active parking spots and reservations.
 */
 const realtimeMap = () =>
-  import('./views/realtime-map/realtime-map.component').then((m) => m.RealtimeMapComponent);
+  import('./views/realtime-map/realtime-map').then((m) => m.RealtimeMap);
 
 /*
   This function loads the AnalyticsComponent asynchronously.
