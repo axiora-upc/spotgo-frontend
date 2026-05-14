@@ -4,12 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start:api": "json-server --watch db.json --port 3000",
-    "start:full": "npm-run-all --parallel start:api start",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "deploy": "ng build --base-href '/spotgo-frontend/' && angular-cli-ghpages --dir=dist/spotgo-frontend/browser"
+    "deploy": "ng build --base-href '/spotgo-frontend/' && angular-cli-ghpages --dir=dist/spotgo-frontend/browser",
+    "server": "npx json-server server/db.json"
   },
   "private": true,
   "packageManager": "npm@11.12.1",

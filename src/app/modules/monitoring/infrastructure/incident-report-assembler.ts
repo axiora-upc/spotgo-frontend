@@ -16,6 +16,7 @@ export class IncidentReportAssembler
   toEntityFromResource(resource: IncidentsResource): IncidentReport {
     return new IncidentReport({
       id: resource.id,
+      code: resource.code ?? resource.id,
       type: resource.type as IncidentType,
       spot: resource.spot,
       date: resource.date,
@@ -27,6 +28,7 @@ export class IncidentReportAssembler
   toResourceFromEntity(entity: IncidentReport): IncidentsResource {
     return {
       id: entity.id,
+      code: entity.code,
       type: entity.type,
       spot: entity.spot,
       date: entity.date,

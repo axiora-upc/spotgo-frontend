@@ -1,31 +1,38 @@
-/*
-  Component to represent the subscriptions view.
+import { Component, OnInit } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { PlanesClienteService } from '../../../infrastructure/planes-cliente.service';
 
-  This is a placeholder component that will be replaced with the actual subscriptions page.
-*/
-import { Component } from '@angular/core';
+interface ClientPlan {
+  id: string;
+  type: string;
+  name: string;
+  monthlyPrice: number;
+  description: string;
+  reservationsPerMonth: number | null;
+}
 
 @Component({
-  /*
-    selector is the HTML tag used to render this component.
-  */
   selector: 'app-subscriptions',
-
-  /*
-    template shows what the component displays.
-  */
-  template: `<div class="subscriptions-view"><h1>Subscriptions</h1></div>`,
-
-  /*
-    styles defines the CSS for this component.
-  */
-  styles: [
-    `
-      .subscriptions-view {
-        padding: 20px;
-      }
-    `,
-  ],
+  standalone: true,
+  imports: [NgClass],
+  templateUrl: './subscriptions.component.html',
+  styleUrl: './subscriptions.component.css',
 })
-export class SubscriptionsComponent {}
+export class SubscriptionsComponent implements OnInit {
+  plans: ClientPlan[] = [];
+  loading = true;
 
+  constructor(private planesClienteService: PlanesClienteService) {}
+
+  ngOnInit(): void {
+    this.planesClienteService.getAll().subscribe({
+      next: (data) => {
+        this.plans = data as ClientPlan[];
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      },
+    });
+  }
+}

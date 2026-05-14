@@ -1,0 +1,39 @@
+<div class="subscriptions-view">
+  <h1 class="subscriptions-title">Subscriptions</h1>
+  <p class="subscriptions-subtitle">Choose the plan that best fits your needs.</p>
+
+  @if (loading) {
+    <p class="subscriptions-loading">Loading plans...</p>
+  }
+
+  @if (!loading && plans.length > 0) {
+    <div class="subscriptions-plans">
+      @for (plan of plans; track plan.id) {
+        <div class="plan-card" [ngClass]="'plan-card--' + plan.type">
+          <div class="plan-header">
+            <h2 class="plan-name">{{ plan.name }}</h2>
+            <p class="plan-price">
+              @if (plan.monthlyPrice === 0) {
+                <span class="plan-price__amount">Free</span>
+              } @else {
+                <span class="plan-price__amount">S/ {{ plan.monthlyPrice }}</span>
+                <span class="plan-price__period">/mo</span>
+              }
+            </p>
+          </div>
+          <p class="plan-description">{{ plan.description }}</p>
+          <p class="plan-reservations">
+            @if (plan.reservationsPerMonth) {
+              Up to {{ plan.reservationsPerMonth }} reservations/month
+            } @else {
+              Unlimited reservations
+            }
+          </p>
+          <button class="plan-btn" type="button">
+            @if (plan.type === 'free') { Get Started } @else { Subscribe }
+          </button>
+        </div>
+      }
+    </div>
+  }
+</div>

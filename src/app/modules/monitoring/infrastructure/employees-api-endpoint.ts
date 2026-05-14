@@ -13,6 +13,7 @@
   POST, so the UI always shows the id that lives in db.json.
 */
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 import { BaseApiEndpoint } from '../../../shared/infrastructure/base-api-endpoint';
 import { Employee } from '../domain/model/employee.entity';
 import { EmployeesResource, EmployeesResponse } from './employees-response';
@@ -27,7 +28,7 @@ export class EmployeesApiEndpoint extends BaseApiEndpoint<
   constructor(http: HttpClient) {
     super(
       http,
-      'http://localhost:3000/employees',
+      `${environment.apiUrl}/employees`,
       new EmployeeAssembler()
     );
   }

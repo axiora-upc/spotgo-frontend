@@ -14,13 +14,14 @@
                        would otherwise lose during a partial merge.
 */
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 import { Observable, catchError, map, switchMap, throwError } from 'rxjs';
 import { ParkingSnapshot } from '../domain/model/parking-spot.entity';
 import { ParkingSnapshotResource } from './parking-snapshot-response';
 import { ParkingSnapshotAssembler } from './parking-snapshot-assembler';
 
 export class ParkingSnapshotApiEndpoint {
-  private readonly endpointUrl = 'http://localhost:3000/parkingSnapshot';
+  private readonly endpointUrl = `${environment.apiUrl}/parkingSnapshot`;
   private readonly assembler = new ParkingSnapshotAssembler();
 
   constructor(private readonly http: HttpClient) {}

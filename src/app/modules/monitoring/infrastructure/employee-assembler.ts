@@ -21,25 +21,29 @@ export class EmployeeAssembler
   toEntityFromResource(resource: EmployeesResource): Employee {
     return new Employee({
       id: resource.id,
-      name: resource.name,
+      name: `${resource.firstName} ${resource.lastName}`,
       role: resource.role as EmployeeRole,
       schedule: resource.schedule as EmployeeSchedule,
       shiftStart: resource.shiftStart,
       shiftEnd: resource.shiftEnd,
-      bookingCode: resource.bookingCode,
+      bookingCode: resource.bookingCode ?? '',
       status: resource.status as EmployeeStatus,
     });
   }
 
   toResourceFromEntity(entity: Employee): EmployeesResource {
+    const parts = entity.name.trim().split(' ');
+    const firstName = parts[0] ?? '';
+    const lastName = parts.slice(1).join(' ');
     return {
       id: entity.id,
-      name: entity.name,
+      firstName,
+      lastName,
       role: entity.role,
       schedule: entity.schedule,
       shiftStart: entity.shiftStart,
       shiftEnd: entity.shiftEnd,
-      bookingCode: entity.bookingCode,
+      bookingCode: entity.bookingCode || undefined,
       status: entity.status,
     } as EmployeesResource;
   }

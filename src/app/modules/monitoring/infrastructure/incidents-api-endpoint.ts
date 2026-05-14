@@ -2,6 +2,7 @@
   Concrete API endpoint for the /incidents resource.
 */
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 import { BaseApiEndpoint } from '../../../shared/infrastructure/base-api-endpoint';
 import { IncidentReport } from '../domain/model/incident-report.entity';
 import { IncidentsResource, IncidentsResponse } from './incidents-response';
@@ -16,7 +17,7 @@ export class IncidentsApiEndpoint extends BaseApiEndpoint<
   constructor(http: HttpClient) {
     super(
       http,
-      'http://localhost:3000/incidents',
+      `${environment.apiUrl}/incidents`,
       new IncidentReportAssembler()
     );
   }

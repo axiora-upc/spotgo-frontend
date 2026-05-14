@@ -15,13 +15,15 @@ import { BaseResource, BaseResponse } from '../../../shared/infrastructure/base-
 
 export interface EmployeesResource extends BaseResource {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  parkingId?: number;
   role: string;
   schedule: string;
   shiftStart: string;
   shiftEnd: string;
-  bookingCode: string;
   status: string;
+  bookingCode?: string;
 }
 
 export interface EmployeesResponse extends BaseResponse {
