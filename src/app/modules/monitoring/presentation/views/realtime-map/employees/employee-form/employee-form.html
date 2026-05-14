@@ -1,1 +1,86 @@
-<p>employee-form works!</p>
+<h2 mat-dialog-title class="employee-form__title">
+  <mat-icon>{{ data.mode === 'edit' ? 'edit' : 'person_add' }}</mat-icon>
+  {{
+    (data.mode === 'edit'
+      ? 'realtime-map.employees.form.edit-title'
+      : 'realtime-map.employees.form.create-title')
+      | translate
+  }}
+</h2>
+
+<form class="employee-form" [formGroup]="form" (ngSubmit)="save()">
+  <mat-dialog-content class="employee-form__content">
+
+    <mat-form-field appearance="outline" class="employee-form__field">
+      <mat-label>{{ 'realtime-map.employees.form.name' | translate }}</mat-label>
+      <input matInput type="text" formControlName="name" required/>
+    </mat-form-field>
+
+    <div class="employee-form__row">
+      <mat-form-field appearance="outline" class="employee-form__field">
+        <mat-label>{{ 'realtime-map.employees.form.role' | translate }}</mat-label>
+        <mat-select formControlName="role" required>
+          @for (role of roles; track role) {
+            <mat-option [value]="role">
+              {{ 'realtime-map.employees.roles.' + role | translate }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="employee-form__field">
+        <mat-label>{{ 'realtime-map.employees.form.schedule' | translate }}</mat-label>
+        <mat-select formControlName="schedule" required>
+          @for (schedule of schedules; track schedule) {
+            <mat-option [value]="schedule">
+              {{ 'realtime-map.employees.schedules.' + schedule | translate }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="employee-form__row">
+      <mat-form-field appearance="outline" class="employee-form__field">
+        <mat-label>{{ 'realtime-map.employees.form.shift-start' | translate }}</mat-label>
+        <input matInput type="time" formControlName="shiftStart" required/>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="employee-form__field">
+        <mat-label>{{ 'realtime-map.employees.form.shift-end' | translate }}</mat-label>
+        <input matInput type="time" formControlName="shiftEnd" required/>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="employee-form__field">
+      <mat-label>{{ 'realtime-map.employees.form.booking-code' | translate }}</mat-label>
+      <input matInput type="text" formControlName="bookingCode" required/>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="employee-form__field">
+      <mat-label>{{ 'realtime-map.employees.form.status' | translate }}</mat-label>
+      <mat-select formControlName="status" required>
+        @for (status of statuses; track status) {
+          <mat-option [value]="status">
+            {{ 'realtime-map.employees.status.' + status | translate }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="employee-form__actions">
+    <button mat-button type="button" (click)="cancel()">
+      {{ 'realtime-map.employees.form.cancel' | translate }}
+    </button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+      {{
+        (data.mode === 'edit'
+          ? 'realtime-map.employees.form.save'
+          : 'realtime-map.employees.form.add')
+          | translate
+      }}
+    </button>
+  </mat-dialog-actions>
+</form>
