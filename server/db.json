@@ -1,7 +1,7 @@
 {
   "admins": [
     {
-      "id": "1",
+      "id": "adm-001",
       "firstName": "Piero",
       "lastName": "Quiroz Montoya",
       "email": "piero.quiroz@spotgo.com",
@@ -16,16 +16,12 @@
       "totalSpaces": 120,
       "totalFloors": 3,
       "operatingHours": "24/7",
-      "subscribedSensors": [
-        "occupancy",
-        "entry-exit",
-        "anpr-camera"
-      ],
+      "subscribedSensors": ["occupancy", "entry-exit", "anpr-camera"],
       "systemStatus": "active",
       "createdAt": "2026-01-10T08:00:00Z"
     },
     {
-      "id": "2",
+      "id": "adm-002",
       "firstName": "Juan",
       "lastName": "Quispe Mamani",
       "email": "juan.quispe@spotgo.com",
@@ -40,17 +36,14 @@
       "totalSpaces": 80,
       "totalFloors": 2,
       "operatingHours": "06:00-22:00",
-      "subscribedSensors": [
-        "occupancy",
-        "environmental"
-      ],
+      "subscribedSensors": ["occupancy", "environmental"],
       "systemStatus": "active",
       "createdAt": "2026-02-15T09:30:00Z"
     }
   ],
   "clients": [
     {
-      "id": "1",
+      "id": "cli-001",
       "firstName": "María",
       "lastName": "García López",
       "email": "maria.garcia@gmail.com",
@@ -64,11 +57,11 @@
       "model": "Corolla",
       "year": 2022,
       "subscriptionPlan": "monthly",
-      "parkingId": 1,
+      "parkingId": "prk-001",
       "createdAt": "2026-03-01T10:00:00Z"
     },
     {
-      "id": "2",
+      "id": "cli-002",
       "firstName": "Carlos",
       "lastName": "Mendoza Torres",
       "email": "carlos.mendoza@gmail.com",
@@ -82,13 +75,13 @@
       "model": "Tucson",
       "year": 2023,
       "subscriptionPlan": "annual",
-      "parkingId": 1,
+      "parkingId": "prk-001",
       "createdAt": "2026-03-05T11:15:00Z"
     }
   ],
   "sensors": [
     {
-      "id": "1",
+      "id": "sen-001",
       "type": "occupancy",
       "name": "Occupancy Sensor",
       "description": "Detects space availability per spot in real time",
@@ -96,7 +89,7 @@
       "active": true
     },
     {
-      "id": "2",
+      "id": "sen-002",
       "type": "entry-exit",
       "name": "Entry / Exit Sensor",
       "description": "Vehicle flow control and automatic counting",
@@ -104,7 +97,7 @@
       "active": true
     },
     {
-      "id": "3",
+      "id": "sen-003",
       "type": "anpr-camera",
       "name": "Camera / ANPR",
       "description": "License plate recognition and vehicle detection",
@@ -112,7 +105,7 @@
       "active": true
     },
     {
-      "id": "4",
+      "id": "sen-004",
       "type": "environmental",
       "name": "Environmental Sensor",
       "description": "CO₂, temperature and humidity per floor",
@@ -122,8 +115,8 @@
   ],
   "parkings": [
     {
-      "id": "1",
-      "adminId": 1,
+      "id": "prk-001",
+      "adminId": "adm-001",
       "name": "Parking Central Lima",
       "address": "Av. Javier Prado Este 123, San Isidro",
       "city": "Lima",
@@ -136,8 +129,8 @@
       "systemStatus": "active"
     },
     {
-      "id": "2",
-      "adminId": 2,
+      "id": "prk-002",
+      "adminId": "adm-002",
       "name": "SpotGo Miraflores",
       "address": "Calle Berlín 450, Miraflores",
       "city": "Lima",
@@ -152,8 +145,19 @@
   ],
   "employees": [
     {
-      "id": "2",
-      "parkingId": 1,
+      "id": "emp-001",
+      "parkingId": "prk-001",
+      "firstName": "Piero",
+      "lastName": "Quiroz Montoya",
+      "role": "guard",
+      "schedule": "all-week",
+      "shiftStart": "09:00",
+      "shiftEnd": "17:00",
+      "status": "on-duty"
+    },
+    {
+      "id": "emp-002",
+      "parkingId": "prk-001",
       "firstName": "Juan",
       "lastName": "Quispe Mamani",
       "role": "guard",
@@ -163,8 +167,8 @@
       "status": "on-duty"
     },
     {
-      "id": "3",
-      "parkingId": 1,
+      "id": "emp-003",
+      "parkingId": "prk-001",
       "firstName": "Jesus Andres",
       "lastName": "Sideral Carreon",
       "role": "guard",
@@ -174,8 +178,8 @@
       "status": "off-duty"
     },
     {
-      "id": "4",
-      "parkingId": 1,
+      "id": "emp-004",
+      "parkingId": "prk-001",
       "firstName": "Hermenegildo",
       "lastName": "Villanueva",
       "role": "guard",
@@ -185,8 +189,8 @@
       "status": "off-duty"
     },
     {
-      "id": "5",
-      "parkingId": 1,
+      "id": "emp-005",
+      "parkingId": "prk-001",
       "firstName": "Gabriel",
       "lastName": "Yanac Villafuente",
       "role": "cleaning-personnel",
@@ -198,10 +202,10 @@
   ],
   "reservations": [
     {
-      "id": "1",
+      "id": "res-001",
       "code": "SPG-J3P9QR",
-      "clientId": 1,
-      "parkingId": 1,
+      "clientId": "cli-001",
+      "parkingId": "prk-001",
       "spot": "L2-03",
       "startDate": "2026-04-25T09:30:00Z",
       "endDate": "2026-04-25T11:30:00Z",
@@ -209,10 +213,10 @@
       "amount": 15
     },
     {
-      "id": "2",
+      "id": "res-002",
       "code": "SPG-J3P9QT",
-      "clientId": 2,
-      "parkingId": 1,
+      "clientId": "cli-002",
+      "parkingId": "prk-001",
       "spot": "L2-02",
       "startDate": "2026-04-28T11:00:00Z",
       "endDate": "2026-04-28T13:00:00Z",
@@ -222,9 +226,9 @@
   ],
   "incidents": [
     {
-      "id": "1",
+      "id": "inc-001",
       "code": "SPG-J3P9QR",
-      "parkingId": 1,
+      "parkingId": "prk-001",
       "type": "unauthorised-parking",
       "spot": "L2-03",
       "date": "2026-04-25",
@@ -233,9 +237,9 @@
       "severity": "high"
     },
     {
-      "id": "2",
+      "id": "inc-002",
       "code": "SPG-J3P9QT",
-      "parkingId": 1,
+      "parkingId": "prk-001",
       "type": "unauthorised-parking",
       "spot": "L2-02",
       "date": "2026-04-28",
@@ -244,9 +248,9 @@
       "severity": "high"
     },
     {
-      "id": "3",
+      "id": "inc-003",
       "code": "SPG-J3P9QS",
-      "parkingId": 1,
+      "parkingId": "prk-001",
       "type": "payment-failure",
       "spot": "L2-03",
       "date": "2026-05-02",
@@ -257,7 +261,7 @@
   ],
   "clientPlans": [
     {
-      "id": "1",
+      "id": "pln-001",
       "type": "free",
       "name": "Free",
       "monthlyPrice": 0,
@@ -265,7 +269,7 @@
       "reservationsPerMonth": 3
     },
     {
-      "id": "2",
+      "id": "pln-002",
       "type": "monthly",
       "name": "Monthly",
       "monthlyPrice": 29.9,
@@ -273,7 +277,7 @@
       "reservationsPerMonth": null
     },
     {
-      "id": "3",
+      "id": "pln-003",
       "type": "annual",
       "name": "Annual",
       "monthlyPrice": 19.9,
@@ -297,170 +301,59 @@
       "revenueYield": 12450,
       "revenueTrendPercent": 4.2,
       "peakHours": [
-        {
-          "hour": "06",
-          "intensity": 0.2
-        },
-        {
-          "hour": "09",
-          "intensity": 0.35
-        },
-        {
-          "hour": "12",
-          "intensity": 0.5
-        },
-        {
-          "hour": "15",
-          "intensity": 0.95
-        },
-        {
-          "hour": "18",
-          "intensity": 0.85
-        },
-        {
-          "hour": "21",
-          "intensity": 0.4
-        },
-        {
-          "hour": "24",
-          "intensity": 0.25
-        }
+        { "hour": "06", "intensity": 0.2 },
+        { "hour": "09", "intensity": 0.35 },
+        { "hour": "12", "intensity": 0.5 },
+        { "hour": "15", "intensity": 0.95 },
+        { "hour": "18", "intensity": 0.85 },
+        { "hour": "21", "intensity": 0.4 },
+        { "hour": "24", "intensity": 0.25 }
       ]
     },
     "rows": [
       {
         "id": "A01",
         "spots": [
-          {
-            "id": "A01-01",
-            "status": "available"
-          },
-          {
-            "id": "A01-02",
-            "status": "occupied"
-          },
-          {
-            "id": "A01-03",
-            "status": "occupied"
-          },
-          {
-            "id": "A01-04",
-            "status": "available"
-          },
-          {
-            "id": "A01-05",
-            "status": "available"
-          },
-          {
-            "id": "A01-06",
-            "status": "maintenance"
-          },
-          {
-            "id": "A01-07",
-            "status": "available"
-          },
-          {
-            "id": "A01-08",
-            "status": "occupied"
-          },
-          {
-            "id": "A01-09",
-            "status": "occupied"
-          },
-          {
-            "id": "A01-10",
-            "status": "available"
-          }
+          { "id": "A01-01", "status": "available" },
+          { "id": "A01-02", "status": "occupied" },
+          { "id": "A01-03", "status": "occupied" },
+          { "id": "A01-04", "status": "available" },
+          { "id": "A01-05", "status": "available" },
+          { "id": "A01-06", "status": "maintenance" },
+          { "id": "A01-07", "status": "available" },
+          { "id": "A01-08", "status": "occupied" },
+          { "id": "A01-09", "status": "occupied" },
+          { "id": "A01-10", "status": "available" }
         ]
       },
       {
         "id": "B01",
         "spots": [
-          {
-            "id": "B01-01",
-            "status": "occupied"
-          },
-          {
-            "id": "B01-02",
-            "status": "occupied"
-          },
-          {
-            "id": "B01-03",
-            "status": "occupied"
-          },
-          {
-            "id": "B01-04",
-            "status": "available"
-          },
-          {
-            "id": "B01-05",
-            "status": "available"
-          },
-          {
-            "id": "B01-06",
-            "status": "available"
-          },
-          {
-            "id": "B01-07",
-            "status": "occupied"
-          },
-          {
-            "id": "B01-08",
-            "status": "available"
-          },
-          {
-            "id": "B01-09",
-            "status": "maintenance"
-          },
-          {
-            "id": "B01-10",
-            "status": "occupied"
-          }
+          { "id": "B01-01", "status": "occupied" },
+          { "id": "B01-02", "status": "occupied" },
+          { "id": "B01-03", "status": "occupied" },
+          { "id": "B01-04", "status": "available" },
+          { "id": "B01-05", "status": "available" },
+          { "id": "B01-06", "status": "available" },
+          { "id": "B01-07", "status": "occupied" },
+          { "id": "B01-08", "status": "available" },
+          { "id": "B01-09", "status": "maintenance" },
+          { "id": "B01-10", "status": "occupied" }
         ]
       },
       {
         "id": "C01",
         "spots": [
-          {
-            "id": "C01-01",
-            "status": "occupied"
-          },
-          {
-            "id": "C01-02",
-            "status": "occupied"
-          },
-          {
-            "id": "C01-03",
-            "status": "available"
-          },
-          {
-            "id": "C01-04",
-            "status": "available"
-          },
-          {
-            "id": "C01-05",
-            "status": "maintenance"
-          },
-          {
-            "id": "C01-06",
-            "status": "available"
-          },
-          {
-            "id": "C01-07",
-            "status": "available"
-          },
-          {
-            "id": "C01-08",
-            "status": "available"
-          },
-          {
-            "id": "C01-09",
-            "status": "occupied"
-          },
-          {
-            "id": "C01-10",
-            "status": "occupied"
-          }
+          { "id": "C01-01", "status": "occupied" },
+          { "id": "C01-02", "status": "occupied" },
+          { "id": "C01-03", "status": "available" },
+          { "id": "C01-04", "status": "available" },
+          { "id": "C01-05", "status": "maintenance" },
+          { "id": "C01-06", "status": "available" },
+          { "id": "C01-07", "status": "available" },
+          { "id": "C01-08", "status": "available" },
+          { "id": "C01-09", "status": "occupied" },
+          { "id": "C01-10", "status": "occupied" }
         ]
       }
     ]

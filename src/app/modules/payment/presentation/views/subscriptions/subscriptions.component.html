@@ -2,13 +2,13 @@
   <h1 class="subscriptions-title">Subscriptions</h1>
   <p class="subscriptions-subtitle">Choose the plan that best fits your needs.</p>
 
-  @if (loading) {
+  @if (loading()) {
     <p class="subscriptions-loading">Loading plans...</p>
   }
 
-  @if (!loading && plans.length > 0) {
+  @if (!loading() && plans().length > 0) {
     <div class="subscriptions-plans">
-      @for (plan of plans; track plan.id) {
+      @for (plan of plans(); track plan.id) {
         <div class="plan-card" [ngClass]="'plan-card--' + plan.type">
           <div class="plan-header">
             <h2 class="plan-name">{{ plan.name }}</h2>
