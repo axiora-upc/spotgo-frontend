@@ -21,5 +21,117 @@
     "realtime-map": "Mapa en Tiempo Real",
     "analytics": "Análisis",
     "settings": "Configuración"
+  },
+
+  "realtime-map": {
+    "tabs": {
+      "overview": "Resumen",
+      "reports": "Reportes",
+      "employees": "Empleados"
+    },
+    "overview": {
+      "title": "Terminal Principal",
+      "subtitle": "Telemetría en tiempo real del Sector 04-A Smart Grid",
+      "export-logs": "Exportar Registros",
+      "refresh-sync": "Actualizar",
+      "total-spaces": "Espacios Totales",
+      "currently-available": "Disponibles Ahora",
+      "occupancy-rate": "Tasa de Ocupación",
+      "vs-last-hour": "vs última hr",
+      "sector-view": "Vista del Sector 04-A",
+      "map": "Mapa",
+      "list": "Lista",
+      "one-way-drive-lane": "CARRIL DE UN SOLO SENTIDO",
+      "central-aisle": "PASILLO CENTRAL",
+      "last-updated": "Última actualización",
+      "live-feed-connected": "Transmisión en Vivo Conectada",
+      "floor-level": "Nivel de Piso",
+      "status-legend": "LEYENDA DE ESTADO",
+      "available": "Disponible",
+      "occupied": "Ocupado",
+      "maintenance": "Mantenimiento",
+      "peak-hours-today": "Horas Pico Hoy",
+      "revenue-yield": "Ingresos Estimados",
+      "revenue-description": "Ingresos diarios proyectados según la ocupación y rotación actual.",
+      "need-help": "¿Necesitas Ayuda Técnica?",
+      "help-description": "Contacta a nuestro equipo de infraestructura IoT para recalibrar sensores.",
+      "open-ticket": "Abrir Ticket de Soporte"
+    },
+    "reports": {
+      "title": "Reportes",
+      "subtitle": "Consulta una serie de registros que incluyen accidentes dentro del edificio, reservas perdidas, etc.",
+      "incident-prefix": "Incidente #",
+      "spot-prefix": "Espacio",
+      "types": {
+        "unauthorised-parking": "Estacionamiento no autorizado",
+        "payment-failure": "Fallo en el pago"
+      }
+    },
+    "employees": {
+      "title": "Empleados",
+      "subtitle": "Consulta a tus empleados, su espacio de estacionamiento asignado si tienen uno y si están en turno o no.",
+      "role-prefix": "Rol",
+      "turn-prefix": "Turno",
+      "booking-prefix": "Reserva #",
+      "add": "Agregar Empleado",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "schedules": {
+        "all-week": "Toda la semana"
+      },
+      "roles": {
+        "guard": "Vigilante",
+        "cleaning-personnel": "Personal de limpieza"
+      },
+      "status": {
+        "on-duty": "En Turno",
+        "off-duty": "Fuera de Turno"
+      },
+      "form": {
+        "create-title": "Agregar Empleado",
+        "edit-title": "Editar Empleado",
+        "name": "Nombre completo",
+        "role": "Rol",
+        "schedule": "Horario",
+        "shift-start": "Inicio de turno",
+        "shift-end": "Fin de turno",
+        "booking-code": "Código de reserva",
+        "status": "Estado",
+        "cancel": "Cancelar",
+        "add": "Agregar",
+        "save": "Guardar"
+      },
+      "delete-confirm": {
+        "title": "Eliminar empleado",
+        "message": "Esta acción eliminará al empleado de la base de datos. No podrás deshacerla.",
+        "confirm": "Eliminar",
+        "cancel": "Cancelar"
+      },
+      "empty": {
+        "title": "Aún no hay empleados",
+        "message": "Agrega tu primer empleado con el botón de arriba y aparecerá aquí."
+      },
+      "snackbar": {
+        "create-success": "Empleado agregado correctamente.",
+        "create-error": "No pudimos agregar al empleado. Inténtalo de nuevo.",
+        "edit-success": "Empleado actualizado correctamente.",
+        "edit-error": "No pudimos guardar los cambios. Inténtalo de nuevo.",
+        "delete-success": "Empleado eliminado correctamente.",
+        "delete-error": "No pudimos eliminar al empleado. Inténtalo de nuevo.",
+        "load-error": "No pudimos cargar la lista de empleados. Verifica que la API esté corriendo."
+      }
+    },
+    "system-status-active": "Estado del Sistema: Activo",
+    "brand-subtitle": "Ecosistema Urbano"
+  },
+
+  "shared": {
+    "confirm-dialog": {
+      "confirm": "Confirmar",
+      "cancel": "Cancelar"
+    },
+    "snackbar": {
+      "close": "Cerrar"
+    }
   }
 }
