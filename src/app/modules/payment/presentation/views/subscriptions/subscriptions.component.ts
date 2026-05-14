@@ -19,13 +19,13 @@ interface ClientPlan {
   styleUrl: './subscriptions.component.css',
 })
 export class SubscriptionsComponent implements OnInit {
-  private readonly planesService = inject(PlanesClienteService);
+  private readonly plansService = inject(ClientPlansService);
 
   protected readonly plans = signal<ClientPlan[]>([]);
   protected readonly loading = signal(true);
 
   ngOnInit(): void {
-    this.planesService.getAll().subscribe({
+    this.plansService.getAll().subscribe({
       next: (data) => {
         this.plans.set(data as ClientPlan[]);
         this.loading.set(false);
