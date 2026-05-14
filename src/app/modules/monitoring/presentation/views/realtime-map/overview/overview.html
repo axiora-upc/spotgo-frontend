@@ -1,1 +1,210 @@
-<p>overview works!</p>
+<!--
+  The whole tab is wrapped in @if so we wait until the store has the
+  parking snapshot loaded before painting any card. While the first
+  request is in flight `store.parkingSnapshot()` returns null and the
+  template renders nothing.
+-->
+@if (store.parkingSnapshot(); as snapshot) {
+
+  <header class="overview__header">
+    <div>
+      <h1 class="overview__title">{{ 'realtime-map.overview.title' | translate }}</h1>
+      <p class="overview__subtitle">
+        {{ 'realtime-map.overview.subtitle' | translate }}
+      </p>
+    </div>
+
+    <div class="overview__actions">
+      <button class="overview__btn overview__btn--ghost" type="button">
+        <mat-icon>file_download</mat-icon>
+        {{ 'realtime-map.overview.export-logs' | translate }}
+      </button>
+
+      <button
+        class="overview__btn overview__btn--primary"
+        type="button"
+        [disabled]="refreshing()"
+        (click)="refresh()">
+        <mat-icon [class.overview__btn-icon--spinning]="refreshing()">
+          autorenew
+        </mat-icon>
+        {{ 'realtime-map.overview.refresh-sync' | translate }}
+      </button>
+    </div>
+  </header>
+
+  <div class="overview__grid">
+
+    <aside class="overview__kpis">
+
+      <div class="overview__card overview__kpi">
+        <p class="overview__kpi-label">
+          {{ 'realtime-map.overview.total-spaces' | translate }}
+        </p>
+        <p class="overview__kpi-value">
+          {{ snapshot.stats.totalSpaces | number }}
+          <mat-icon class="overview__kpi-pulse">sensors</mat-icon>
+        </p>
+      </div>
+
+      <div class="overview__card overview__kpi">
+        <p class="overview__kpi-label">
+          {{ 'realtime-map.overview.currently-available' | translate }}
+        </p>
+        <p class="overview__kpi-value overview__kpi-value--available">
+          {{ snapshot.stats.currentlyAvailable | number }}
+          <span class="overview__kpi-trend">
+            +{{ snapshot.stats.availableTrendPercent }}%
+            <span class="overview__kpi-trend-line">
+              {{ 'realtime-map.overview.vs-last-hour' | translate }}
+            </span>
+          </span>
+        </p>
+      </div>
+
+      <div class="overview__card overview__kpi overview__kpi--dark">
+        <p class="overview__kpi-label">
+          {{ 'realtime-map.overview.occupancy-rate' | translate }}
+        </p>
+        <p class="overview__kpi-value">
+          {{ snapshot.stats.occupancyRate | number:'1.1-1' }}%
+          <span class="overview__kpi-dot"></span>
+        </p>
+      </div>
+
+      <div class="overview__card overview__legend">
+        <h3 class="overview__legend-title">
+          {{ 'realtime-map.overview.status-legend' | translate }}
+        </h3>
+        <ul class="overview__legend-list">
+          <li>
+            <span class="overview__legend-swatch overview__legend-swatch--available"></span>
+            {{ 'realtime-map.overview.available' | translate }}
+          </li>
+          <li>
+            <span class="overview__legend-swatch overview__legend-swatch--occupied"></span>
+            {{ 'realtime-map.overview.occupied' | translate }}
+          </li>
+          <li>
+            <span class="overview__legend-swatch overview__legend-swatch--maintenance"></span>
+            {{ 'realtime-map.overview.maintenance' | translate }}
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <section class="overview__card overview__map">
+      <header class="overview__map-header">
+        <h2 class="overview__map-title">
+          <mat-icon>grid_view</mat-icon>
+          {{ 'realtime-map.overview.sector-view' | translate }}
+        </h2>
+        <div class="overview__view-toggle" role="tablist">
+          <button class="is-active" type="button">
+            {{ 'realtime-map.overview.map' | translate }}
+          </button>
+          <button type="button">
+            {{ 'realtime-map.overview.list' | translate }}
+          </button>
+        </div>
+      </header>
+
+      <div class="overview__map-body">
+        @for (row of snapshot.rows; track row.id; let rowIndex = $index) {
+          <span class="overview__row-label">{{ row.id }}</span>
+
+          <div class="overview__row">
+            @for (spot of row.spots; track spot.id) {
+              <span
+                class="overview__spot"
+                [ngClass]="'overview__spot--' + spot.status"
+                [attr.title]="spot.id"></span>
+            }
+          </div>
+
+          @if (rowIndex === 0) {
+            <div class="overview__lane">
+              <span class="overview__lane-label">
+                {{ 'realtime-map.overview.one-way-drive-lane' | translate }}
+              </span>
+            </div>
+          }
+          @if (rowIndex === 1) {
+            <div class="overview__central-aisle">
+              <span class="overview__central-aisle-letter">P</span>
+              <span class="overview__central-aisle-label">
+                {{ 'realtime-map.overview.central-aisle' | translate }}
+              </span>
+            </div>
+          }
+        }
+
+        <div class="overview__map-zoom">
+          <button type="button" aria-label="Zoom in"><mat-icon>zoom_in</mat-icon></button>
+          <button type="button" aria-label="Zoom out"><mat-icon>zoom_out</mat-icon></button>
+          <button type="button" aria-label="Recenter"><mat-icon>my_location</mat-icon></button>
+        </div>
+      </div>
+
+      <footer class="overview__map-footer">
+        <span>
+          {{ 'realtime-map.overview.last-updated' | translate }}: {{ snapshot.facility.lastUpdated }}
+        </span>
+        <span class="overview__live">
+          <span class="overview__live-dot"></span>
+          {{ 'realtime-map.overview.live-feed-connected' | translate }}
+        </span>
+        <span class="overview__floor">
+          <mat-icon>layers</mat-icon>
+          {{ 'realtime-map.overview.floor-level' | translate }}: {{ snapshot.facility.floor }}
+        </span>
+      </footer>
+    </section>
+  </div>
+
+  <div class="overview__bottom">
+    <div class="overview__card overview__peak">
+      <h3 class="overview__card-title">
+        <mat-icon>trending_up</mat-icon>
+        {{ 'realtime-map.overview.peak-hours-today' | translate }}
+      </h3>
+      <div class="overview__chart">
+        @for (bar of snapshot.stats.peakHours; track bar.hour) {
+          <span
+            class="overview__chart-bar"
+            [class.overview__chart-bar--active]="bar.intensity > 0.75"
+            [style.height.%]="bar.intensity * 100"></span>
+        }
+      </div>
+    </div>
+
+    <div class="overview__card overview__revenue">
+      <h3 class="overview__card-title">
+        <mat-icon>credit_card</mat-icon>
+        {{ 'realtime-map.overview.revenue-yield' | translate }}
+      </h3>
+      <p class="overview__revenue-value">
+        {{ snapshot.stats.revenueYield | currency:'S/.':'symbol':'1.2-2' }}
+        <span class="overview__revenue-trend">
+          +{{ snapshot.stats.revenueTrendPercent }}%
+        </span>
+      </p>
+      <p class="overview__revenue-desc">
+        {{ 'realtime-map.overview.revenue-description' | translate }}
+      </p>
+    </div>
+
+    <div class="overview__card overview__help">
+      <span class="overview__help-icon"><mat-icon>support_agent</mat-icon></span>
+      <h3 class="overview__card-title overview__card-title--centered">
+        {{ 'realtime-map.overview.need-help' | translate }}
+      </h3>
+      <p class="overview__help-desc">
+        {{ 'realtime-map.overview.help-description' | translate }}
+      </p>
+      <a class="overview__help-link" href="#">
+        {{ 'realtime-map.overview.open-ticket' | translate }}
+      </a>
+    </div>
+  </div>
+}
