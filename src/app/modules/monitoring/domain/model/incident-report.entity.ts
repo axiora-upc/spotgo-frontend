@@ -12,6 +12,7 @@ export type IncidentSeverity = 'low' | 'medium' | 'high';
 
 export class IncidentReport implements BaseEntity {
   private _id: string;
+  private _code: string;
   private _type: IncidentType;
   private _spot: string;
   private _date: string;
@@ -20,6 +21,7 @@ export class IncidentReport implements BaseEntity {
 
   constructor(props: {
     id: string;
+    code: string;
     type: IncidentType;
     spot: string;
     date: string;
@@ -27,6 +29,7 @@ export class IncidentReport implements BaseEntity {
     severity: IncidentSeverity;
   }) {
     this._id = props.id;
+    this._code = props.code;
     this._type = props.type;
     this._spot = props.spot;
     this._date = props.date;
@@ -40,6 +43,14 @@ export class IncidentReport implements BaseEntity {
 
   set id(value: string) {
     this._id = value;
+  }
+
+  get code(): string {
+    return this._code;
+  }
+
+  set code(value: string) {
+    this._code = value;
   }
 
   get type(): IncidentType {

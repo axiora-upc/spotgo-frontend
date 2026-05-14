@@ -5,10 +5,12 @@ import { BaseResource, BaseResponse } from '../../../shared/infrastructure/base-
 
 export interface IncidentsResource extends BaseResource {
   id: string;
+  code: string;
   type: string;
   spot: string;
   date: string;
   time: string;
+  status?: string;
   severity: string;
 }
 
