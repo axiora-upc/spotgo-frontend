@@ -5,7 +5,7 @@
   Following the project DDD pattern, this is a class with private
   fields exposed through get/set accessors.
 */
-import { BaseEntity } from '../../../../shared/domain/model/base-entity';
+import {BaseEntity} from '../../../../shared/domain/model/base-entity';
 
 export type IncidentType = 'unauthorised-parking' | 'payment-failure';
 export type IncidentSeverity = 'low' | 'medium' | 'high';
@@ -34,21 +34,51 @@ export class IncidentReport implements BaseEntity {
     this._severity = props.severity;
   }
 
-  get id(): string { return this._id; }
-  set id(value: string) { this._id = value; }
+  get id(): string {
+    return this._id;
+  }
 
-  get type(): IncidentType { return this._type; }
-  set type(value: IncidentType) { this._type = value; }
+  set id(value: string) {
+    this._id = value;
+  }
 
-  get spot(): string { return this._spot; }
-  set spot(value: string) { this._spot = value; }
+  get type(): IncidentType {
+    return this._type;
+  }
 
-  get date(): string { return this._date; }
-  set date(value: string) { this._date = value; }
+  set type(value: IncidentType) {
+    this._type = value;
+  }
 
-  get time(): string { return this._time; }
-  set time(value: string) { this._time = value; }
+  get spot(): string {
+    return this._spot;
+  }
 
-  get severity(): IncidentSeverity { return this._severity; }
-  set severity(value: IncidentSeverity) { this._severity = value; }
+  set spot(value: string) {
+    this._spot = value;
+  }
+
+  get date(): string {
+    return this._date;
+  }
+
+  set date(value: string) {
+    this._date = value;
+  }
+
+  get time(): string {
+    return this._time;
+  }
+
+  set time(value: string) {
+    this._time = value;
+  }
+
+  get severity(): IncidentSeverity {
+    return this._severity;
+  }
+
+  set severity(value: IncidentSeverity) {
+    this._severity = value;
+  }
 }
