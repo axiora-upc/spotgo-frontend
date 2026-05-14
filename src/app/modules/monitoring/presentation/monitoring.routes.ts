@@ -66,7 +66,7 @@ const realtimeMapEmployees = () =>
   This is the admin-only view that shows charts and statistics.
 */
 const analytics = () =>
-  import('./views/analytics/analytics.component').then((m) => m.AnalyticsComponent);
+  import('./views/analytics/analytics').then((m) => m.Analytics);
 
 /*
   Define all monitoring bounded context routes.

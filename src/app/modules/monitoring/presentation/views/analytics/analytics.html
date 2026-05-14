@@ -1,0 +1,228 @@
+@if (store.analyticsLoading()) {
+  <div class="analytics__loading">
+    <mat-icon class="analytics__loading-icon">hourglass_empty</mat-icon>
+    <p>{{ 'analytics.loading' | translate }}</p>
+  </div>
+}
+
+@if (store.analytics(); as data) {
+  <div class="analytics__header">
+    <div>
+      <h1 class="analytics__title">{{ 'analytics.title' | translate }}</h1>
+      <p class="analytics__subtitle">{{ 'analytics.subtitle' | translate }}</p>
+    </div>
+    <div class="analytics__period">
+      <button
+        class="analytics__period-btn"
+        [class.analytics__period-btn--active]="selectedPeriod() === 'today'"
+        (click)="selectPeriod('today')">
+        {{ 'analytics.period.today' | translate }}
+      </button>
+      <button
+        class="analytics__period-btn"
+        [class.analytics__period-btn--active]="selectedPeriod() === 'last7'"
+        (click)="selectPeriod('last7')">
+        {{ 'analytics.period.last7' | translate }}
+      </button>
+      <button
+        class="analytics__period-btn analytics__period-btn--calendar"
+        [class.analytics__period-btn--active]="selectedPeriod() === 'custom'"
+        (click)="selectPeriod('custom')">
+        {{ 'analytics.period.custom' | translate }}
+        <mat-icon>calendar_today</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="analytics__kpis">
+    <div class="analytics__kpi-card">
+      <p class="analytics__kpi-label">{{ 'analytics.kpi.avg-occupancy' | translate }}</p>
+      <p class="analytics__kpi-value">{{ data.averageOccupancy | number:'1.1-1' }}%</p>
+      <p class="analytics__kpi-trend analytics__kpi-trend--up">
+        <mat-icon>trending_up</mat-icon>
+        +{{ data.occupancyTrendPercent | number:'1.1-1' }}%
+        {{ 'analytics.kpi.vs-yesterday' | translate }}
+      </p>
+    </div>
+
+    <div class="analytics__kpi-card">
+      <p class="analytics__kpi-label">{{ 'analytics.kpi.peak-hour' | translate }}</p>
+      <p class="analytics__kpi-value analytics__kpi-value--time">{{ data.peakHour }}</p>
+      <p class="analytics__kpi-note">
+        <mat-icon>schedule</mat-icon>
+        {{ 'analytics.kpi.peak-note' | translate }}
+      </p>
+    </div>
+
+    <div class="analytics__kpi-card">
+      <p class="analytics__kpi-label">{{ 'analytics.kpi.total-revenue' | translate }}</p>
+      <p class="analytics__kpi-value">{{ data.totalRevenue | currency:'USD':'symbol':'1.1-1' }}</p>
+      <p class="analytics__kpi-trend analytics__kpi-trend--up">
+        <mat-icon>trending_up</mat-icon>
+        +{{ data.revenueTrendPercent | number:'1.1-1' }}%
+        {{ 'analytics.kpi.projected' | translate }}
+      </p>
+    </div>
+
+    <div
+      class="analytics__kpi-card analytics__kpi-card--health"
+      [class.analytics__kpi-card--health-ok]="data.isSystemHealthy">
+      <p class="analytics__kpi-label">{{ 'analytics.kpi.system-health' | translate }}</p>
+      <p
+        class="analytics__kpi-value"
+        [class.analytics__kpi-value--health-ok]="data.isSystemHealthy">
+        {{ data.systemHealthLabel }}
+      </p>
+      <p
+        class="analytics__kpi-note"
+        [class.analytics__kpi-note--ok]="data.isSystemHealthy">
+        <mat-icon>{{ data.isSystemHealthy ? 'check_circle' : 'warning' }}</mat-icon>
+        {{ (data.isSystemHealthy ? 'analytics.kpi.all-sensors' : 'analytics.kpi.sensors-warning') | translate }}
+      </p>
+    </div>
+
+  </div>
+
+  <div class="analytics__charts">
+
+    <div class="analytics__chart-card">
+      <div class="analytics__chart-header">
+        <div>
+          <h2 class="analytics__chart-title">{{ 'analytics.charts.occupancy-title' | translate }}</h2>
+          <p class="analytics__chart-sub">{{ 'analytics.charts.occupancy-sub' | translate }}</p>
+        </div>
+        <button class="analytics__chart-menu" type="button">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </div>
+
+      <div class="analytics__bar-chart">
+        @for (point of data.occupancyByHour; track point.hour) {
+          <div class="analytics__bar-col">
+            <div
+              class="analytics__bar"
+              [class.analytics__bar--peak]="isPeakBar(point.intensity)"
+              [style.height.%]="point.intensity * 100">
+            </div>
+            <span class="analytics__bar-label">{{ point.hour }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="analytics__chart-card analytics__chart-card--dark">
+      <h2 class="analytics__chart-title analytics__chart-title--light">
+        {{ 'analytics.charts.weekly-title' | translate }}
+      </h2>
+      <p class="analytics__chart-sub analytics__chart-sub--light">
+        {{ 'analytics.charts.weekly-sub' | translate }}
+      </p>
+
+      <div class="analytics__line-chart">
+        <svg viewBox="0 0 280 80" preserveAspectRatio="none" class="analytics__svg">
+          <polyline
+            [attr.points]="weeklyPolyline()"
+            fill="none"
+            stroke="#00e5a0"
+            stroke-width="2.5"
+            stroke-linejoin="round"
+            stroke-linecap="round" />
+
+          @for (point of data.weeklyTrends; let i = $index; track point.day) {
+            <circle
+              [attr.cx]="i * (280 / (data.weeklyTrends.length - 1))"
+              [attr.cy]="80 - point.value * 80"
+              r="3.5"
+              fill="#00e5a0" />
+          }
+        </svg>
+
+        <div class="analytics__line-labels">
+          @for (point of data.weeklyTrends; track point.day) {
+            <span class="analytics__line-label">{{ point.day }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="analytics__weekly-stats">
+        <div>
+          <p class="analytics__weekly-stat-label">{{ 'analytics.charts.total-capacity' | translate }}</p>
+          <p class="analytics__weekly-stat-value">{{ data.totalCapacity | number }} {{ 'analytics.charts.units' | translate }}</p>
+        </div>
+        <div class="analytics__weekly-stat-right">
+          <p class="analytics__weekly-stat-label">{{ 'analytics.charts.efficiency-index' | translate }}</p>
+          <p class="analytics__weekly-stat-value analytics__weekly-stat-value--green">
+            {{ data.efficiencyIndex | number:'1.1-1' }}/10
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="analytics__spots">
+
+    <div class="analytics__spots-header">
+      <div>
+        <h2 class="analytics__spots-title">{{ 'analytics.spots.title' | translate }}</h2>
+        <p class="analytics__spots-sub">{{ 'analytics.spots.subtitle' | translate }}</p>
+      </div>
+      <button class="analytics__export-btn" type="button" (click)="exportReport()">
+        {{ 'analytics.spots.export' | translate }}
+        <mat-icon>file_download</mat-icon>
+      </button>
+    </div>
+
+    <div class="analytics__table-head">
+      <span class="analytics__th analytics__th--location">{{ 'analytics.spots.col-location' | translate }}</span>
+      <span class="analytics__th">{{ 'analytics.spots.col-status' | translate }}</span>
+      <span class="analytics__th">{{ 'analytics.spots.col-turnover' | translate }}</span>
+      <span class="analytics__th">{{ 'analytics.spots.col-peak' | translate }}</span>
+      <span class="analytics__th">{{ 'analytics.spots.col-revenue' | translate }}</span>
+    </div>
+
+    @for (spot of visibleSpots(); track spot.id) {
+      <div class="analytics__table-row">
+
+        <div class="analytics__spot-location">
+          <div class="analytics__spot-icon" [class.analytics__spot-icon--ev]="spot.type === 'ev'">
+            <mat-icon>{{ spot.type === 'ev' ? 'electric_car' : 'local_parking' }}</mat-icon>
+          </div>
+          <div>
+            <p class="analytics__spot-name">{{ spot.spotName }}</p>
+            <p class="analytics__spot-zone">{{ spot.zone }}</p>
+          </div>
+        </div>
+
+        <span
+          class="analytics__status-badge"
+          [ngClass]="'analytics__status-badge--' + spot.status">
+          <span class="analytics__status-dot"></span>
+          {{ ('analytics.spots.status.' + spot.status) | translate }}
+        </span>
+
+        <span class="analytics__td">{{ spot.dailyTurnover }} {{ 'analytics.spots.vehicles' | translate }}</span>
+
+        <div class="analytics__peak-cell">
+          <div class="analytics__progress-bar">
+            <div
+              class="analytics__progress-fill"
+              [style.width.%]="spot.peakUtilization">
+            </div>
+          </div>
+          <span class="analytics__peak-pct">{{ spot.peakUtilization }}%</span>
+        </div>
+
+        <span class="analytics__revenue">+{{ spot.revenueImpact | currency:'USD':'symbol':'1.2-2' }}</span>
+      </div>
+    }
+
+    @if (hasMoreSpots()) {
+      <button class="analytics__load-more" type="button" (click)="loadMoreSpots()">
+        {{ 'analytics.spots.load-more' | translate }}
+      </button>
+    }
+
+  </div>
+
+}
