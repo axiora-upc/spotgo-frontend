@@ -47,15 +47,15 @@ export abstract class BaseApiEndpoint< TEntity extends BaseEntity,
   TResponse extends BaseResponse,
   TAssembler extends BaseAssembler<TEntity, TResource, TResponse>>{
 
-    /*
-    This protected constructor means that this class cannot be instantiated directly, 
-    but only through a subclass that extends it.
+  /*
+  This protected constructor means that this class cannot be instantiated directly,
+  but only through a subclass that extends it.
 
-    The function is inicialized with the HttpClient to make HTTP requests, 
-    the endpointUrl which is the URL of the API endpoint, 
-    and the assembler which is responsible for converting 
-    between entities, resources, and responses.
-    */
+  The function is inicialized with the HttpClient to make HTTP requests,
+  the endpointUrl which is the URL of the API endpoint,
+  and the assembler which is responsible for converting
+  between entities, resources, and responses.
+  */
 
   protected constructor(
     protected http: HttpClient,
@@ -64,10 +64,10 @@ export abstract class BaseApiEndpoint< TEntity extends BaseEntity,
   ) {  }
 
 
-    /*
-    This method handleError helps to handle errors that may occur during HTTP requests. 
-    It takes an operation string as a parameter, which describes the operation being performed (e.g., "fetching data", "creating resource").
-    */
+  /*
+  This method handleError helps to handle errors that may occur during HTTP requests.
+  It takes an operation string as a parameter, which describes the operation being performed (e.g., "fetching data", "creating resource").
+  */
 
   protected handleError(operation: string){
 
@@ -93,41 +93,41 @@ export abstract class BaseApiEndpoint< TEntity extends BaseEntity,
       return throwError(()=> new Error(errorMessage));
     }
   }
-    /*
-    This method delete a resource from the API by its ID. 
-    It sends an HTTP DELETE request to the endpoint URL 
-    with the specified ID. 
-    If the request is successful, 
-    it returns an Observable that completes without 
-    emitting any value (void). 
-    If there is an error during the request, 
-    it catches the error and returns an Observable 
-    that emits an error with a descriptive message 
-    using the handleError method.
-    */
+  /*
+  This method delete a resource from the API by its ID.
+  It sends an HTTP DELETE request to the endpoint URL
+  with the specified ID.
+  If the request is successful,
+  it returns an Observable that completes without
+  emitting any value (void).
+  If there is an error during the request,
+  it catches the error and returns an Observable
+  that emits an error with a descriptive message
+  using the handleError method.
+  */
 
-  delete(id: number): Observable<void> {
+  delete(id: string | number): Observable<void> {
     return this.http.delete<void>(`${this.endpointUrl}/${id}`).pipe(
       catchError(this.handleError('Failed to delete entity'))
     );
   }
-    /*
-    This method updates a resource in the API by its ID.
-    It receives a domain entity with the updated data and an ID.
+  /*
+  This method updates a resource in the API by its ID.
+  It receives a domain entity with the updated data and an ID.
 
-    First, it converts the domain entity into a resource using the assembler,
-    because the API expects to receive a resource.
-    Then, it sends an HTTP PUT request to the endpoint URL with the specified ID,
-    sending the resource as the request body.
-    If the request is successful, the API returns the updated resource.
-    Then, map converts that updated resource back into a domain entity.
+  First, it converts the domain entity into a resource using the assembler,
+  because the API expects to receive a resource.
+  Then, it sends an HTTP PUT request to the endpoint URL with the specified ID,
+  sending the resource as the request body.
+  If the request is successful, the API returns the updated resource.
+  Then, map converts that updated resource back into a domain entity.
 
-    If there is an error during the request,
-    catchError catches the error and uses handleError
-    to return an Observable with a descriptive error message.
-    */
+  If there is an error during the request,
+  catchError catches the error and uses handleError
+  to return an Observable with a descriptive error message.
+  */
 
-  update(entity: TEntity, id: number): Observable<TEntity> {
+  update(entity: TEntity, id: string | number): Observable<TEntity> {
     const resource =  this.assembler.toResourceFromEntity(entity);
     return this.http.put<TResource>(`${this.endpointUrl}/${id}`, resource).pipe(
       map(updated => this.assembler.toEntityFromResource(updated)),
@@ -135,18 +135,18 @@ export abstract class BaseApiEndpoint< TEntity extends BaseEntity,
     );
   }
 
-    /*
-    Creates a new resource in the API.
+  /*
+  Creates a new resource in the API.
 
-    It receives a domain entity with the data to create.
+  It receives a domain entity with the data to create.
 
-    First, it converts the domain entity into a resource using the assembler,
-    because the API expects to receive a resource.
-    Then, it sends an HTTP POST request to the endpoint URL,
-    sending the resource as the request body.
-    If the request is successful, the API returns the created resource.
-    Then, map converts that created resource back into a domain entity.
-    */
+  First, it converts the domain entity into a resource using the assembler,
+  because the API expects to receive a resource.
+  Then, it sends an HTTP POST request to the endpoint URL,
+  sending the resource as the request body.
+  If the request is successful, the API returns the created resource.
+  Then, map converts that created resource back into a domain entity.
+  */
 
   create(entity: TEntity): Observable<TEntity> {
     const resource =  this.assembler.toResourceFromEntity(entity);
@@ -156,40 +156,40 @@ export abstract class BaseApiEndpoint< TEntity extends BaseEntity,
     );
   }
 
-    /*
-    Gets all resources from the API.
+  /*
+  Gets all resources from the API.
 
-    It sends an HTTP GET request to the endpoint URL.
-    The API response can have two possible formats:
+  It sends an HTTP GET request to the endpoint URL.
+  The API response can have two possible formats:
 
-    1. A direct array of resources:
-        [
-        { id: 1 },
-        { id: 2 }
-        ]
+  1. A direct array of resources:
+      [
+      { id: 1 },
+      { id: 2 }
+      ]
 
-    2. A complete response object that contains the resources:
-        {
-        content: [
-            { id: 1 },
-            { id: 2 }
-        ]
-        }
+  2. A complete response object that contains the resources:
+      {
+      content: [
+          { id: 1 },
+          { id: 2 }
+      ]
+      }
 
-    The RxJS map transforms the API response into the final value
-    that this method must return: a list of domain entities.
+  The RxJS map transforms the API response into the final value
+  that this method must return: a list of domain entities.
 
-    If the response is a direct array, Array.isArray(response) returns true.
-    Then, response.map(...) is used to convert each resource in the array
-    into a domain entity using the assembler.
+  If the response is a direct array, Array.isArray(response) returns true.
+  Then, response.map(...) is used to convert each resource in the array
+  into a domain entity using the assembler.
 
-    If the response is not an array, it is treated as a complete response object.
-    Then, the assembler converts that complete response into a list of domain entities.
+  If the response is not an array, it is treated as a complete response object.
+  Then, the assembler converts that complete response into a list of domain entities.
 
-    If there is an error during the request,
-    catchError catches the error and uses handleError
-    to return an Observable with a descriptive error message.
-    */
+  If there is an error during the request,
+  catchError catches the error and uses handleError
+  to return an Observable with a descriptive error message.
+  */
 
 
   getAll(): Observable<TEntity[]> {
@@ -205,29 +205,29 @@ export abstract class BaseApiEndpoint< TEntity extends BaseEntity,
     );
   }
 
-    /*
-    Gets one resource from the API by its ID.
+  /*
+  Gets one resource from the API by its ID.
 
-    It receives an ID as a parameter.
+  It receives an ID as a parameter.
 
-    It sends an HTTP GET request to the endpoint URL with the specified ID.
+  It sends an HTTP GET request to the endpoint URL with the specified ID.
 
-    This method expects the API to return one direct resource, not an array
-    and not a complete response object.
+  This method expects the API to return one direct resource, not an array
+  and not a complete response object.
 
-    Example of the expected API response:
-        {
-        id: 6,
-        title: "Advanced TypeScript",
-        description: "Explore advanced concepts in TypeScript programming",
-        categoryId: 3
-        }
+  Example of the expected API response:
+      {
+      id: 6,
+      title: "Advanced TypeScript",
+      description: "Explore advanced concepts in TypeScript programming",
+      categoryId: 3
+      }
 
-    The RxJS map transforms the resource received from the API
-    into a domain entity using the assembler.
-    */
+  The RxJS map transforms the resource received from the API
+  into a domain entity using the assembler.
+  */
 
-  getById(id: number): Observable<TEntity> {
+  getById(id: string | number): Observable<TEntity> {
     return this.http.get<TResource>(`${this.endpointUrl}/${id}`).pipe(
       map(resource => this.assembler.toEntityFromResource(resource)),
       catchError(this.handleError('Failed to get entity'))
