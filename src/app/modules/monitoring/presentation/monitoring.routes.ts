@@ -35,9 +35,30 @@ const dashboard = () =>
 
   This is the admin-only view that shows a live map
   with active parking spots and reservations.
+
+  The Realtime Map is itself a shell that hosts three child routes
+  (overview, reports and employees), so it owns its own router-outlet.
 */
 const realtimeMap = () =>
   import('./views/realtime-map/realtime-map').then((m) => m.RealtimeMap);
+
+/*
+  Lazy loaders for the realtime-map child views.
+
+  Each function returns a promise that resolves to a single component,
+  so Angular can lazy load each tab independently.
+
+  These files follow the Angular 17+ convention where the component
+  files drop the .component suffix (overview.ts, overview.html, etc.).
+*/
+const realtimeMapOverview = () =>
+  import('./views/realtime-map/overview/overview').then((m) => m.Overview);
+
+const realtimeMapReports = () =>
+  import('./views/realtime-map/reports/reports').then((m) => m.Reports);
+
+const realtimeMapEmployees = () =>
+  import('./views/realtime-map/employees/employees').then((m) => m.Employees);
 
 /*
   This function loads the AnalyticsComponent asynchronously.
@@ -59,6 +80,9 @@ const analytics = () =>
   Final routes:
   /monitoring/dashboard
   /monitoring/realtime-map
+  /monitoring/realtime-map/overview
+  /monitoring/realtime-map/reports
+  /monitoring/realtime-map/employees
   /monitoring/analytics
 */
 export const MONITORING_ROUTES: Routes = [
@@ -96,10 +120,23 @@ export const MONITORING_ROUTES: Routes = [
     When the user navigates to:
     /monitoring/realtime-map
 
-    Angular loads:
-    RealtimeMapComponent
+    Angular loads RealtimeMapComponent, which acts as a shell with
+    its own router-outlet and three child tabs (Overview, Reports,
+    Employees).
+
+    The empty child route ('') redirects to /overview so the user
+    always lands on the Overview tab by default.
   */
-  { path: 'realtime-map', loadComponent: realtimeMap },
+  {
+    path: 'realtime-map',
+    loadComponent: realtimeMap,
+    children: [
+      { path: '', redirectTo: 'overview', pathMatch: 'full' },
+      { path: 'overview', loadComponent: realtimeMapOverview },
+      { path: 'reports', loadComponent: realtimeMapReports },
+      { path: 'employees', loadComponent: realtimeMapEmployees },
+    ],
+  },
 
   /*
     Analytics route. Admin-only view.
