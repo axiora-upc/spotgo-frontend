@@ -17,7 +17,7 @@ export interface EmployeesResource extends BaseResource {
   id: string;
   firstName: string;
   lastName: string;
-  parkingId?: number;
+  parkingId?: string;
   role: string;
   schedule: string;
   shiftStart: string;

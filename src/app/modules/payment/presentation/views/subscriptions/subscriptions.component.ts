@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { PlanesClienteService } from '../../../infrastructure/planes-cliente.service';
 
@@ -19,19 +19,19 @@ interface ClientPlan {
   styleUrl: './subscriptions.component.css',
 })
 export class SubscriptionsComponent implements OnInit {
-  plans: ClientPlan[] = [];
-  loading = true;
+  private readonly planesService = inject(PlanesClienteService);
 
-  constructor(private planesClienteService: PlanesClienteService) {}
+  protected readonly plans = signal<ClientPlan[]>([]);
+  protected readonly loading = signal(true);
 
   ngOnInit(): void {
-    this.planesClienteService.getAll().subscribe({
+    this.planesService.getAll().subscribe({
       next: (data) => {
-        this.plans = data as ClientPlan[];
-        this.loading = false;
+        this.plans.set(data as ClientPlan[]);
+        this.loading.set(false);
       },
       error: () => {
-        this.loading = false;
+        this.loading.set(false);
       },
     });
   }

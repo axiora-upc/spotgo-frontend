@@ -28,6 +28,7 @@ import {
   EmployeeSchedule,
   EmployeeStatus,
 } from '../../../../../domain/model/employee.entity';
+import { MonitoringStore } from '../../../../../application/monitoring.store';
 
 /*
   Dialog data shape consumed by the form. Create mode does not need
@@ -57,6 +58,7 @@ export interface EmployeeFormData {
 export class EmployeeForm {
   private readonly dialogRef = inject(MatDialogRef<EmployeeForm, Employee>);
   protected readonly data = inject<EmployeeFormData>(MAT_DIALOG_DATA);
+  private readonly store = inject(MonitoringStore);
 
   protected readonly roles: EmployeeRole[] = ['guard', 'cleaning-personnel'];
   protected readonly schedules: EmployeeSchedule[] = ['all-week'];
@@ -109,7 +111,7 @@ export class EmployeeForm {
   }
 
   private generateId(): string {
-    const suffix = Math.floor(Math.random() * 9000 + 1000).toString();
-    return `EMP-${suffix}`;
+    const next = this.store.employeeCount() + 1;
+    return `emp-${next.toString().padStart(3, '0')}`;
   }
 }
