@@ -6,16 +6,11 @@
       "dest": "index.js"
     },
     {
-      "src": "/(.*)",
-      "dest": "/spotgo-frontend/browser/$1",
-      "continue": true
-    },
-    {
       "handle": "filesystem"
     },
     {
       "src": "/(.*)",
-      "dest": "/spotgo-frontend/browser/index.html"
+      "dest": "/index.html"
     }
   ]
 }
