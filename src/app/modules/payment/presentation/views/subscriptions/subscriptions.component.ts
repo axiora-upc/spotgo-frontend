@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { PlanesClienteService } from '../../../infrastructure/planes-cliente.service';
+import { ClientPlansService } from '../../../infrastructure/client-plans.service';
 
 interface ClientPlan {
   id: string;
