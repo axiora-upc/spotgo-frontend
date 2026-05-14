@@ -1,0 +1,91 @@
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 8px 4px 4px;
+  min-width: 400px;
+}
+
+.dialog-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #151970;
+  text-align: center;
+}
+
+.dialog-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: #5f6673;
+  text-align: center;
+}
+
+/* ─── Campo de nombre ────────────────────────────────────────────────────── */
+
+.name-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.name-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #5f6673;
+}
+
+.name-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #c7cfe0;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  font-size: 14px;
+  color: #1a1a2e;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 160ms ease;
+}
+
+.name-input:focus {
+  border-color: #c0392b;
+  background-color: #ffffff;
+}
+
+/* ─── Error ──────────────────────────────────────────────────────────────── */
+
+.error-message {
+  margin: 0;
+  font-size: 13px;
+  color: #c0392b;
+  font-weight: 500;
+}
+
+/* ─── Botones ────────────────────────────────────────────────────────────── */
+
+.dialog-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/*
+  El botón de borrar usa rojo para indicar que es una acción destructiva
+  e irreversible.
+*/
+.btn-delete {
+  flex: 1;
+  background-color: #c0392b !important;
+  color: #ffffff !important;
+}
+
+.btn-delete:disabled {
+  opacity: 0.45 !important;
+}
+
+.btn-cancel {
+  flex: 1;
+  color: #151970 !important;
+  border-color: #151970 !important;
+}

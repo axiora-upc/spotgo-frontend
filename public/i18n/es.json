@@ -125,6 +125,158 @@
     "brand-subtitle": "Ecosistema Urbano"
   },
 
+  "subscription": {
+    "title": "Suscripción",
+    "subtitle": "Gestiona tu pase mensual de estacionamiento y preferencias de facturación",
+    "loading": "Cargando...",
+    "renews-on": "Se renueva el",
+    "per-month": "/mes",
+    "per-mo": "/mes",
+    "status": {
+      "active": "Activo"
+    },
+    "usage": {
+      "label": "Uso del mes actual",
+      "hours-remaining": "horas restantes · se reinicia el 1 de mayo"
+    },
+    "stats": {
+      "sessions": "Sesiones",
+      "saved": "Ahorrado este mes",
+      "member-since": "Miembro desde"
+    },
+    "auto-renewal": {
+      "title": "Renovación automática",
+      "subtitle": "Tu pase se renueva automáticamente cada mes"
+    },
+    "payment-method": {
+      "title": "Método de pago",
+      "subtitle": "termina en {{ lastFour }} · vence {{ expiry }}",
+      "update-btn": "Actualizar método de pago"
+    },
+    "plans": {
+      "title": "Planes Disponibles",
+      "subtitle": "Mejora o cambia tu pase mensual",
+      "current": "Plan Actual",
+      "switch": "Cambiar Plan",
+      "upgrade": "Mejorar",
+      "free": {
+        "name": "Plan Gratuito (Básico)",
+        "description": "Diseñado para usuarios ocasionales.",
+        "features": {
+          "availability": "Disponibilidad de estacionamiento en tiempo real",
+          "search": "Búsqueda de estacionamiento",
+          "reservation": "Reserva de espacios",
+          "pay-per-use": "Pago por uso (pago por hora)"
+        }
+      },
+      "monthly": {
+        "name": "Plan Mensual (Suscripción)",
+        "description": "Diseñado para usuarios frecuentes.",
+        "features": {
+          "unlimited": "Uso ilimitado por 30 días",
+          "entry-exit": "Entrada y salida sin pago por hora",
+          "receipts": "Acceso a recibos del historial de uso",
+          "extensions": "Extensiones de reserva gratuitas",
+          "faster": "Proceso de reserva más rápido"
+        }
+      },
+      "annual": {
+        "name": "Plan Anual (Suscripción)",
+        "description": "Diseñado para usuarios a largo plazo o de alta frecuencia.",
+        "features": {
+          "monthly-benefits": "Todos los beneficios del Plan Mensual",
+          "valid": "Válido por 12 meses",
+          "discount": "Descuento frente a pagos mensuales",
+          "priority": "Mayor prioridad en horas pico",
+          "preferred": "Acceso preferencial a zonas específicas"
+        }
+      }
+    },
+    "modal": {
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "confirm": "Confirmar",
+      "payment": {
+        "title": "Actualizar método de pago",
+        "card-number": "Número de tarjeta",
+        "card-holder": "Titular de la tarjeta",
+        "expiry": "Fecha de vencimiento",
+        "cvv": "CVV"
+      },
+      "plan": {
+        "title": "Cambiar Plan",
+        "confirm-prefix": "¿Estás seguro de que quieres cambiar a ",
+        "confirm-suffix": "? Tu facturación se actualizará en tu próxima fecha de renovación."
+      }
+    },
+    "errors": {
+      "required": "Este campo es obligatorio.",
+      "card-number-invalid": "Ingresa un número de tarjeta válido de 16 dígitos.",
+      "cvv-invalid": "Ingresa un CVV válido (3 o 4 dígitos).",
+      "name-too-short": "El nombre debe tener al menos 3 caracteres.",
+      "expiry-format": "Ingresa una fecha de vencimiento válida (MM/AA).",
+      "expiry-past": "Esta tarjeta ya está vencida."
+    }
+  },
+
+  "receipts": {
+    "title": "Recibos Digitales",
+    "subtitle": "Accede, descarga y envía por correo tu historial de transacciones de estacionamiento",
+    "loading": "Cargando recibos...",
+    "empty": "No se encontraron recibos.",
+    "search-placeholder": "Buscar por ubicación, factura o ID de reserva",
+    "booking-prefix": "Reserva",
+    "stats": {
+      "total": "Total de recibos",
+      "spent": "Total gastado",
+      "this-month": "Este mes"
+    },
+    "status": {
+      "paid": "Pagado",
+      "refunded": "Reembolsado",
+      "pending": "Pendiente"
+    },
+    "actions": {
+      "pdf": "PDF",
+      "email": "Correo"
+    }
+  },
+
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Gestiona tu información personal y los croquis de tu estacionamiento.",
+    "info": {
+      "title": "Información Personal",
+      "edit": "Editar",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "loading": "Cargando información...",
+      "full-name": "Nombre Completo",
+      "email": "Correo Electrónico",
+      "verified": "Verificado",
+      "business-name": "Nombre del Negocio",
+      "phone": "Teléfono",
+      "district": "Distrito"
+    },
+    "blueprint": {
+      "upload": "Subir Croquis",
+      "delete": "Eliminar Croquis",
+      "list-title": "Croquis Subidos",
+      "empty": "Aún no has subido ningún croquis.",
+      "view-btn": "Ver",
+      "dialog-title": "Subir Croquis",
+      "drop-hint-short": "Arrastra una imagen aquí o haz clic para seleccionar",
+      "upload-btn": "Subir",
+      "cancel-btn": "Cancelar",
+      "name-label": "Nombre del croquis",
+      "name-placeholder": "Ej. Planta baja",
+      "error-duplicate": "Ya existe un croquis con ese nombre.",
+      "error-type": "Solo se permiten imágenes PNG, JPG y WebP.",
+      "error-size": "La imagen debe pesar menos de 1 MB.",
+      "error-storage": "No hay suficiente espacio en el navegador. Elimina un croquis e intenta de nuevo."
+    }
+  },
+
   "shared": {
     "confirm-dialog": {
       "confirm": "Confirmar",

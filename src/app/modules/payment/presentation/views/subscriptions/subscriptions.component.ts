@@ -1,12 +1,13 @@
 import { Component, OnInit, inject, computed, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 import { PaymentStore } from '../../../application/payment.store';
 import { ClientPlan } from '../../../domain/model/client-plan.entity';
 
 @Component({
   selector: 'app-subscriptions',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TranslatePipe],
   templateUrl: './subscriptions.component.html',
   styleUrl: './subscriptions.component.css',
 })
@@ -51,15 +52,43 @@ export class SubscriptionsComponent implements OnInit {
     });
   });
 
-  /*
-    Finds the full plan object that matches the subscription's planId.
-    Used to display the plan name instead of the raw ID.
-  */
   protected readonly currentPlan = computed(() => {
     const sub = this.store.subscription();
     if (!sub) return null;
     return this.store.plans().find(p => p.id === sub.planId) ?? null;
   });
+
+  protected readonly currentPlanNameKey = computed(() => {
+    const plan = this.currentPlan();
+    return plan ? `subscription.plans.${plan.type}.name` : '';
+  });
+
+  protected readonly planFeaturesMap: Record<string, string[]> = {
+    free: [
+      'subscription.plans.free.features.availability',
+      'subscription.plans.free.features.search',
+      'subscription.plans.free.features.reservation',
+      'subscription.plans.free.features.pay-per-use',
+    ],
+    monthly: [
+      'subscription.plans.monthly.features.unlimited',
+      'subscription.plans.monthly.features.entry-exit',
+      'subscription.plans.monthly.features.receipts',
+      'subscription.plans.monthly.features.extensions',
+      'subscription.plans.monthly.features.faster',
+    ],
+    annual: [
+      'subscription.plans.annual.features.monthly-benefits',
+      'subscription.plans.annual.features.valid',
+      'subscription.plans.annual.features.discount',
+      'subscription.plans.annual.features.priority',
+      'subscription.plans.annual.features.preferred',
+    ],
+  };
+
+  protected getPlanFeatures(type: string): string[] {
+    return this.planFeaturesMap[type] ?? [];
+  }
 
   /*
     Returns true if the given plan is the one the client is currently on.
@@ -157,13 +186,13 @@ export class SubscriptionsComponent implements OnInit {
     const control = this.paymentForm.get(field);
     if (!control || !control.touched || control.valid) return null;
 
-    if (control.hasError('required'))     return 'This field is required.';
+    if (control.hasError('required'))     return 'subscription.errors.required';
     if (control.hasError('pattern'))      return field === 'cardNumber'
-      ? 'Enter a valid 16-digit card number.'
-      : 'Enter a valid CVV (3 or 4 digits).';
-    if (control.hasError('minlength'))    return 'Name must be at least 3 characters.';
-    if (control.hasError('expiryFormat')) return 'Enter a valid expiry date (MM/YY).';
-    if (control.hasError('expiryPast'))   return 'This card has already expired.';
+      ? 'subscription.errors.card-number-invalid'
+      : 'subscription.errors.cvv-invalid';
+    if (control.hasError('minlength'))    return 'subscription.errors.name-too-short';
+    if (control.hasError('expiryFormat')) return 'subscription.errors.expiry-format';
+    if (control.hasError('expiryPast'))   return 'subscription.errors.expiry-past';
     return null;
   }
 
