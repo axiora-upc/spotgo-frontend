@@ -1,0 +1,37 @@
+<header class="reports__header">
+  <h1 class="reports__title">{{ 'realtime-map.reports.title' | translate }}</h1>
+  <p class="reports__subtitle">
+    {{ 'realtime-map.reports.subtitle' | translate }}
+  </p>
+</header>
+
+<ul class="reports__list">
+  @for (incident of store.incidents(); track incident.id) {
+    <li class="reports__card">
+      <span class="reports__icon">
+        <mat-icon>error</mat-icon>
+      </span>
+
+      <div class="reports__body">
+        <h3 class="reports__type">
+          {{ 'realtime-map.reports.types.' + incident.type | translate }}
+        </h3>
+
+        <p class="reports__meta">
+          <span class="reports__meta-item">
+            <mat-icon>location_on</mat-icon>
+            {{ 'realtime-map.reports.spot-prefix' | translate }} {{ incident.spot }}
+          </span>
+          <span class="reports__dot">·</span>
+          <span class="reports__meta-item">{{ incident.date }}</span>
+          <span class="reports__dot">·</span>
+          <span class="reports__meta-item">{{ incident.time }}</span>
+        </p>
+
+        <p class="reports__id">
+          {{ 'realtime-map.reports.incident-prefix' | translate }}{{ incident.id }}
+        </p>
+      </div>
+    </li>
+  }
+</ul>

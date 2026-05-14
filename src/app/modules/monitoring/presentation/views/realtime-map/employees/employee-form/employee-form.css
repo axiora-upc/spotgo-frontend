@@ -1,0 +1,46 @@
+.employee-form__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0c1838;
+  margin: 0;
+}
+
+.employee-form__title mat-icon {
+  color: #2563eb;
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+}
+
+.employee-form {
+  display: flex;
+  flex-direction: column;
+  min-width: 460px;
+}
+
+.employee-form__content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 8px !important;
+}
+
+.employee-form__row {
+  display: flex;
+  gap: 16px;
+}
+
+.employee-form__row > .employee-form__field {
+  flex: 1;
+}
+
+.employee-form__field {
+  width: 100%;
+}
+
+.employee-form__actions {
+  padding: 12px 0 0 !important;
+}

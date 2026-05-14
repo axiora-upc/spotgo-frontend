@@ -21,5 +21,117 @@
     "realtime-map": "Real-time Map",
     "analytics": "Analytics",
     "settings": "Settings"
+  },
+
+  "realtime-map": {
+    "tabs": {
+      "overview": "Overview",
+      "reports": "Report",
+      "employees": "Employees"
+    },
+    "overview": {
+      "title": "Main Terminal Hub",
+      "subtitle": "Real-time telemetry from Sector 04-A Smart Grid",
+      "export-logs": "Export Logs",
+      "refresh-sync": "Refresh Sync",
+      "total-spaces": "Total Spaces",
+      "currently-available": "Currently Available",
+      "occupancy-rate": "Occupancy Rate",
+      "vs-last-hour": "vs last hr",
+      "sector-view": "Sector 04-A View of the square",
+      "map": "Map",
+      "list": "List",
+      "one-way-drive-lane": "ONE WAY DRIVE LANE",
+      "central-aisle": "CENTRAL AISLE",
+      "last-updated": "Last updated",
+      "live-feed-connected": "Live Feed Connected",
+      "floor-level": "Floor Level",
+      "status-legend": "STATUS LEGEND",
+      "available": "Available",
+      "occupied": "Occupied",
+      "maintenance": "Maintenance",
+      "peak-hours-today": "Peak Hours Today",
+      "revenue-yield": "Revenue Yield",
+      "revenue-description": "Projected daily revenue based on current occupancy and turnover rate.",
+      "need-help": "Need Technical Help?",
+      "help-description": "Contact our IoT infrastructure team for sensor recalibration.",
+      "open-ticket": "Open Support Ticket"
+    },
+    "reports": {
+      "title": "Reports",
+      "subtitle": "Watch a series of records which englove, accidents inside the building, missing reservations, etc.",
+      "incident-prefix": "Incident #",
+      "spot-prefix": "Spot",
+      "types": {
+        "unauthorised-parking": "Unathorised parking",
+        "payment-failure": "Payment failure"
+      }
+    },
+    "employees": {
+      "title": "Employees",
+      "subtitle": "Watch your employees, their assigned parking spot if they have one and whether they are on duty or off.",
+      "role-prefix": "Role",
+      "turn-prefix": "Turn",
+      "booking-prefix": "Booking #",
+      "add": "Add Employee",
+      "edit": "Edit",
+      "delete": "Delete",
+      "schedules": {
+        "all-week": "All week"
+      },
+      "roles": {
+        "guard": "Guard",
+        "cleaning-personnel": "Cleaning personnel"
+      },
+      "status": {
+        "on-duty": "On Duty",
+        "off-duty": "Off Duty"
+      },
+      "form": {
+        "create-title": "Add Employee",
+        "edit-title": "Edit Employee",
+        "name": "Full name",
+        "role": "Role",
+        "schedule": "Schedule",
+        "shift-start": "Shift start",
+        "shift-end": "Shift end",
+        "booking-code": "Booking code",
+        "status": "Status",
+        "cancel": "Cancel",
+        "add": "Add",
+        "save": "Save"
+      },
+      "delete-confirm": {
+        "title": "Delete employee",
+        "message": "This action will remove the employee from the database. You will not be able to undo it.",
+        "confirm": "Delete",
+        "cancel": "Cancel"
+      },
+      "empty": {
+        "title": "No employees yet",
+        "message": "Add your first employee using the button above and they will appear here."
+      },
+      "snackbar": {
+        "create-success": "Employee added successfully.",
+        "create-error": "We could not add the employee. Please try again.",
+        "edit-success": "Employee updated successfully.",
+        "edit-error": "We could not save the changes. Please try again.",
+        "delete-success": "Employee deleted successfully.",
+        "delete-error": "We could not delete the employee. Please try again.",
+        "load-error": "We could not load the employees list. Make sure the API is running."
+      }
+    },
+    "system-status-active": "System Status: Active",
+    "brand-subtitle": "Urban Ecosystem"
+  },
+
+  "shared": {
+    "confirm-dialog": {
+      "confirm": "Confirm",
+      "cancel": "Cancel"
+    },
+    "snackbar": {
+      "close": "Close"
+    }
   }
 }

@@ -1,0 +1,43 @@
+:host {
+  display: block;
+}
+
+.realtime-map {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.realtime-map__tabs {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 4px;
+}
+
+.realtime-map__tab {
+  font-size: 15px;
+  font-weight: 500;
+  color: #6b7280;
+  text-decoration: none;
+  padding: 8px 0;
+  border-bottom: 2px solid transparent;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease;
+}
+
+.realtime-map__tab:hover {
+  color: #1e40e0;
+}
+
+.realtime-map__tab.is-active {
+  color: #1e40e0;
+  border-bottom-color: #1e40e0;
+  font-weight: 600;
+}
+
+.realtime-map__outlet {
+  display: block;
+}

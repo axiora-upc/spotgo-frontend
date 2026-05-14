@@ -1,0 +1,24 @@
+<section class="realtime-map">
+
+  <!--
+    Internal tab bar.
+
+    Each anchor is a relative routerLink that resolves against the
+    current /monitoring/realtime-map URL. routerLinkActive adds the
+    is-active class when the corresponding child route is active.
+  -->
+  <nav class="realtime-map__tabs" role="tablist">
+    @for (tab of tabs; track tab.link) {
+      <a
+        class="realtime-map__tab"
+        [routerLink]="tab.link"
+        routerLinkActive="is-active">
+        {{ tab.label | translate }}
+      </a>
+    }
+  </nav>
+
+  <div class="realtime-map__outlet">
+    <router-outlet />
+  </div>
+</section>

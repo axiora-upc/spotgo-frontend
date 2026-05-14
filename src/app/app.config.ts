@@ -9,12 +9,22 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 */
 
 import { routes } from './app.routes';
+import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(),
+
+    /*
+      provideAnimationsAsync enables Angular Material animations (used
+      by MatDialog, MatSelect, mat-form-field, etc). The async variant
+      loads the animations bundle lazily, so it only ships when a
+      component actually needs it.
+    */
+    provideAnimationsAsync(),
+
     provideTranslateService({
       fallbackLang: 'en',
       lang: 'en'

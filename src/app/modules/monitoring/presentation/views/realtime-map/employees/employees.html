@@ -1,0 +1,93 @@
+<header class="employees__header">
+  <div>
+    <h1 class="employees__title">{{ 'realtime-map.employees.title' | translate }}</h1>
+    <p class="employees__subtitle">
+      {{ 'realtime-map.employees.subtitle' | translate }}
+    </p>
+  </div>
+
+  <button
+    mat-flat-button
+    color="primary"
+    class="employees__add-btn"
+    type="button"
+    (click)="openCreateDialog()">
+    <mat-icon>person_add</mat-icon>
+    {{ 'realtime-map.employees.add' | translate }}
+  </button>
+</header>
+
+@if (store.employeesLoaded() && store.employees().length === 0) {
+  <div class="employees__empty">
+    <mat-icon class="employees__empty-icon">group_off</mat-icon>
+    <h2 class="employees__empty-title">
+      {{ 'realtime-map.employees.empty.title' | translate }}
+    </h2>
+    <p class="employees__empty-message">
+      {{ 'realtime-map.employees.empty.message' | translate }}
+    </p>
+  </div>
+}
+
+<ul class="employees__list">
+  @for (employee of store.employees(); track employee.id) {
+    <li class="employees__card">
+      <span class="employees__avatar">
+        <mat-icon>person</mat-icon>
+      </span>
+
+      <div class="employees__body">
+        <h3 class="employees__name">{{ employee.name }}</h3>
+
+        <p class="employees__meta">
+          <span class="employees__meta-item">
+            <mat-icon>location_on</mat-icon>
+            {{ 'realtime-map.employees.role-prefix' | translate }}:
+            {{ 'realtime-map.employees.roles.' + employee.role | translate }}
+          </span>
+          <span class="employees__dot">·</span>
+          <span class="employees__meta-item">
+            {{ 'realtime-map.employees.schedules.' + employee.schedule | translate }}
+          </span>
+          <span class="employees__dot">·</span>
+          <span class="employees__meta-item">
+            {{ 'realtime-map.employees.turn-prefix' | translate }}:
+            {{ employee.shiftStart }} - {{ employee.shiftEnd }}
+          </span>
+        </p>
+
+        <p class="employees__booking">
+          {{ 'realtime-map.employees.booking-prefix' | translate }}{{ employee.bookingCode }}
+        </p>
+      </div>
+
+      <span
+        class="employees__badge"
+        [ngClass]="'employees__badge--' + employee.status">
+        {{ 'realtime-map.employees.status.' + employee.status | translate }}
+      </span>
+
+      <div class="employees__actions">
+
+        <button
+          mat-stroked-button
+          class="employees__edit-btn"
+          type="button"
+          (click)="openEditDialog(employee)">
+          <mat-icon>edit</mat-icon>
+          {{ 'realtime-map.employees.edit' | translate }}
+        </button>
+
+        <button
+          mat-stroked-button
+          color="warn"
+          class="employees__delete-btn"
+          type="button"
+          (click)="confirmDelete(employee)">
+          <mat-icon>delete</mat-icon>
+          {{ 'realtime-map.employees.delete' | translate }}
+        </button>
+      </div>
+    </li>
+  }
+</ul>

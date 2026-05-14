@@ -1,17 +1,16 @@
-
 /*
-  The BaseResponse interface do not have any properties or methods 
-  defined,so response from APIs dont need to have a specific structure.
-  
-  The BaseResource interface defines a single property, id, which is 
-  a number. This means that resources need to follow a specific structure, 
-  where they must have an id property that is a number.
+  The BaseResponse interface does not have any properties or methods
+  defined, so responses from APIs don't need to follow a specific
+  structure.
+
+  The BaseResource interface defines a single property, id, which is
+  a string or a number. We allow both because our backend uses
+  alphanumeric ids (EMP-001, SPG-J3P9QR) while typical examples use
+  numeric ids.
 */
 
-export interface BaseResponse {
-
-}
+export interface BaseResponse {}
 
 export interface BaseResource {
-  id: number;
+  id: string | number;
 }

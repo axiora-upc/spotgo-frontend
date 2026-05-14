@@ -1,0 +1,25 @@
+<h2 mat-dialog-title class="confirm-dialog__title">
+  <mat-icon
+    class="confirm-dialog__icon"
+    [class.confirm-dialog__icon--danger]="(data.tone ?? defaults.tone) === 'danger'">
+    {{ data.iconName ?? defaults.iconName }}
+  </mat-icon>
+  {{ data.titleKey | translate }}
+</h2>
+
+<mat-dialog-content class="confirm-dialog__content">
+  <p>{{ data.messageKey | translate }}</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="confirm-dialog__actions">
+  <button mat-button type="button" (click)="cancel()">
+    {{ (data.cancelKey ?? defaults.cancelKey) | translate }}
+  </button>
+  <button
+    mat-flat-button
+    type="button"
+    [color]="(data.tone ?? defaults.tone) === 'danger' ? 'warn' : 'primary'"
+    (click)="confirm()">
+    {{ (data.confirmKey ?? defaults.confirmKey) | translate }}
+  </button>
+</mat-dialog-actions>
