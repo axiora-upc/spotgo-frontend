@@ -1,0 +1,187 @@
+/*
+  MonitoringStore is the application layer of the monitoring bounded
+  context. It holds the in-memory state seen by the views and is the
+  only place that orchestrates the HTTP calls from MonitoringApi.
+
+  Public API (consumed by the views):
+  - readonly signals: employees, incidents, parkingSnapshot,
+                      loading, error, employeeCount
+  - imperative methods: addEmployee, updateEmployee, deleteEmployee,
+                        refreshParkingSnapshot, loadEmployees,
+                        loadIncidents.
+
+  Why a Store?
+  - Concentrates state mutation in one place so the views stay dumb.
+  - Lets multiple components react to the same data without duplicating
+    fetches.
+  - Mirrors the LearningStore pattern used by the professor's example.
+*/
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { retry } from 'rxjs';
+import { Employee } from '../domain/model/employee.entity';
+import { IncidentReport } from '../domain/model/incident-report.entity';
+import { ParkingSnapshot } from '../domain/model/parking-spot.entity';
+import { MonitoringApi } from '../infrastructure/monitoring-api';
+
+@Injectable({ providedIn: 'root' })
+export class MonitoringStore {
+  private readonly monitoringApi = inject(MonitoringApi);
+
+  private readonly employeesSignal = signal<Employee[]>([]);
+  readonly employees = this.employeesSignal.asReadonly();
+  readonly employeeCount = computed(() => this.employeesSignal().length);
+
+  private readonly incidentsSignal = signal<IncidentReport[]>([]);
+  readonly incidents = this.incidentsSignal.asReadonly();
+
+  private readonly parkingSnapshotSignal = signal<ParkingSnapshot | null>(null);
+  readonly parkingSnapshot = this.parkingSnapshotSignal.asReadonly();
+
+  private readonly loadingSignal = signal(false);
+  readonly loading = this.loadingSignal.asReadonly();
+
+  private readonly errorSignal = signal<string | null>(null);
+  readonly error = this.errorSignal.asReadonly();
+
+  /*
+    employeesLoaded becomes true after the first fetch resolves. Used
+    by the view to differentiate "still loading" from "loaded but
+    empty" and show the proper empty state.
+  */
+  private readonly employeesLoadedSignal = signal(false);
+  readonly employeesLoaded = this.employeesLoadedSignal.asReadonly();
+
+  loadEmployees(): void {
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+    this.monitoringApi.getEmployees().subscribe({
+      next: (employees) => {
+        this.employeesSignal.set(employees);
+        this.employeesLoadedSignal.set(true);
+        this.loadingSignal.set(false);
+      },
+      error: (err) => {
+        this.employeesLoadedSignal.set(true);
+        this.errorSignal.set(this.formatError(err, 'Failed to load employees'));
+        this.loadingSignal.set(false);
+      },
+    });
+  }
+
+  /*
+    addEmployee, updateEmployee and deleteEmployee accept a "callbacks"
+    object so the view can react to success/error (showing a snackbar,
+    for example). The Store itself does NOT depend on Material or any
+    UI library — that would tightly couple application logic to a
+    specific UI framework.
+  */
+  addEmployee(
+    employee: Employee,
+    callbacks?: { onSuccess?: () => void; onError?: () => void }
+  ): void {
+    this.monitoringApi
+      .addEmployee(employee)
+      .pipe(retry(1))
+      .subscribe({
+        next: (created) => {
+          this.employeesSignal.update((current) => [...current, created]);
+          callbacks?.onSuccess?.();
+        },
+        error: (err) => {
+          this.errorSignal.set(this.formatError(err, 'Failed to add employee'));
+          callbacks?.onError?.();
+        },
+      });
+  }
+
+  updateEmployee(
+    employee: Employee,
+    callbacks?: { onSuccess?: () => void; onError?: () => void }
+  ): void {
+    this.monitoringApi
+      .updateEmployee(employee)
+      .pipe(retry(1))
+      .subscribe({
+        next: (updated) => {
+          this.employeesSignal.update((current) =>
+            current.map((e) => (e.id === updated.id ? updated : e))
+          );
+          callbacks?.onSuccess?.();
+        },
+        error: (err) => {
+          this.errorSignal.set(this.formatError(err, 'Failed to update employee'));
+          callbacks?.onError?.();
+        },
+      });
+  }
+
+  deleteEmployee(
+    id: string,
+    callbacks?: { onSuccess?: () => void; onError?: () => void }
+  ): void {
+    this.monitoringApi
+      .deleteEmployee(id)
+      .pipe(retry(1))
+      .subscribe({
+        next: () => {
+          this.employeesSignal.update((current) =>
+            current.filter((e) => e.id !== id)
+          );
+          callbacks?.onSuccess?.();
+        },
+        error: (err) => {
+          this.errorSignal.set(this.formatError(err, 'Failed to delete employee'));
+          callbacks?.onError?.();
+        },
+      });
+  }
+
+  loadIncidents(): void {
+    this.monitoringApi.getIncidentReports().subscribe({
+      next: (incidents) => this.incidentsSignal.set(incidents),
+      error: (err) =>
+        this.errorSignal.set(this.formatError(err, 'Failed to load incidents')),
+    });
+  }
+
+  loadParkingSnapshot(): void {
+    this.monitoringApi.getParkingSnapshot().subscribe({
+      next: (snapshot) => this.parkingSnapshotSignal.set(snapshot),
+      error: (err) =>
+        this.errorSignal.set(this.formatError(err, 'Failed to load snapshot')),
+    });
+  }
+
+  /*
+    Refreshes the snapshot AND updates facility.lastUpdated to the
+    current client time, persisting the change in db.json.
+
+    callbacks let the Overview view know when the refresh starts and
+    finishes so it can toggle the spinner state of the button.
+  */
+  refreshParkingSnapshot(
+    callbacks?: { onSuccess?: () => void; onError?: () => void }
+  ): void {
+    this.monitoringApi.touchParkingSnapshotLastUpdated().subscribe({
+      next: (snapshot) => {
+        this.parkingSnapshotSignal.set(snapshot);
+        callbacks?.onSuccess?.();
+      },
+      error: (err) => {
+        this.errorSignal.set(
+          this.formatError(err, 'Failed to refresh snapshot')
+        );
+        callbacks?.onError?.();
+      },
+    });
+  }
+
+  private formatError(err: any, fallback: string): string {
+    if (err instanceof Error) {
+      return err.message.includes('Resource not found')
+        ? `${fallback}: not found`
+        : err.message;
+    }
+    return fallback;
+  }
+}
