@@ -28,6 +28,10 @@
                 "glob": "**/*",
                 "input": "src/app/assets",
                 "output": "assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "server"
               }
             ],
             "styles": ["src/material-theme.scss"]

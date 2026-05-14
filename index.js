@@ -1,12 +1,10 @@
 const jsonServer = require('json-server');
-const path = require('path');
-const server = jsonServer.create();
-const middlewares = jsonServer.defaults();
 
 const db = require('./server/db.json');
 const router = jsonServer.router(db);
+const server = jsonServer.create();
 
-server.use(middlewares);
+server.use(jsonServer.bodyParser);
 
 server.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');

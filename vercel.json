@@ -4,11 +4,13 @@
     {
       "src": "index.js",
       "use": "@vercel/node",
-      "config": { "includeFiles": ["server/db.json"] }
+      "config": {
+        "includeFiles": ["server/db.json"]
+      }
     },
     {
-      "src": "dist/spotgo-frontend/browser/**",
-      "use": "@vercel/static"
+      "src": "package.json",
+      "use": "@vercel/angular"
     }
   ],
   "rewrites": [
@@ -17,7 +19,7 @@
       "destination": "/index.js"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
   ]
