@@ -500,10 +500,10 @@
     {
       "id": "sub-001",
       "clientId": "cli-001",
-      "planId": "pln-002",
+      "planId": "pln-001",
       "status": "active",
       "renewsOn": "2026-05-01",
-      "pricePerMonth": 150,
+      "pricePerMonth": 0,
       "usageHours": 38,
       "maxHours": 60,
       "sessions": 14,

@@ -125,6 +125,41 @@
     "brand-subtitle": "Ecosistema Urbano"
   },
 
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Gestiona tu información personal y los croquis de tu estacionamiento.",
+    "info": {
+      "title": "Información Personal",
+      "edit": "Editar",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "loading": "Cargando información...",
+      "full-name": "Nombre Completo",
+      "email": "Correo Electrónico",
+      "verified": "Verificado",
+      "business-name": "Nombre del Negocio",
+      "phone": "Teléfono",
+      "district": "Distrito"
+    },
+    "blueprint": {
+      "upload": "Subir Croquis",
+      "delete": "Eliminar Croquis",
+      "list-title": "Croquis Subidos",
+      "empty": "Aún no has subido ningún croquis.",
+      "view-btn": "Ver",
+      "dialog-title": "Subir Croquis",
+      "drop-hint-short": "Arrastra una imagen aquí o haz clic para seleccionar",
+      "upload-btn": "Subir",
+      "cancel-btn": "Cancelar",
+      "name-label": "Nombre del croquis",
+      "name-placeholder": "Ej. Planta baja",
+      "error-duplicate": "Ya existe un croquis con ese nombre.",
+      "error-type": "Solo se permiten imágenes PNG, JPG y WebP.",
+      "error-size": "La imagen debe pesar menos de 1 MB.",
+      "error-storage": "No hay suficiente espacio en el navegador. Elimina un croquis e intenta de nuevo."
+    }
+  },
+
   "shared": {
     "confirm-dialog": {
       "confirm": "Confirmar",

@@ -1,0 +1,195 @@
+<!--
+  Contenedor principal de la vista Settings.
+-->
+<div class="settings-view">
+
+  <!-- ── Encabezado ────────────────────────────────────────────────────────── -->
+  <div class="settings-header">
+    <h1 class="settings-title">{{ 'settings.title' | translate }}</h1>
+    <p class="settings-subtitle">{{ 'settings.subtitle' | translate }}</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       Tarjeta: Información personal
+  ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="info-card">
+
+    <div class="info-card-header">
+      <h2 class="info-card-title">{{ 'settings.info.title' | translate }}</h2>
+
+      <div class="info-actions">
+        @if (!isEditing()) {
+          <button mat-stroked-button class="btn-edit" (click)="startEditing()">
+            <mat-icon>edit</mat-icon>
+            {{ 'settings.info.edit' | translate }}
+          </button>
+        }
+        @if (isEditing()) {
+          <button mat-flat-button class="btn-save" (click)="saveChanges()">
+            <mat-icon>check</mat-icon>
+            {{ 'settings.info.save' | translate }}
+          </button>
+          <button mat-stroked-button class="btn-cancel" (click)="cancelEditing()">
+            <mat-icon>close</mat-icon>
+            {{ 'settings.info.cancel' | translate }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <!--
+      Indicador de carga: se muestra mientras el store solicita
+      los datos al servidor.
+    -->
+    @if (profilesStore.loading()) {
+      <p class="info-loading">{{ 'settings.info.loading' | translate }}</p>
+    }
+
+    <!--
+      Mensaje de error: se muestra si la solicitud falla.
+    -->
+    @if (profilesStore.error()) {
+      <p class="info-error">{{ profilesStore.error() }}</p>
+    }
+
+    <!--
+      Campos del usuario: se muestran solo cuando el admin está cargado.
+    -->
+    @if (admin) {
+      <div class="info-card-body">
+
+        <!-- Nombre completo -->
+        <div class="info-row">
+          <div class="info-icon-box"><mat-icon>person</mat-icon></div>
+          <div class="info-content">
+            <span class="info-label">{{ 'settings.info.full-name' | translate }}</span>
+            @if (!isEditing()) {
+              <span class="info-value">{{ admin.fullName }}</span>
+            }
+            @if (isEditing()) {
+              <div class="info-name-inputs">
+                <input class="info-input" [(ngModel)]="editBuffer.firstName"  placeholder="First name" />
+                <input class="info-input" [(ngModel)]="editBuffer.lastName"   placeholder="Last name" />
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="info-divider"></div>
+
+        <!-- Email -->
+        <div class="info-row">
+          <div class="info-icon-box"><mat-icon>email</mat-icon></div>
+          <div class="info-content">
+            <span class="info-label">{{ 'settings.info.email' | translate }}</span>
+            @if (!isEditing()) {
+              <div class="info-value-row">
+                <span class="info-value">{{ admin.email }}</span>
+                <span class="verified-badge">{{ 'settings.info.verified' | translate }}</span>
+              </div>
+            }
+            @if (isEditing()) {
+              <input class="info-input" [(ngModel)]="editBuffer.email" type="email" />
+            }
+          </div>
+        </div>
+
+        <div class="info-divider"></div>
+
+        <!-- Nombre del negocio -->
+        <div class="info-row">
+          <div class="info-icon-box"><mat-icon>business</mat-icon></div>
+          <div class="info-content">
+            <span class="info-label">{{ 'settings.info.business-name' | translate }}</span>
+            @if (!isEditing()) {
+              <span class="info-value">{{ admin.parkingName }}</span>
+            }
+            @if (isEditing()) {
+              <input class="info-input" [(ngModel)]="editBuffer.parkingName" />
+            }
+          </div>
+        </div>
+
+        <div class="info-divider"></div>
+
+        <!-- Teléfono -->
+        <div class="info-row">
+          <div class="info-icon-box"><mat-icon>phone</mat-icon></div>
+          <div class="info-content">
+            <span class="info-label">{{ 'settings.info.phone' | translate }}</span>
+            @if (!isEditing()) {
+              <span class="info-value">{{ admin.phone }}</span>
+            }
+            @if (isEditing()) {
+              <input class="info-input" [(ngModel)]="editBuffer.phone" type="tel" />
+            }
+          </div>
+        </div>
+
+        <div class="info-divider"></div>
+
+        <!-- Ciudad / Distrito -->
+        <div class="info-row">
+          <div class="info-icon-box"><mat-icon>location_on</mat-icon></div>
+          <div class="info-content">
+            <span class="info-label">{{ 'settings.info.district' | translate }}</span>
+            @if (!isEditing()) {
+              <span class="info-value">{{ admin.city }}</span>
+            }
+            @if (isEditing()) {
+              <input class="info-input" [(ngModel)]="editBuffer.city" />
+            }
+          </div>
+        </div>
+
+      </div>
+    }
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       Sección: Croquis
+  ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="blueprint-section">
+
+    <!-- Botones de acción -->
+    <div class="blueprint-actions">
+      <button mat-flat-button class="btn-upload-blueprint" (click)="openUploadDialog()">
+        {{ 'settings.blueprint.upload' | translate }}
+      </button>
+      <button mat-flat-button class="btn-delete-blueprint" (click)="openDeleteDialog()">
+        {{ 'settings.blueprint.delete' | translate }}
+      </button>
+    </div>
+
+    @if (blueprintError()) {
+      <p class="blueprint-error">{{ blueprintError() | translate }}</p>
+    }
+
+    <!-- Lista de croquis subidos -->
+    <div class="blueprint-list-header">
+      <span class="blueprint-list-title">{{ 'settings.blueprint.list-title' | translate }}</span>
+    </div>
+
+    @if (blueprintStorage.blueprints().length === 0) {
+      <p class="blueprint-empty">{{ 'settings.blueprint.empty' | translate }}</p>
+    }
+
+    @for (item of blueprintStorage.blueprints(); track item.name) {
+      <div class="blueprint-item">
+        <mat-icon class="blueprint-item-icon">image</mat-icon>
+        <span class="blueprint-item-name">{{ item.name }}</span>
+        <button mat-flat-button class="btn-view" (click)="viewBlueprint(item.dataUrl)">
+          {{ 'settings.blueprint.view-btn' | translate }}
+        </button>
+      </div>
+    }
+
+    @if (selectedBlueprint()) {
+      <div class="blueprint-preview">
+        <img class="blueprint-preview-img" [src]="selectedBlueprint()" alt="Blueprint" />
+      </div>
+    }
+
+  </section>
+
+</div>

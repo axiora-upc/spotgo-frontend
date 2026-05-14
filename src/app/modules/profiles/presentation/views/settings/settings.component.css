@@ -1,0 +1,306 @@
+/* ─── Contenedor principal ───────────────────────────────────────────────── */
+
+.settings-view {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 32px 36px;
+  min-height: 100%;
+  background-color: #f4f6fb;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* ─── Encabezado ─────────────────────────────────────────────────────────── */
+
+.settings-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #151970;
+}
+
+.settings-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #5f6673;
+}
+
+/* ─── Tarjeta de información personal ───────────────────────────────────── */
+
+.info-card {
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.info-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px 16px;
+  border-bottom: 1px solid #f0f2f7;
+}
+
+.info-card-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #151970;
+}
+
+.info-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-edit {
+  color: #151970 !important;
+  border-color: #151970 !important;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-edit mat-icon { font-size: 16px; width: 16px; height: 16px; }
+
+.btn-save {
+  background-color: #151970 !important;
+  color: #ffffff !important;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-save mat-icon { font-size: 16px; width: 16px; height: 16px; }
+
+.btn-cancel {
+  color: #c0392b !important;
+  border-color: #c0392b !important;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-cancel mat-icon { font-size: 16px; width: 16px; height: 16px; }
+
+.info-card-body { padding: 8px 0; }
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 28px;
+}
+
+.info-icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: #eef2ff;
+  flex-shrink: 0;
+}
+
+.info-icon-box mat-icon { font-size: 20px; width: 20px; height: 20px; color: #151970; }
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.info-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #9099a8;
+}
+
+.info-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a2e;
+}
+
+.info-value-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.verified-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background-color: #22c55e;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.info-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 6px 12px;
+  border: 1px solid #c7cfe0;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a2e;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 160ms ease;
+}
+
+.info-input:focus { border-color: #151970; background-color: #ffffff; }
+
+.info-divider { height: 1px; background-color: #f0f2f7; margin: 0 28px; }
+
+/* ─── Sección de croquis ─────────────────────────────────────────────────── */
+
+.blueprint-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.blueprint-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.btn-upload-blueprint {
+  background-color: #151970 !important;
+  color: #ffffff !important;
+  border-radius: 12px !important;
+  padding: 0 28px !important;
+  height: 48px;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+.btn-delete-blueprint {
+  background-color: #c0392b !important;
+  color: #ffffff !important;
+  border-radius: 12px !important;
+  padding: 0 28px !important;
+  height: 48px;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+/* ─── Lista de croquis ───────────────────────────────────────────────────── */
+
+.blueprint-list-header {
+  margin-top: 4px;
+}
+
+.blueprint-list-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #151970;
+}
+
+.blueprint-empty {
+  margin: 0;
+  font-size: 13px;
+  color: #9099a8;
+}
+
+/*
+  .blueprint-item replica exactamente el mockup:
+  una tarjeta blanca con sombra suave, borde redondeado,
+  ícono a la izquierda, nombre en el centro y botón a la derecha.
+
+  box-shadow agrega la elevación sutil que se ve en la imagen de referencia.
+*/
+.blueprint-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  background-color: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+}
+
+/*
+  El ícono de imagen usa el mismo tamaño que en el mockup:
+  un cuadrado de 40px con color gris neutro para no competir
+  con el nombre ni el botón.
+*/
+.blueprint-item-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: #5f6673;
+  flex-shrink: 0;
+}
+
+/*
+  El nombre ocupa todo el espacio disponible entre el ícono y el botón.
+  overflow: hidden + text-overflow: ellipsis evitan que nombres largos
+  rompan el layout: se cortan con "..." al final.
+*/
+.blueprint-item-name {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a2e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*
+  .btn-view replica el botón azul redondeado "Ver imagen" del mockup.
+  border-radius: 999px da el efecto píldora.
+*/
+.btn-view {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+  border-radius: 999px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 0 20px !important;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+/* ─── Vista previa del croquis seleccionado ──────────────────────────────── */
+
+.blueprint-preview {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  background-color: #f4f6fb;
+}
+
+.blueprint-preview-img {
+  display: block;
+  width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+}

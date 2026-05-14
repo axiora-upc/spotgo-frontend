@@ -125,6 +125,41 @@
     "brand-subtitle": "Urban Ecosystem"
   },
 
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your personal information and parking lot blueprints.",
+    "info": {
+      "title": "Personal Information",
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel",
+      "loading": "Loading information...",
+      "full-name": "Full Name",
+      "email": "Email",
+      "verified": "Verified",
+      "business-name": "Business Name",
+      "phone": "Phone",
+      "district": "District"
+    },
+    "blueprint": {
+      "upload": "Upload Blueprint",
+      "delete": "Delete Blueprint",
+      "list-title": "Uploaded Blueprints",
+      "empty": "You have not uploaded any blueprints yet.",
+      "view-btn": "View",
+      "dialog-title": "Upload Blueprint",
+      "drop-hint-short": "Drag an image here or click to select",
+      "upload-btn": "Upload",
+      "cancel-btn": "Cancel",
+      "name-label": "Blueprint name",
+      "name-placeholder": "E.g. Ground floor",
+      "error-duplicate": "A blueprint with that name already exists.",
+      "error-type": "Only PNG, JPG, and WebP images are allowed.",
+      "error-size": "The image must be smaller than 1 MB.",
+      "error-storage": "Not enough browser storage. Delete a blueprint and try again."
+    }
+  },
+
   "shared": {
     "confirm-dialog": {
       "confirm": "Confirm",
