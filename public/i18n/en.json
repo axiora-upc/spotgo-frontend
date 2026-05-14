@@ -125,123 +125,6 @@
     "brand-subtitle": "Urban Ecosystem"
   },
 
-  "subscription": {
-    "title": "Subscription",
-    "subtitle": "Manage your monthly parking pass and billing preferences",
-    "loading": "Loading...",
-    "renews-on": "Renews on",
-    "per-month": "/month",
-    "per-mo": "/mo",
-    "status": {
-      "active": "Active"
-    },
-    "usage": {
-      "label": "This month's usage",
-      "hours-remaining": "hours remaining · resets on May 1"
-    },
-    "stats": {
-      "sessions": "Sessions",
-      "saved": "Saved this month",
-      "member-since": "Member since"
-    },
-    "auto-renewal": {
-      "title": "Auto-renewal",
-      "subtitle": "Your pass renews automatically each month"
-    },
-    "payment-method": {
-      "title": "Payment method",
-      "subtitle": "ending in {{ lastFour }} · expires {{ expiry }}",
-      "update-btn": "Update payment method"
-    },
-    "plans": {
-      "title": "Available Plans",
-      "subtitle": "Upgrade or change your monthly pass",
-      "current": "Current Plan",
-      "switch": "Switch Plan",
-      "upgrade": "Upgrade",
-      "free": {
-        "name": "Free Plan (Basic)",
-        "description": "Designed for occasional users.",
-        "features": {
-          "availability": "Real-time parking availability",
-          "search": "Parking search",
-          "reservation": "Spot reservation",
-          "pay-per-use": "Pay-per-use (hourly payment)"
-        }
-      },
-      "monthly": {
-        "name": "Monthly Plan (Subscription)",
-        "description": "Designed for frequent users.",
-        "features": {
-          "unlimited": "Unlimited usage for 30 days",
-          "entry-exit": "Entry and exit without hourly payment",
-          "receipts": "Access to usage history receipts",
-          "extensions": "Free reservation extensions",
-          "faster": "Faster reservation process"
-        }
-      },
-      "annual": {
-        "name": "Annual Plan (Subscription)",
-        "description": "Designed for long-term or high-frequency users.",
-        "features": {
-          "monthly-benefits": "All Monthly Plan benefits",
-          "valid": "Valid for 12 months",
-          "discount": "Discount compared to monthly payments",
-          "priority": "Higher priority during peak hours",
-          "preferred": "Preferred access to specific zones"
-        }
-      }
-    },
-    "modal": {
-      "cancel": "Cancel",
-      "save": "Save",
-      "confirm": "Confirm",
-      "payment": {
-        "title": "Update payment method",
-        "card-number": "Card number",
-        "card-holder": "Cardholder name",
-        "expiry": "Expiry date",
-        "cvv": "CVV"
-      },
-      "plan": {
-        "title": "Change Plan",
-        "confirm-prefix": "Are you sure you want to switch to ",
-        "confirm-suffix": "? Your billing will update on your next renewal date."
-      }
-    },
-    "errors": {
-      "required": "This field is required.",
-      "card-number-invalid": "Enter a valid 16-digit card number.",
-      "cvv-invalid": "Enter a valid CVV (3 or 4 digits).",
-      "name-too-short": "Name must be at least 3 characters.",
-      "expiry-format": "Enter a valid expiry date (MM/YY).",
-      "expiry-past": "This card has already expired."
-    }
-  },
-
-  "receipts": {
-    "title": "Digital Receipts",
-    "subtitle": "Access, download, and email your parking transaction history",
-    "loading": "Loading receipts...",
-    "empty": "No receipts found.",
-    "search-placeholder": "Search by location, invoice, or booking ID",
-    "booking-prefix": "Booking",
-    "stats": {
-      "total": "Total receipts",
-      "spent": "Total spent",
-      "this-month": "This month"
-    },
-    "status": {
-      "paid": "Paid",
-      "refunded": "Refunded",
-      "pending": "Pending"
-    },
-    "actions": {
-      "pdf": "PDF",
-      "email": "Email"
-    }
-  },
-
   "settings": {
     "title": "Settings",
     "subtitle": "Manage your personal information and parking lot blueprints.",
@@ -274,6 +157,54 @@
       "error-type": "Only PNG, JPG, and WebP images are allowed.",
       "error-size": "The image must be smaller than 1 MB.",
       "error-storage": "Not enough browser storage. Delete a blueprint and try again."
+    }
+  },
+
+  "analytics": {
+    "loading": "Loading analytics data...",
+    "title": "Analytics Dashboard",
+    "subtitle": "Real-time insights into parking occupancy, revenue, and system health.",
+    "period": {
+      "today": "Today",
+      "last7": "Last 7 Days",
+      "custom": "Custom Date"
+    },
+    "kpi": {
+      "avg-occupancy": "Average Occupancy",
+      "vs-yesterday": "vs yesterday",
+      "peak-hour": "Peak Hour",
+      "peak-note": "Highest occupancy during the day",
+      "total-revenue": "Total Revenue",
+      "projected": "projected",
+      "system-health": "System Health",
+      "all-sensors": "All sensors operating normally",
+      "sensors-warning": "Some sensors need attention"
+    },
+    "charts": {
+      "occupancy-title": "Occupancy by Hour",
+      "occupancy-sub": "Track parking utilization throughout the day",
+      "weekly-title": "Weekly Trends",
+      "weekly-sub": "7-day occupancy and revenue overview",
+      "total-capacity": "Total Capacity",
+      "units": "spaces",
+      "efficiency-index": "Efficiency Index"
+    },
+    "spots": {
+      "title": "Most Utilized Spots",
+      "subtitle": "Breakdown of highest-performing parking spaces",
+      "export": "Export Report",
+      "col-location": "Location",
+      "col-status": "Status",
+      "col-turnover": "Daily Turnover",
+      "col-peak": "Peak Utilization",
+      "col-revenue": "Revenue Impact",
+      "status": {
+        "available": "Available",
+        "occupied": "Occupied",
+        "maintenance": "Maintenance"
+      },
+      "vehicles": "vehicles",
+      "load-more": "Load More Spots"
     }
   },
 

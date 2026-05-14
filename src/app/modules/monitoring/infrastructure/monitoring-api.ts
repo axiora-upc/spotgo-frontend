@@ -13,21 +13,25 @@ import { BaseApi } from '../../../shared/infrastructure/base-api';
 import { EmployeesApiEndpoint } from './employees-api-endpoint';
 import { IncidentsApiEndpoint } from './incidents-api-endpoint';
 import { ParkingSnapshotApiEndpoint } from './parking-snapshot-api-endpoint';
+import { AnalyticsApiEndpoint } from './analytics-api-endpoint';
 import { Employee } from '../domain/model/employee.entity';
 import { IncidentReport } from '../domain/model/incident-report.entity';
 import { ParkingSnapshot } from '../domain/model/parking-spot.entity';
+import { ParkingAnalytics } from '../domain/model/analytics.entity';
 
 @Injectable({ providedIn: 'root' })
 export class MonitoringApi extends BaseApi {
   private readonly employeesEndpoint: EmployeesApiEndpoint;
   private readonly incidentsEndpoint: IncidentsApiEndpoint;
   private readonly parkingSnapshotEndpoint: ParkingSnapshotApiEndpoint;
+  private readonly analyticsEndpoint: AnalyticsApiEndpoint;
 
   constructor(http: HttpClient) {
     super();
     this.employeesEndpoint = new EmployeesApiEndpoint(http);
     this.incidentsEndpoint = new IncidentsApiEndpoint(http);
     this.parkingSnapshotEndpoint = new ParkingSnapshotApiEndpoint(http);
+    this.analyticsEndpoint = new AnalyticsApiEndpoint(http);
   }
 
   getEmployees(): Observable<Employee[]> {
@@ -56,5 +60,9 @@ export class MonitoringApi extends BaseApi {
 
   touchParkingSnapshotLastUpdated(): Observable<ParkingSnapshot> {
     return this.parkingSnapshotEndpoint.touchLastUpdated();
+  }
+
+  getAnalytics(parkingId: string): Observable<ParkingAnalytics> {
+    return this.analyticsEndpoint.getByParkingId(parkingId);
   }
 }
