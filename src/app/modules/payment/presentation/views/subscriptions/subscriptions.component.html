@@ -1,39 +1,211 @@
-<div class="subscriptions-view">
-  <h1 class="subscriptions-title">Subscriptions</h1>
-  <p class="subscriptions-subtitle">Choose the plan that best fits your needs.</p>
+<div class="page">
+  <h1 class="page-title">Subscription</h1>
+  <p class="page-subtitle">Manage your monthly parking pass and billing preferences</p>
 
-  @if (loading()) {
-    <p class="subscriptions-loading">Loading plans...</p>
+  @if (store.loading()) {
+    <p class="loading-text">Loading...</p>
   }
 
-  @if (!loading() && plans().length > 0) {
-    <div class="subscriptions-plans">
-      @for (plan of plans(); track plan.id) {
-        <div class="plan-card" [ngClass]="'plan-card--' + plan.type">
-          <div class="plan-header">
-            <h2 class="plan-name">{{ plan.name }}</h2>
-            <p class="plan-price">
-              @if (plan.monthlyPrice === 0) {
-                <span class="plan-price__amount">Free</span>
-              } @else {
-                <span class="plan-price__amount">S/ {{ plan.monthlyPrice }}</span>
-                <span class="plan-price__period">/mo</span>
-              }
-            </p>
+  @if (!store.loading() && store.subscription(); as sub) {
+
+    <!-- Current plan card -->
+    <div class="current-card">
+      <div class="current-card__header">
+        <div class="current-card__title-row">
+          <span class="current-card__plan-name">{{ currentPlan()?.name ?? sub.planId }}</span>
+          <span class="current-card__badge">Active</span>
+        </div>
+        <p class="current-card__renews">
+          Renews on {{ renewsOnFormatted() }} · S/.{{ sub.pricePerMonth }}/month
+        </p>
+        <span class="current-card__price">S/.{{ sub.pricePerMonth }} <small>/mo</small></span>
+      </div>
+
+      <div class="usage">
+        <div class="usage__label">
+          <span>This month's usage</span>
+          <span>{{ sub.usageHours }}h / {{ sub.maxHours }}h</span>
+        </div>
+        <div class="usage__bar">
+          <div class="usage__fill" [style.width.%]="usagePercent()"></div>
+        </div>
+        <p class="usage__remaining">{{ hoursRemaining() }} hours remaining · resets on May 1</p>
+      </div>
+
+      <div class="stats">
+        <div class="stats__item">
+          <span class="stats__label">Sessions</span>
+          <span class="stats__value">{{ sub.sessions }}</span>
+        </div>
+        <div class="stats__item">
+          <span class="stats__label">Saved this month</span>
+          <span class="stats__value stats__value--green">S/.{{ sub.savedThisMonth }}</span>
+        </div>
+        <div class="stats__item">
+          <span class="stats__label">Member since</span>
+          <span class="stats__value">{{ memberSinceFormatted() }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auto-renewal and payment method row -->
+    <div class="info-row">
+      <div class="info-card">
+        <div class="info-card__icon">&#128197;</div>
+        <div class="info-card__content">
+          <p class="info-card__title">Auto-renewal</p>
+          <p class="info-card__subtitle">Your pass renews automatically each month</p>
+        </div>
+        <label class="toggle">
+          <input
+            type="checkbox"
+            [checked]="sub.autoRenewal"
+            (change)="onToggleAutoRenewal()"
+          />
+          <span class="toggle__slider"></span>
+        </label>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card__icon">&#128179;</div>
+        <div class="info-card__content">
+          <p class="info-card__title">Payment method</p>
+          <p class="info-card__subtitle">
+            Visa ending in {{ sub.paymentMethodLastFour }} · expires {{ sub.paymentMethodExpiry }}
+          </p>
+        </div>
+        <button class="btn-outline" type="button" (click)="openPaymentModal()">Update payment method</button>
+      </div>
+    </div>
+
+  }
+
+  <!-- Available plans -->
+  @if (store.plans().length > 0) {
+    <h2 class="section-title">Available Plans</h2>
+    <p class="section-subtitle">Upgrade or change your monthly pass</p>
+
+    <div class="plans-grid">
+      @for (plan of store.plans(); track plan.id) {
+        <div class="plan-card" [class.plan-card--active]="isCurrentPlan(plan.id)">
+
+          <div class="plan-card__header">
+            <p class="plan-card__name">{{ plan.name }}</p>
+            <p class="plan-card__description">{{ plan.description }}</p>
           </div>
-          <p class="plan-description">{{ plan.description }}</p>
-          <p class="plan-reservations">
-            @if (plan.reservationsPerMonth) {
-              Up to {{ plan.reservationsPerMonth }} reservations/month
+
+          <p class="plan-card__price">
+            @if (plan.monthlyPrice === 0) {
+              <span class="plan-card__amount">$0</span>
+              <span class="plan-card__period">/month</span>
             } @else {
-              Unlimited reservations
+              <span class="plan-card__amount">S/.{{ plan.monthlyPrice }}</span>
+              <span class="plan-card__period">/month</span>
             }
           </p>
-          <button class="plan-btn" type="button">
-            @if (plan.type === 'free') { Get Started } @else { Subscribe }
+
+          <ul class="plan-card__features">
+            @for (feature of plan.features; track feature) {
+              <li class="plan-card__feature">{{ feature }}</li>
+            }
+          </ul>
+
+          <button
+            class="plan-card__btn"
+            [class.plan-card__btn--current]="isCurrentPlan(plan.id)"
+            [disabled]="isCurrentPlan(plan.id)"
+            (click)="onSwitchPlan(plan)"
+            type="button"
+          >
+            @if (isCurrentPlan(plan.id)) {
+              Current Plan
+            } @else if (plan.type === 'free') {
+              Switch Plan
+            } @else {
+              Upgrade
+            }
           </button>
+
         </div>
       }
     </div>
   }
+
 </div>
+
+<!-- Payment method modal -->
+@if (showPaymentModal()) {
+  <div class="modal-backdrop" (click)="closePaymentModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h3 class="modal__title">Update payment method</h3>
+
+      <form [formGroup]="paymentForm" (ngSubmit)="onSubmitPayment()" class="payment-form">
+
+        <div class="form-field">
+          <label class="form-label">Card number</label>
+          <input class="form-input" formControlName="cardNumber" placeholder="1234567890123456" maxlength="16" />
+          @if (getError('cardNumber'); as err) {
+            <span class="form-error">{{ err }}</span>
+          }
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">Cardholder name</label>
+          <input class="form-input" formControlName="cardHolder" placeholder="María García" />
+          @if (getError('cardHolder'); as err) {
+            <span class="form-error">{{ err }}</span>
+          }
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">Expiry date</label>
+            <input class="form-input" formControlName="expiry" placeholder="MM/YY" maxlength="5" />
+            @if (getError('expiry'); as err) {
+              <span class="form-error">{{ err }}</span>
+            }
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">CVV</label>
+            <input class="form-input" formControlName="cvv" placeholder="123" maxlength="4" type="password" />
+            @if (getError('cvv'); as err) {
+              <span class="form-error">{{ err }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="modal__actions">
+          <button class="modal__btn modal__btn--cancel" type="button" (click)="closePaymentModal()">
+            Cancel
+          </button>
+          <button class="modal__btn modal__btn--confirm" type="submit">
+            Save
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+}
+
+<!-- Confirmation modal -->
+@if (selectedPlan(); as plan) {
+  <div class="modal-backdrop" (click)="onCancelSwitch()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h3 class="modal__title">Change Plan</h3>
+      <p class="modal__body">
+        Are you sure you want to switch to <strong>{{ plan.name }}</strong>?
+        Your billing will update on your next renewal date.
+      </p>
+      <div class="modal__actions">
+        <button class="modal__btn modal__btn--cancel" type="button" (click)="onCancelSwitch()">
+          Cancel
+        </button>
+        <button class="modal__btn modal__btn--confirm" type="button" (click)="onConfirmSwitch()">
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+}
