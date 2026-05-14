@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { PlanesClienteService } from '../../../infrastructure/planes-cliente.service';
+import { ClientPlansService } from '../../../infrastructure/client-plans.service';
 
 interface ClientPlan {
   id: string;
@@ -22,7 +22,7 @@ export class SubscriptionsComponent implements OnInit {
   plans: ClientPlan[] = [];
   loading = true;
 
-  constructor(private planesClienteService: PlanesClienteService) {}
+  constructor(private planesClienteService: ClientPlansService) {}
 
   ngOnInit(): void {
     this.planesClienteService.getAll().subscribe({

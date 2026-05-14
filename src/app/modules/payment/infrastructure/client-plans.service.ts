@@ -46,7 +46,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
-export class PlanesClienteService {
+export class ClientPlansService {
 
   /*
     We inject HttpClient via the constructor.
