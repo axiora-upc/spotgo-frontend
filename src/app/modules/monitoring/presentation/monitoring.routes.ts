@@ -136,4 +136,8 @@ export const MONITORING_ROUTES: Routes = [
       { path: 'employees', loadComponent: realtimeMapEmployees },
     ],
   },
+  {
+    path: 'analytics',
+    loadComponent: analytics,
+  },
 ];
