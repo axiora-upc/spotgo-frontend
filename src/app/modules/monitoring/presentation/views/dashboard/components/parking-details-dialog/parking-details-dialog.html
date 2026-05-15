@@ -1,0 +1,196 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <header class="dialog-header">
+    <h2 *ngIf="step() === 'details'">{{ 'dashboard.reservation.parking-details' | translate }}</h2>
+    <h2 *ngIf="step() === 'reserve'">{{ 'dashboard.reservation.reserve-at' | translate }} {{ parking.name }}</h2>
+    <h2 *ngIf="step() === 'choose-spot'">{{ 'dashboard.reservation.choose-your-spot' | translate }}</h2>
+    <h2 *ngIf="step() === 'confirm'">{{ 'dashboard.reservation.confirm-reservation' | translate }}</h2>
+    <h2 *ngIf="step() === 'success'">{{ 'dashboard.reservation.reservation-confirmed' | translate }}</h2>
+    
+    <button mat-icon-button (click)="close()" class="close-btn">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+
+  <!-- Step 1: Details -->
+  <div *ngIf="step() === 'details'" class="step-content">
+    <div class="parking-info">
+      <h3>{{ parking.name }}</h3>
+      <div class="meta">
+        <mat-icon>location_on</mat-icon> 0.8 mi away • <mat-icon class="star">star</mat-icon> 3.8
+      </div>
+    </div>
+
+    <div class="availability-card">
+      <div class="availability-header">
+        <span>{{ 'dashboard.reservation.availability' | translate }}</span>
+        <span class="badge">{{ parking.availableSpaces }} {{ 'dashboard.parking.spots' | translate }}</span>
+      </div>
+      <div class="progress-container">
+        <div class="progress-bar" [style.width.%]="(parking.totalSpaces - parking.availableSpaces) / parking.totalSpaces * 100"></div>
+      </div>
+      <div class="availability-footer">
+        <span>{{ parking.totalSpaces - parking.availableSpaces }} {{ 'dashboard.reservation.occupied' | translate }}</span>
+        <span>{{ parking.totalSpaces }} {{ 'dashboard.parking.total' | translate }}</span>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="info-icon price-icon"><mat-icon>attach_money</mat-icon></div>
+        <div class="info-text">
+          <span class="label">{{ 'dashboard.reservation.price' | translate }}</span>
+          <span class="value">$2/hr</span>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon hours-icon"><mat-icon>access_time</mat-icon></div>
+        <div class="info-text">
+          <span class="label">{{ 'dashboard.reservation.hours' | translate }}</span>
+          <span class="value">24/7</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="services">
+      <h4>{{ 'dashboard.reservation.services' | translate }}</h4>
+      <div class="service-badge">
+        <mat-icon>wb_sunny</mat-icon> Open Air
+      </div>
+    </div>
+
+    <div class="floor-preview">
+      <h4>{{ 'dashboard.reservation.floor-map-level' | translate }} 1</h4>
+      <div class="mini-grid">
+        <div *ngFor="let spot of spots().slice(0, 24)" class="mini-spot" [ngClass]="spot.status"></div>
+      </div>
+    </div>
+
+    <footer class="dialog-footer">
+      <button class="primary-btn" (click)="goToReserve()">{{ 'dashboard.reservation.reserve-a-spot' | translate }}</button>
+    </footer>
+  </div>
+
+  <!-- Step 2: Reserve (Date & Time) -->
+  <div *ngIf="step() === 'reserve'" class="step-content">
+    <p class="subtitle">{{ 'dashboard.reservation.select-date-time' | translate }}</p>
+
+    <div class="form-field">
+      <label>{{ 'dashboard.reservation.date' | translate }}</label>
+      <mat-form-field appearance="outline">
+        <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="form-field">
+      <label>{{ 'dashboard.reservation.start-time' | translate }}</label>
+      <mat-form-field appearance="outline">
+        <input matInput type="time" [(ngModel)]="startTime">
+        <mat-icon matPrefix>access_time</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="form-field">
+      <label>{{ 'dashboard.reservation.duration' | translate }}</label>
+      <mat-form-field appearance="outline">
+        <input matInput type="number" min="1" [(ngModel)]="duration">
+        <mat-icon matPrefix>timer</mat-icon>
+        <mat-error *ngIf="duration() < 1">{{ 'dashboard.reservation.invalid-duration' | translate }}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <footer class="dialog-footer split">
+      <button class="secondary-btn" (click)="goBack()">{{ 'dashboard.reservation.cancel' | translate }}</button>
+      <button class="primary-btn" [disabled]="duration() < 1" (click)="goToChooseSpot()">{{ 'dashboard.reservation.next' | translate }}</button>
+    </footer>
+  </div>
+
+  <!-- Step 3: Choose Spot -->
+  <div *ngIf="step() === 'choose-spot'" class="step-content">
+    <p class="subtitle">{{ 'dashboard.reservation.tap-available-spot' | translate }}</p>
+
+    <div class="spot-grid">
+      <div *ngFor="let spot of spots()" 
+           class="spot-item" 
+           [ngClass]="spot.status"
+           (click)="selectSpot(spot)">
+        <mat-icon>directions_car</mat-icon>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="dot available"></span> {{ 'dashboard.reservation.available' | translate }}</div>
+      <div class="legend-item"><span class="dot occupied"></span> {{ 'dashboard.reservation.occupied' | translate }}</div>
+      <div class="legend-item"><span class="dot selected"></span> {{ 'dashboard.reservation.selected' | translate }}</div>
+    </div>
+
+    <footer class="dialog-footer split">
+      <button class="secondary-btn" (click)="goBack()">{{ 'dashboard.reservation.back' | translate }}</button>
+      <button class="primary-btn" [disabled]="!selectedSpotId()" (click)="goToConfirm()">{{ 'dashboard.reservation.review' | translate }}</button>
+    </footer>
+  </div>
+
+  <!-- Step 4: Confirm -->
+  <div *ngIf="step() === 'confirm'" class="step-content">
+    <p class="subtitle">{{ 'dashboard.reservation.review-booking' | translate }}</p>
+
+    <div class="summary-card">
+      <div class="summary-row">
+        <span class="label">{{ 'dashboard.reservation.location' | translate }}</span>
+        <span class="value">{{ parking.name }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="label">{{ 'dashboard.reservation.date' | translate }}</span>
+        <span class="value">{{ selectedDate() | date:'yyyy-MM-dd' }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="label">{{ 'dashboard.reservation.time' | translate }}</span>
+        <span class="value">{{ startTime() }} ({{ duration() }}h)</span>
+      </div>
+      <div class="summary-row">
+        <span class="label">{{ 'dashboard.reservation.spot' | translate }}</span>
+        <span class="value">{{ selectedSpotId() }}</span>
+      </div>
+      <hr>
+      <div class="summary-row total">
+        <span class="label">{{ 'dashboard.reservation.total' | translate }}</span>
+        <span class="value">{{ totalAmount | currency }}</span>
+      </div>
+    </div>
+
+    <footer class="dialog-footer split">
+      <button class="secondary-btn" (click)="goBack()">{{ 'dashboard.reservation.back' | translate }}</button>
+      <button class="primary-btn success" (click)="confirmAndPay()">{{ 'dashboard.reservation.confirm-pay' | translate }}</button>
+    </footer>
+  </div>
+
+  <!-- Step 5: Success -->
+  <div *ngIf="step() === 'success'" class="step-content centered">
+    <div class="success-icon">
+      <mat-icon>check_circle</mat-icon>
+    </div>
+    <h3>{{ 'dashboard.reservation.confirmed-title' | translate }}</h3>
+    <p>{{ 'dashboard.reservation.your-spot' | translate }} {{ selectedSpotId() }} {{ 'dashboard.reservation.at' | translate }} {{ parking.name }} {{ 'dashboard.reservation.is-reserved' | translate }}.</p>
+
+    <div class="success-details">
+      <div class="summary-row">
+        <span class="label">{{ 'dashboard.reservation.date' | translate }}</span>
+        <span class="value">{{ selectedDate() | date:'yyyy-MM-dd' }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="label">{{ 'dashboard.reservation.time' | translate }}</span>
+        <span class="value">{{ startTime() }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="label">{{ 'dashboard.reservation.booking-id' | translate }}</span>
+        <span class="value highlighted">#{{ bookingCode() }}</span>
+      </div>
+    </div>
+
+    <footer class="dialog-footer">
+      <button class="secondary-btn full" (click)="close()">{{ 'dashboard.reservation.done' | translate }}</button>
+    </footer>
+  </div>
+</div>

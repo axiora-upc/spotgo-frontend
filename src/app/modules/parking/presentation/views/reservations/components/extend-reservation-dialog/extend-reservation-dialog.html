@@ -1,0 +1,42 @@
+<div class="dialog-container">
+  <header class="dialog-header">
+    <h2>{{ 'reservations.extend-title' | translate }}</h2>
+    <button mat-icon-button (click)="cancel()" class="close-btn">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+
+  <div class="dialog-content">
+    <p class="subtitle">
+      {{ 'reservations.extend-desc' | translate }} <strong>{{ data.parkingName }}</strong> ({{ 'reservations.spot-label' | translate }} {{ data.currentSpot }}).
+    </p>
+
+    <div class="form-field">
+      <label>{{ 'reservations.extend-hours' | translate }}</label>
+      <mat-form-field appearance="outline">
+        <input matInput type="number" min="1" [(ngModel)]="additionalHours" name="additionalHours">
+        <mat-icon matPrefix>timer</mat-icon>
+        <mat-error *ngIf="additionalHours() < 1">{{ 'dashboard.reservation.invalid-duration' | translate }}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="summary-box">
+      <div class="summary-row">
+        <span>{{ 'reservations.extend-rate' | translate }}</span>
+        <span>{{ data.hourlyRate | currency }}</span>
+      </div>
+      <hr>
+      <div class="summary-row total">
+        <span>{{ 'reservations.extend-total' | translate }}</span>
+        <span class="total-value">{{ additionalCost | currency }}</span>
+      </div>
+    </div>
+
+    <footer class="dialog-footer split">
+      <button class="secondary-btn" (click)="cancel()">{{ 'reservations.action-cancel' | translate }}</button>
+      <button class="primary-btn success" [disabled]="additionalHours() < 1" (click)="confirm()">
+        {{ 'reservations.extend-confirm' | translate }}
+      </button>
+    </footer>
+  </div>
+</div>

@@ -23,6 +23,67 @@
     "settings": "Settings"
   },
 
+  "dashboard": {
+    "stats": {
+      "spotsAvailableNearby": "Spots Nearby",
+      "activeReservations": "Active Reservations",
+      "savedLocations": "Saved Locations",
+      "avgSavings": "Avg. Savings"
+    },
+    "nearby": {
+      "title": "Nearby Parkings"
+    },
+    "parking": {
+      "spots": "spots",
+      "total": "total"
+    },
+    "reservation": {
+      "parking-details": "Parking Details",
+      "reserve-at": "Reserve at",
+      "choose-your-spot": "Choose Your Spot",
+      "confirm-reservation": "Confirm Reservation",
+      "reservation-confirmed": "Reservation Confirmed!",
+      "availability": "Availability",
+      "occupied": "occupied",
+      "price": "Price",
+      "hours": "Hours",
+      "services": "Services",
+      "floor-map-level": "Floor Map - Level",
+      "reserve-a-spot": "Reserve a Spot",
+      "select-date-time": "Select your date and time",
+      "date": "Date",
+      "start-time": "Start Time",
+      "duration": "Duration",
+      "invalid-duration": "Minimum duration is 1 hour",
+      "cancel": "Cancel",
+      "next": "Next",
+      "tap-available-spot": "Tap an available spot on Level 1",
+      "available": "Available",
+      "selected": "Selected",
+      "back": "Back",
+      "review": "Review",
+      "review-booking": "Please review your booking details",
+      "location": "Location",
+      "time": "Time",
+      "spot": "Spot",
+      "total": "Total",
+      "confirm-pay": "Confirm & Pay",
+      "confirmed-title": "Reservation Confirmed!",
+      "your-spot": "Your spot",
+      "at": "at",
+      "is-reserved": "is reserved",
+      "booking-id": "Booking ID",
+      "done": "Done"
+    },
+    "map": {
+      "legend": {
+        "available": "Available",
+        "limited": "Limited",
+        "full": "Full"
+      }
+    }
+  },
+
   "realtime-map": {
     "tabs": {
       "overview": "Overview",
@@ -34,7 +95,7 @@
       "subtitle": "Real-time telemetry from Sector 04-A Smart Grid",
       "export-logs": "Export Logs",
       "refresh-sync": "Refresh Sync",
-      "total-spaces": "Total Spaces",
+      "total-spots": "Total Spots",
       "currently-available": "Currently Available",
       "occupancy-rate": "Occupancy Rate",
       "vs-last-hour": "vs last hr",
@@ -216,5 +277,26 @@
     "snackbar": {
       "close": "Close"
     }
+  },
+
+  "reservations": {
+    "title": "My Reservations",
+    "subtitle": "Manage your active and upcoming bookings",
+    "banner-expiring": "Reservation expiring soon!",
+    "banner-expires-text": "Your spot at {{ parkingName }} expires in {{ time }}",
+    "badge-active": "Active",
+    "badge-upcoming": "Upcoming",
+    "action-extend": "Extend Time",
+    "action-navigate": "Navigate",
+    "action-cancel": "Cancel",
+    "booking-label": "Booking",
+    "spot-label": "Spot",
+    "extend-title": "Extend Reservation",
+    "extend-desc": "Select how many additional hours you want to add for",
+    "extend-hours": "Additional Hours",
+    "extend-rate": "Hourly Rate",
+    "extend-total": "Additional Total",
+    "extend-confirm": "Confirm Extension"
   }
 }
+
