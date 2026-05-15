@@ -66,6 +66,13 @@ export class HistoryApi extends BaseApi {
   }
 
   /*
+    Generic reservation update via PUT.
+  */
+  updateReservation(reservation: ReservationRaw): Observable<ReservationRaw> {
+    return this.reservationsEndpoint.update(reservation, reservation.id);
+  }
+
+  /*
     Persists only the updated rating to the parking via PATCH.
     PATCH sends { rating } and json-server merges it with the existing
     document, leaving all other fields (adminId, totalSpaces, etc.) intact.

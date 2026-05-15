@@ -82,6 +82,7 @@ export class ReservationsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.store.loadParkings();
+    this.store.loadUserReservations();
 
     // Start countdown timer ticker
     this.timerIntervalId = setInterval(() => {
@@ -96,6 +97,10 @@ export class ReservationsComponent implements OnInit, OnDestroy {
   }
 
   protected extendTime(reservation: ReservationViewModel): void {
+    // Lookup dynamically the real parking lot rate from state
+    const matched = this.store.parkings().find(p => p.id === reservation.parkingId);
+    const rate = matched ? matched.pricePerHour : 2.50;
+
     const dialogRef = this.dialog.open(ExtendReservationDialog, {
       width: '400px',
       maxWidth: '95vw',
@@ -103,13 +108,12 @@ export class ReservationsComponent implements OnInit, OnDestroy {
         reservationId: reservation.id,
         parkingName: reservation.parkingName,
         currentSpot: reservation.spotId,
-        hourlyRate: 2.50, // Mock hourly rate
+        hourlyRate: rate,
       } as ExtendReservationData,
     });
 
     dialogRef.afterClosed().subscribe((addedHours: number | null) => {
       if (addedHours && addedHours >= 1) {
-        // Access signal to update reservation
         const rawReservations = this.store.userReservations();
         const index = rawReservations.findIndex(r => r.id === reservation.id);
         
@@ -118,7 +122,7 @@ export class ReservationsComponent implements OnInit, OnDestroy {
           const updatedReservation = {
             ...resToUpdate,
             duration: resToUpdate.duration + addedHours,
-            totalAmount: resToUpdate.totalAmount + (addedHours * 2.50),
+            totalAmount: resToUpdate.totalAmount + (addedHours * rate),
           };
           
           // Mutate store's internal list of userReservations. 

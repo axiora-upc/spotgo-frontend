@@ -72,6 +72,7 @@ export class Dashboard implements OnInit {
 
   ngOnInit(): void {
     this.store.loadParkings();
+    this.store.loadUserReservations();
     this.favoritesStore.loadFavoritesByClientId('cli-001');
     this.paymentStore.loadSubscriptionByClientId('cli-001');
   }
