@@ -32,9 +32,16 @@ export interface DashboardStats {
   avgSavings: number;
 }
 
+import { HistoryApi } from '../../parking/infrastructure/history-api';
+import { PaymentApi } from '../../payment/infrastructure/payment-api';
+import { ReservationRaw } from '../../parking/domain/model/reservation-raw.entity';
+import { Receipt } from '../../payment/domain/model/receipt.entity';
+
 @Injectable({ providedIn: 'root' })
 export class MonitoringStore {
   private readonly monitoringApi = inject(MonitoringApi);
+  private readonly historyApi = inject(HistoryApi);
+  private readonly paymentApi = inject(PaymentApi);
 
   private readonly employeesSignal = signal<Employee[]>([]);
   readonly employees = this.employeesSignal.asReadonly();
@@ -200,11 +207,55 @@ export class MonitoringStore {
 
   completeReservation(reservation: Reservation): void {
     this.userReservationsSignal.update(current => [...current, reservation]);
-    // Update stats after reservation
+    
+    // Update in-memory stats for immediate session reactivity
     this.dashboardStatsSignal.update(stats => ({
       ...stats,
       activeReservations: this.userReservationsSignal().filter(r => r.status === 'completed').length
     }));
+
+    // Compute absolute times for SQL/JSON server persistence
+    const [year, month, day] = reservation.date.split('-').map(Number);
+    const [hour, min] = reservation.startTime.split(':').map(Number);
+    const startObj = new Date(year, month - 1, day, hour, min);
+    const endObj = new Date(startObj.getTime() + reservation.duration * 60 * 60 * 1000);
+
+    // 1. Construct raw persistent representation for user history (POST /reservations)
+    const rawRes = new ReservationRaw(
+      reservation.id,
+      'cli-001',
+      reservation.parkingId,
+      reservation.code,
+      reservation.spotId,
+      startObj.toISOString(),
+      endObj.toISOString(),
+      'completed',
+      reservation.totalAmount,
+      null // unrated
+    );
+
+    // 2. Construct transactional representation for receipts history (POST /receipts)
+    const invoiceId = `INV-${new Date().toISOString().split('T')[0].replace(/-/g, '')}-${reservation.code}`;
+    const matchedPkg = this.parkingsSignal().find(p => p.id === reservation.parkingId);
+    const pkgName = matchedPkg ? matchedPkg.name : 'SpotGo Parking';
+    
+    const finalReceipt = new Receipt({
+      id: '', // assigned by lowdb/json-server
+      clientId: 'cli-001',
+      invoiceNumber: invoiceId,
+      locationName: pkgName,
+      date: new Date().toISOString().split('T')[0],
+      durationHours: Math.floor(reservation.duration),
+      durationMinutes: Math.round((reservation.duration % 1) * 60),
+      paymentMethod: 'Visa •• 4242',
+      bookingCode: reservation.code,
+      amount: reservation.totalAmount,
+      status: 'paid'
+    });
+
+    // 3. Perform transactional POSTs asynchronously to persist state
+    this.historyApi.createReservation(rawRes).subscribe();
+    this.paymentApi.addReceipt(finalReceipt).subscribe();
   }
 
   updateReservation(reservation: Reservation): void {

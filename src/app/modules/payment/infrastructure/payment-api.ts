@@ -99,4 +99,11 @@ export class PaymentApi extends BaseApi {
   getReceipts(): Observable<Receipt[]> {
     return this.receiptsEndpoint.getAll();
   }
+
+  /*
+    Creates a new receipt in the database via POST.
+  */
+  addReceipt(receipt: Receipt): Observable<Receipt> {
+    return this.receiptsEndpoint.create(receipt);
+  }
 }

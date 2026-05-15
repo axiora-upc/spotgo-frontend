@@ -40,7 +40,7 @@
         <div class="info-icon price-icon"><mat-icon>attach_money</mat-icon></div>
         <div class="info-text">
           <span class="label">{{ 'dashboard.reservation.price' | translate }}</span>
-          <span class="value">$2/hr</span>
+          <span class="value">{{ parking.pricePerHour | currency:'S/.':'symbol':'1.2-2' }}/hr</span>
         </div>
       </div>
       <div class="info-item">
@@ -156,7 +156,7 @@
       <hr>
       <div class="summary-row total">
         <span class="label">{{ 'dashboard.reservation.total' | translate }}</span>
-        <span class="value">{{ totalAmount | currency }}</span>
+        <span class="value">{{ totalAmount | currency:'S/.':'symbol':'1.2-2' }}</span>
       </div>
     </div>
 

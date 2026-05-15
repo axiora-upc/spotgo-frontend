@@ -76,6 +76,13 @@ export class HistoryApi extends BaseApi {
   }
 
   /*
+    Creates a new reservation in the database via POST.
+  */
+  createReservation(reservation: ReservationRaw): Observable<ReservationRaw> {
+    return this.reservationsEndpoint.create(reservation);
+  }
+
+  /*
     Creates a new client report via POST /clientReports.
     json-server assigns the id and returns the saved record.
   */

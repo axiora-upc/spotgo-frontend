@@ -72,7 +72,7 @@
               @if (res.status === 'completed') {
                 <span class="live-timer">{{ res.remainingTimeStr }}</span>
               }
-              <span class="total-amount">{{ res.totalAmount | currency }}</span>
+              <span class="total-amount">{{ res.totalAmount | currency:'S/.':'symbol':'1.2-2' }}</span>
             </div>
           </div>
         </div>

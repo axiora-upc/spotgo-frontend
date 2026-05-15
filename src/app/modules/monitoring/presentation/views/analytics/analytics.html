@@ -56,7 +56,7 @@
 
     <div class="analytics__kpi-card">
       <p class="analytics__kpi-label">{{ 'analytics.kpi.total-revenue' | translate }}</p>
-      <p class="analytics__kpi-value">{{ data.totalRevenue | currency:'USD':'symbol':'1.1-1' }}</p>
+      <p class="analytics__kpi-value">{{ data.totalRevenue | currency:'S/.':'symbol':'1.1-1' }}</p>
       <p class="analytics__kpi-trend analytics__kpi-trend--up">
         <mat-icon>trending_up</mat-icon>
         +{{ data.revenueTrendPercent | number:'1.1-1' }}%
@@ -213,7 +213,7 @@
           <span class="analytics__peak-pct">{{ spot.peakUtilization }}%</span>
         </div>
 
-        <span class="analytics__revenue">+{{ spot.revenueImpact | currency:'USD':'symbol':'1.2-2' }}</span>
+        <span class="analytics__revenue">+{{ spot.revenueImpact | currency:'S/.':'symbol':'1.2-2' }}</span>
       </div>
     }
 

@@ -7,6 +7,9 @@ import { MonitoringStore } from '../../../application/monitoring.store';
 import { ParkingResource } from '../../../infrastructure/monitoring-api';
 import { ParkingDetailsDialog } from './components/parking-details-dialog/parking-details-dialog';
 
+import { FavoritesStore } from '../../../../profiles/application/favorites.store';
+import { PaymentStore } from '../../../../payment/application/payment.store';
+
 interface ParkingWithPosition extends ParkingResource {
   mapX: number;
   mapY: number;
@@ -21,8 +24,32 @@ interface ParkingWithPosition extends ParkingResource {
 export class Dashboard implements OnInit {
   protected readonly store = inject(MonitoringStore);
   private readonly dialog = inject(MatDialog);
+  private readonly favoritesStore = inject(FavoritesStore);
+  private readonly paymentStore = inject(PaymentStore);
 
-  protected readonly stats = this.store.dashboardStats;
+  protected readonly stats = computed(() => {
+    const parkings = this.store.parkings();
+    
+    // Calculate spots available nearby from all parking facilities
+    const availableNearby = parkings.reduce((acc, p) => acc + p.availableSpaces, 0);
+
+    // Filter and count only active completed reservations in session
+    const activeReservations = this.store.userReservations().filter(r => r.status === 'completed').length;
+
+    // Count of dynamic favorites from backend favorite-store
+    const savedLocations = this.favoritesStore.favorites().length;
+
+    // Actual monthly savings from client subscription profile
+    const sub = this.paymentStore.subscription();
+    const avgSavings = sub ? sub.savedThisMonth : 0;
+
+    return {
+      availableNearby,
+      activeReservations,
+      savedLocations,
+      avgSavings
+    };
+  });
 
   private readonly positionCache = new Map<string, { mapX: number; mapY: number }>();
 
@@ -45,6 +72,8 @@ export class Dashboard implements OnInit {
 
   ngOnInit(): void {
     this.store.loadParkings();
+    this.favoritesStore.loadFavoritesByClientId('cli-001');
+    this.paymentStore.loadSubscriptionByClientId('cli-001');
   }
 
   protected openParkingDetails(parking: ParkingResource): void {

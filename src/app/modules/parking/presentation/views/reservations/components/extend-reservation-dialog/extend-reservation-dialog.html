@@ -23,12 +23,12 @@
     <div class="summary-box">
       <div class="summary-row">
         <span>{{ 'reservations.extend-rate' | translate }}</span>
-        <span>{{ data.hourlyRate | currency }}</span>
+        <span>{{ data.hourlyRate | currency:'S/.':'symbol':'1.2-2' }}</span>
       </div>
       <hr>
       <div class="summary-row total">
         <span>{{ 'reservations.extend-total' | translate }}</span>
-        <span class="total-value">{{ additionalCost | currency }}</span>
+        <span class="total-value">{{ additionalCost | currency:'S/.':'symbol':'1.2-2' }}</span>
       </div>
     </div>
 
