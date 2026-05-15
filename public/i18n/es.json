@@ -219,6 +219,57 @@
     }
   },
 
+  "history": {
+    "title": "Historial de Estacionamiento",
+    "subtitle": "{{count}} reservas pasadas",
+    "loading": "Cargando historial...",
+    "empty": "Aún no tienes historial de estacionamiento.",
+    "spot": "Espacio",
+    "btn-report": "Reportar",
+    "btn-rate": "Calificar",
+    "modal": {
+      "cancel": "Cancelar",
+      "rate": {
+        "title": "Califica tu experiencia",
+        "confirm": "Enviar calificación"
+      },
+      "report": {
+        "title": "Reportar un problema",
+        "placeholder": "Selecciona un motivo",
+        "confirm": "Enviar reporte"
+      }
+    },
+    "report": {
+      "types": {
+        "safety-concern": "Problema de seguridad",
+        "maintenance-issue": "Problema de mantenimiento",
+        "billing-dispute": "Disputa de facturación",
+        "other": "Otro"
+      }
+    }
+  },
+
+  "favorites": {
+    "title": "Favoritos",
+    "subtitle": "{{count}} ubicaciones guardadas",
+    "loading": "Cargando favoritos...",
+    "empty": "Aún no tienes ubicaciones guardadas.",
+    "spots": "espacios",
+    "per-hour": "/hr",
+    "btn-navigate": "Navegar",
+    "btn-reserve": "Reservar",
+    "btn-delete": "Eliminar de favoritos",
+    "time": {
+      "today": "Hoy",
+      "yesterday": "Ayer",
+      "days-ago": "Hace {{days}} días",
+      "week-ago": "Hace 1 semana",
+      "weeks-ago": "Hace {{weeks}} semanas",
+      "month-ago": "Hace 1 mes",
+      "months-ago": "Hace {{months}} meses"
+    }
+  },
+
   "receipts": {
     "title": "Recibos Digitales",
     "subtitle": "Accede, descarga y envía por correo tu historial de transacciones de estacionamiento",

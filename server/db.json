@@ -133,7 +133,9 @@
       "averageOccupancy": 84.2,
       "peakHour": "14:00",
       "totalRevenue": 4200,
-      "systemStatus": "active"
+      "systemStatus": "active",
+      "rating": 4,
+      "pricePerHour": 3
     },
     {
       "id": "prk-002",
@@ -147,7 +149,105 @@
       "averageOccupancy": 72.5,
       "peakHour": "12:00",
       "totalRevenue": 2800,
-      "systemStatus": "active"
+      "systemStatus": "active",
+      "rating": 4.2,
+      "pricePerHour": 2.8
+    },
+    {
+      "id": "prk-003",
+      "adminId": "adm-001",
+      "name": "Mall Parking Complex",
+      "address": "500 Commerce Dr",
+      "city": "Lima",
+      "totalSpaces": 60,
+      "availableSpaces": 8,
+      "totalFloors": 2,
+      "averageOccupancy": 86.7,
+      "peakHour": "13:00",
+      "totalRevenue": 1900,
+      "systemStatus": "active",
+      "rating": 4.7,
+      "pricePerHour": 4
+    },
+    {
+      "id": "prk-004",
+      "adminId": "adm-002",
+      "name": "Station Parking",
+      "address": "75 Transit Ave",
+      "city": "Lima",
+      "totalSpaces": 50,
+      "availableSpaces": 32,
+      "totalFloors": 1,
+      "averageOccupancy": 36.0,
+      "peakHour": "08:00",
+      "totalRevenue": 980,
+      "systemStatus": "active",
+      "rating": 4,
+      "pricePerHour": 2.5
+    },
+    {
+      "id": "prk-005",
+      "adminId": "adm-001",
+      "name": "Riverside Lot",
+      "address": "900 River Rd",
+      "city": "Lima",
+      "totalSpaces": 80,
+      "availableSpaces": 45,
+      "totalFloors": 1,
+      "averageOccupancy": 43.8,
+      "peakHour": "11:00",
+      "totalRevenue": 1100,
+      "systemStatus": "active",
+      "rating": 3.8,
+      "pricePerHour": 2
+    },
+    {
+      "id": "prk-006",
+      "adminId": "adm-002",
+      "name": "Airport Express Lot",
+      "address": "1 Airport Blvd",
+      "city": "Lima",
+      "totalSpaces": 200,
+      "availableSpaces": 3,
+      "totalFloors": 4,
+      "averageOccupancy": 98.5,
+      "peakHour": "06:00",
+      "totalRevenue": 8500,
+      "systemStatus": "active",
+      "rating": 4.3,
+      "pricePerHour": 8
+    },
+    {
+      "id": "prk-007",
+      "adminId": "adm-001",
+      "name": "Central Plaza Parking",
+      "address": "123 Main St, Downtown",
+      "city": "Lima",
+      "totalSpaces": 40,
+      "availableSpaces": 24,
+      "totalFloors": 1,
+      "averageOccupancy": 40.0,
+      "peakHour": "12:00",
+      "totalRevenue": 1200,
+      "systemStatus": "active",
+      "rating": 5.0,
+      "pricePerHour": 3
+    },
+    {
+      "id": "prk-008",
+      "adminId": "adm-002",
+      "name": "Downtown Garage",
+      "address": "456 Center Ave",
+      "city": "Lima",
+      "totalSpaces": 35,
+      "availableSpaces": 15,
+      "totalFloors": 2,
+      "averageOccupancy": 57.1,
+      "peakHour": "15:00",
+      "totalRevenue": 1750,
+      "systemStatus": "active",
+      "rating": 4.0,
+      "pricePerHour": 5
     }
   ],
   "employees": [
@@ -210,14 +310,15 @@
   "reservations": [
     {
       "id": "res-001",
-      "code": "SPG-J3P9QR",
       "clientId": "cli-001",
       "parkingId": "prk-001",
+      "code": "SPG-J3P9QR",
       "spot": "L2-03",
       "startDate": "2026-04-25T09:30:00Z",
       "endDate": "2026-04-25T11:30:00Z",
       "status": "completed",
-      "amount": 15
+      "amount": 15,
+      "rating": null
     },
     {
       "id": "res-002",
@@ -228,7 +329,68 @@
       "startDate": "2026-04-28T11:00:00Z",
       "endDate": "2026-04-28T13:00:00Z",
       "status": "completed",
-      "amount": 15
+      "amount": 15,
+      "rating": null
+    },
+    {
+      "id": "res-003",
+      "code": "SPG-A1B2C3",
+      "clientId": "cli-001",
+      "parkingId": "prk-007",
+      "spot": "L1-08",
+      "startDate": "2026-04-12T09:00:00Z",
+      "endDate": "2026-04-12T13:00:00Z",
+      "status": "completed",
+      "amount": 12,
+      "rating": 5
+    },
+    {
+      "id": "res-004",
+      "code": "SPG-D4E5F6",
+      "clientId": "cli-001",
+      "parkingId": "prk-008",
+      "spot": "L3-22",
+      "startDate": "2026-04-10T14:00:00Z",
+      "endDate": "2026-04-10T18:00:00Z",
+      "status": "completed",
+      "amount": 20,
+      "rating": 4
+    },
+    {
+      "id": "res-005",
+      "code": "SPG-G7H8I9",
+      "clientId": "cli-001",
+      "parkingId": "prk-003",
+      "spot": "L2-15",
+      "startDate": "2026-04-08T10:00:00Z",
+      "endDate": "2026-04-08T12:00:00Z",
+      "status": "completed",
+      "amount": 8,
+      "rating": null
+    },
+    {
+      "id": "res-006",
+      "code": "SPG-J1K2L3",
+      "clientId": "cli-001",
+      "parkingId": "prk-005",
+      "spot": "A-05",
+      "startDate": "2026-04-05T08:00:00Z",
+      "endDate": "2026-04-05T17:00:00Z",
+      "status": "completed",
+      "amount": 18,
+      "rating": 3
+    },
+    {
+      "id": "res-007",
+      "code": "SPG-M4N5O6",
+      "clientId": "cli-001",
+      "parkingId": "prk-004",
+      "spot": "B-12",
+      "startDate": "2026-04-01T07:00:00Z",
+      "endDate": "2026-04-01T09:00:00Z",
+      "status": "completed",
+      "amount": 5,
+      "rating": null
     }
   ],
   "incidents": [
@@ -578,6 +740,38 @@
       "bookingCode": "SPG-M4N5O6",
       "amount": 5,
       "status": "refunded"
+    }
+  ],
+  "clientReports": [],
+
+  "favorites": [
+    {
+      "id": "fav-001",
+      "clientId": "cli-001",
+      "parkingId": "prk-001",
+      "distanceMi": 0.3,
+      "lastVisited": "2026-05-12T10:00:00Z"
+    },
+    {
+      "id": "fav-003",
+      "clientId": "cli-001",
+      "parkingId": "prk-004",
+      "distanceMi": 1.5,
+      "lastVisited": "2026-05-11T09:00:00Z"
+    },
+    {
+      "id": "fav-004",
+      "clientId": "cli-001",
+      "parkingId": "prk-005",
+      "distanceMi": 0.8,
+      "lastVisited": "2026-04-30T16:00:00Z"
+    },
+    {
+      "id": "fav-005",
+      "clientId": "cli-001",
+      "parkingId": "prk-006",
+      "distanceMi": 3.2,
+      "lastVisited": "2026-04-14T11:00:00Z"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

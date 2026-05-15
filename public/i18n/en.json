@@ -219,6 +219,57 @@
     }
   },
 
+  "history": {
+    "title": "Parking History",
+    "subtitle": "{{count}} past reservations",
+    "loading": "Loading history...",
+    "empty": "No parking history yet.",
+    "spot": "Spot",
+    "btn-report": "Report",
+    "btn-rate": "Rate",
+    "modal": {
+      "cancel": "Cancel",
+      "rate": {
+        "title": "Rate your experience",
+        "confirm": "Submit rating"
+      },
+      "report": {
+        "title": "Report an issue",
+        "placeholder": "Select a reason",
+        "confirm": "Submit report"
+      }
+    },
+    "report": {
+      "types": {
+        "safety-concern": "Safety concern",
+        "maintenance-issue": "Maintenance issue",
+        "billing-dispute": "Billing dispute",
+        "other": "Other"
+      }
+    }
+  },
+
+  "favorites": {
+    "title": "Favorites",
+    "subtitle": "{{count}} saved locations",
+    "loading": "Loading favorites...",
+    "empty": "No saved locations yet.",
+    "spots": "spots",
+    "per-hour": "/hr",
+    "btn-navigate": "Navigate",
+    "btn-reserve": "Reserve",
+    "btn-delete": "Remove from favorites",
+    "time": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "days-ago": "{{days}} days ago",
+      "week-ago": "1 week ago",
+      "weeks-ago": "{{weeks}} weeks ago",
+      "month-ago": "1 month ago",
+      "months-ago": "{{months}} months ago"
+    }
+  },
+
   "receipts": {
     "title": "Digital Receipts",
     "subtitle": "Access, download, and email your parking transaction history",
