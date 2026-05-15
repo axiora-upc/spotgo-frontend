@@ -16,7 +16,11 @@
       "totalSpaces": 120,
       "totalFloors": 3,
       "operatingHours": "24/7",
-      "subscribedSensors": ["occupancy", "entry-exit", "anpr-camera"],
+      "subscribedSensors": [
+        "occupancy",
+        "entry-exit",
+        "anpr-camera"
+      ],
       "systemStatus": "active",
       "createdAt": "2026-01-10T08:00:00Z"
     },
@@ -36,7 +40,10 @@
       "totalSpaces": 80,
       "totalFloors": 2,
       "operatingHours": "06:00-22:00",
-      "subscribedSensors": ["occupancy", "environmental"],
+      "subscribedSensors": [
+        "occupancy",
+        "environmental"
+      ],
       "systemStatus": "active",
       "createdAt": "2026-02-15T09:30:00Z"
     }
@@ -124,9 +131,31 @@
       "availableSpaces": 34,
       "totalFloors": 3,
       "averageOccupancy": 84.2,
+      "occupancyTrendPercent": 5.3,
       "peakHour": "14:00",
       "totalRevenue": 4200,
-      "systemStatus": "active"
+      "revenueTrendPercent": 8.7,
+      "systemStatus": "active",
+      "totalCapacity": 120,
+      "efficiencyIndex": 92.5,
+      "occupancyByHour": [
+        { "hour": "06:00", "intensity": 20 },
+        { "hour": "09:00", "intensity": 45 },
+        { "hour": "12:00", "intensity": 70 },
+        { "hour": "15:00", "intensity": 95 },
+        { "hour": "18:00", "intensity": 85 },
+        { "hour": "21:00", "intensity": 40 },
+        { "hour": "24:00", "intensity": 15 }
+      ],
+      "weeklyTrends": [
+        { "day": "Mon", "value": 0.6 },
+        { "day": "Tue", "value": 0.7 },
+        { "day": "Wed", "value": 0.8 },
+        { "day": "Thu", "value": 0.9 },
+        { "day": "Fri", "value": 0.95 },
+        { "day": "Sat", "value": 0.75 },
+        { "day": "Sun", "value": 0.5 }
+      ]
     },
     {
       "id": "prk-002",
@@ -263,26 +292,46 @@
     {
       "id": "pln-001",
       "type": "free",
-      "name": "Free",
+      "name": "Free Plan (Basic)",
       "monthlyPrice": 0,
-      "description": "Basic access, search and book in advance",
-      "reservationsPerMonth": 3
+      "description": "Designed for occasional users.",
+      "reservationsPerMonth": 3,
+      "features": [
+        "Real-time parking availability",
+        "Parking search",
+        "Spot reservation",
+        "Pay-per-use (hourly payment)"
+      ]
     },
     {
       "id": "pln-002",
       "type": "monthly",
-      "name": "Monthly",
-      "monthlyPrice": 29.9,
-      "description": "Unlimited bookings, priority access",
-      "reservationsPerMonth": null
+      "name": "Monthly Plan (Subscription)",
+      "monthlyPrice": 150,
+      "description": "Designed for frequent users.",
+      "reservationsPerMonth": null,
+      "features": [
+        "Unlimited usage for 30 days",
+        "Entry and exit without hourly payment",
+        "Access to usage history receipts",
+        "Free reservation extensions",
+        "Faster reservation process"
+      ]
     },
     {
       "id": "pln-003",
       "type": "annual",
-      "name": "Annual",
-      "monthlyPrice": 19.9,
-      "description": "Everything in Monthly + annual discount",
-      "reservationsPerMonth": null
+      "name": "Annual Plan (Subscription)",
+      "monthlyPrice": 400,
+      "description": "Designed for long-term or high-frequency users.",
+      "reservationsPerMonth": null,
+      "features": [
+        "All Monthly Plan benefits",
+        "Valid for 12 months",
+        "Discount compared to monthly payments",
+        "Higher priority during peak hours",
+        "Preferred access to specific zones"
+      ]
     }
   ],
   "parkingSnapshot": {
@@ -301,62 +350,269 @@
       "revenueYield": 12450,
       "revenueTrendPercent": 4.2,
       "peakHours": [
-        { "hour": "06", "intensity": 0.2 },
-        { "hour": "09", "intensity": 0.35 },
-        { "hour": "12", "intensity": 0.5 },
-        { "hour": "15", "intensity": 0.95 },
-        { "hour": "18", "intensity": 0.85 },
-        { "hour": "21", "intensity": 0.4 },
-        { "hour": "24", "intensity": 0.25 }
+        {
+          "hour": "06",
+          "intensity": 0.2
+        },
+        {
+          "hour": "09",
+          "intensity": 0.35
+        },
+        {
+          "hour": "12",
+          "intensity": 0.5
+        },
+        {
+          "hour": "15",
+          "intensity": 0.95
+        },
+        {
+          "hour": "18",
+          "intensity": 0.85
+        },
+        {
+          "hour": "21",
+          "intensity": 0.4
+        },
+        {
+          "hour": "24",
+          "intensity": 0.25
+        }
       ]
     },
     "rows": [
       {
         "id": "A01",
         "spots": [
-          { "id": "A01-01", "status": "available" },
-          { "id": "A01-02", "status": "occupied" },
-          { "id": "A01-03", "status": "occupied" },
-          { "id": "A01-04", "status": "available" },
-          { "id": "A01-05", "status": "available" },
-          { "id": "A01-06", "status": "maintenance" },
-          { "id": "A01-07", "status": "available" },
-          { "id": "A01-08", "status": "occupied" },
-          { "id": "A01-09", "status": "occupied" },
-          { "id": "A01-10", "status": "available" }
+          {
+            "id": "A01-01",
+            "status": "available"
+          },
+          {
+            "id": "A01-02",
+            "status": "occupied"
+          },
+          {
+            "id": "A01-03",
+            "status": "occupied"
+          },
+          {
+            "id": "A01-04",
+            "status": "available"
+          },
+          {
+            "id": "A01-05",
+            "status": "available"
+          },
+          {
+            "id": "A01-06",
+            "status": "maintenance"
+          },
+          {
+            "id": "A01-07",
+            "status": "available"
+          },
+          {
+            "id": "A01-08",
+            "status": "occupied"
+          },
+          {
+            "id": "A01-09",
+            "status": "occupied"
+          },
+          {
+            "id": "A01-10",
+            "status": "available"
+          }
         ]
       },
       {
         "id": "B01",
         "spots": [
-          { "id": "B01-01", "status": "occupied" },
-          { "id": "B01-02", "status": "occupied" },
-          { "id": "B01-03", "status": "occupied" },
-          { "id": "B01-04", "status": "available" },
-          { "id": "B01-05", "status": "available" },
-          { "id": "B01-06", "status": "available" },
-          { "id": "B01-07", "status": "occupied" },
-          { "id": "B01-08", "status": "available" },
-          { "id": "B01-09", "status": "maintenance" },
-          { "id": "B01-10", "status": "occupied" }
+          {
+            "id": "B01-01",
+            "status": "occupied"
+          },
+          {
+            "id": "B01-02",
+            "status": "occupied"
+          },
+          {
+            "id": "B01-03",
+            "status": "occupied"
+          },
+          {
+            "id": "B01-04",
+            "status": "available"
+          },
+          {
+            "id": "B01-05",
+            "status": "available"
+          },
+          {
+            "id": "B01-06",
+            "status": "available"
+          },
+          {
+            "id": "B01-07",
+            "status": "occupied"
+          },
+          {
+            "id": "B01-08",
+            "status": "available"
+          },
+          {
+            "id": "B01-09",
+            "status": "maintenance"
+          },
+          {
+            "id": "B01-10",
+            "status": "occupied"
+          }
         ]
       },
       {
         "id": "C01",
         "spots": [
-          { "id": "C01-01", "status": "occupied" },
-          { "id": "C01-02", "status": "occupied" },
-          { "id": "C01-03", "status": "available" },
-          { "id": "C01-04", "status": "available" },
-          { "id": "C01-05", "status": "maintenance" },
-          { "id": "C01-06", "status": "available" },
-          { "id": "C01-07", "status": "available" },
-          { "id": "C01-08", "status": "available" },
-          { "id": "C01-09", "status": "occupied" },
-          { "id": "C01-10", "status": "occupied" }
+          {
+            "id": "C01-01",
+            "status": "occupied"
+          },
+          {
+            "id": "C01-02",
+            "status": "occupied"
+          },
+          {
+            "id": "C01-03",
+            "status": "available"
+          },
+          {
+            "id": "C01-04",
+            "status": "available"
+          },
+          {
+            "id": "C01-05",
+            "status": "maintenance"
+          },
+          {
+            "id": "C01-06",
+            "status": "available"
+          },
+          {
+            "id": "C01-07",
+            "status": "available"
+          },
+          {
+            "id": "C01-08",
+            "status": "available"
+          },
+          {
+            "id": "C01-09",
+            "status": "occupied"
+          },
+          {
+            "id": "C01-10",
+            "status": "occupied"
+          }
         ]
       }
     ]
   },
+  "subscriptions": [
+    {
+      "id": "sub-001",
+      "clientId": "cli-001",
+      "planId": "pln-001",
+      "status": "active",
+      "renewsOn": "2026-05-01",
+      "pricePerMonth": 0,
+      "usageHours": 38,
+      "maxHours": 60,
+      "sessions": 14,
+      "savedThisMonth": 32.5,
+      "memberSince": "2026-01-01",
+      "autoRenewal": false,
+      "paymentMethodLastFour": "3456",
+      "paymentMethodExpiry": "12/28"
+    },
+    {
+      "id": "sub-002",
+      "clientId": "cli-002",
+      "planId": "pln-003",
+      "status": "active",
+      "renewsOn": "2026-06-05",
+      "pricePerMonth": 400,
+      "usageHours": 20,
+      "maxHours": 60,
+      "sessions": 8,
+      "savedThisMonth": 15,
+      "memberSince": "2026-03-05",
+      "autoRenewal": false,
+      "paymentMethodLastFour": "1234",
+      "paymentMethodExpiry": "12/28"
+    }
+  ],
+  "spotUtilization": [
+    {
+      "id": "sut-001",
+      "parkingId": "prk-001",
+      "spotId": "L1-01",
+      "spotName": "L1-01",
+      "zone": "Level 1",
+      "type": "standard",
+      "status": "occupied",
+      "dailyTurnover": 8,
+      "peakUtilization": 95,
+      "revenueImpact": 120.50
+    },
+    {
+      "id": "sut-002",
+      "parkingId": "prk-001",
+      "spotId": "L1-02",
+      "spotName": "L1-02",
+      "zone": "Level 1",
+      "type": "ev",
+      "status": "available",
+      "dailyTurnover": 6,
+      "peakUtilization": 88,
+      "revenueImpact": 95.75
+    },
+    {
+      "id": "sut-003",
+      "parkingId": "prk-001",
+      "spotId": "L2-01",
+      "spotName": "L2-01",
+      "zone": "Level 2",
+      "type": "standard",
+      "status": "occupied",
+      "dailyTurnover": 7,
+      "peakUtilization": 92,
+      "revenueImpact": 110.25
+    },
+    {
+      "id": "sut-004",
+      "parkingId": "prk-001",
+      "spotId": "L2-02",
+      "spotName": "L2-02",
+      "zone": "Level 2",
+      "type": "standard",
+      "status": "maintenance",
+      "dailyTurnover": 5,
+      "peakUtilization": 75,
+      "revenueImpact": 85.00
+    },
+    {
+      "id": "sut-005",
+      "parkingId": "prk-001",
+      "spotId": "L3-01",
+      "spotName": "L3-01",
+      "zone": "Level 3",
+      "type": "ev",
+      "status": "occupied",
+      "dailyTurnover": 9,
+      "peakUtilization": 98,
+      "revenueImpact": 135.60
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }

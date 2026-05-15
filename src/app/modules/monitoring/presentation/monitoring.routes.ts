@@ -61,6 +61,14 @@ const realtimeMapEmployees = () =>
   import('./views/realtime-map/employees/employees').then((m) => m.Employees);
 
 /*
+  This function loads the AnalyticsComponent asynchronously.
+
+  This is the admin-only view that shows charts and statistics.
+*/
+const analytics = () =>
+  import('./views/analytics/analytics').then((m) => m.Analytics);
+
+/*
   Define all monitoring bounded context routes.
 
   These are child routes of the 'monitoring' path from app.routes.ts.

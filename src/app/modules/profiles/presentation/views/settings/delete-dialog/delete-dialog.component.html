@@ -1,0 +1,48 @@
+<!--
+  Contenedor principal del dialog de borrar croquis.
+-->
+<div class="dialog-container">
+
+  <h2 class="dialog-title">{{ 'settings.blueprint.delete-dialog-title' | translate }}</h2>
+
+  <p class="dialog-subtitle">{{ 'settings.blueprint.delete-dialog-subtitle' | translate }}</p>
+
+  <!-- Campo donde el admin escribe el nombre del croquis a borrar -->
+  <div class="name-field">
+    <label class="name-label">{{ 'settings.blueprint.name-label' | translate }}</label>
+    <input
+      class="name-input"
+      [(ngModel)]="nameToDelete"
+      [placeholder]="'settings.blueprint.name-placeholder' | translate"
+      (input)="errorMessage.set('')" />
+  </div>
+
+  <!--
+    Mensaje de error: aparece cuando el nombre escrito no coincide
+    con ningún croquis en la lista.
+  -->
+  @if (errorMessage()) {
+    <p class="error-message">{{ errorMessage() | translate }}</p>
+  }
+
+  <!-- Botones de acción -->
+  <div class="dialog-actions">
+
+    <!--
+      Botón Borrar: deshabilitado si el campo está vacío.
+      Usa el color rojo para indicar que es una acción destructiva.
+    -->
+    <button
+      mat-flat-button
+      class="btn-delete"
+      [disabled]="!nameToDelete.trim()"
+      (click)="confirm()">
+      {{ 'settings.blueprint.delete-btn' | translate }}
+    </button>
+
+    <button mat-stroked-button class="btn-cancel" (click)="cancel()">
+      {{ 'settings.blueprint.cancel-btn' | translate }}
+    </button>
+
+  </div>
+</div>

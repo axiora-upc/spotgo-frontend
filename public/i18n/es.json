@@ -186,6 +186,89 @@
     "brand-subtitle": "Ecosistema Urbano"
   },
 
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Gestiona tu información personal y los croquis de tu estacionamiento.",
+    "info": {
+      "title": "Información Personal",
+      "edit": "Editar",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "loading": "Cargando información...",
+      "full-name": "Nombre Completo",
+      "email": "Correo Electrónico",
+      "verified": "Verificado",
+      "business-name": "Nombre del Negocio",
+      "phone": "Teléfono",
+      "district": "Distrito"
+    },
+    "blueprint": {
+      "upload": "Subir Croquis",
+      "delete": "Eliminar Croquis",
+      "list-title": "Croquis Subidos",
+      "empty": "Aún no has subido ningún croquis.",
+      "view-btn": "Ver",
+      "dialog-title": "Subir Croquis",
+      "drop-hint-short": "Arrastra una imagen aquí o haz clic para seleccionar",
+      "upload-btn": "Subir",
+      "cancel-btn": "Cancelar",
+      "name-label": "Nombre del croquis",
+      "name-placeholder": "Ej. Planta baja",
+      "error-duplicate": "Ya existe un croquis con ese nombre.",
+      "error-type": "Solo se permiten imágenes PNG, JPG y WebP.",
+      "error-size": "La imagen debe pesar menos de 1 MB.",
+      "error-storage": "No hay suficiente espacio en el navegador. Elimina un croquis e intenta de nuevo."
+    }
+  },
+
+  "analytics": {
+    "loading": "Cargando datos de análisis...",
+    "title": "Panel de Análisis",
+    "subtitle": "Información en tiempo real sobre ocupación, ingresos y salud del sistema.",
+    "period": {
+      "today": "Hoy",
+      "last7": "Últimos 7 Días",
+      "custom": "Fecha Personalizada"
+    },
+    "kpi": {
+      "avg-occupancy": "Ocupación Promedio",
+      "vs-yesterday": "vs ayer",
+      "peak-hour": "Hora Pico",
+      "peak-note": "Mayor ocupación durante el día",
+      "total-revenue": "Ingresos Totales",
+      "projected": "proyectado",
+      "system-health": "Salud del Sistema",
+      "all-sensors": "Todos los sensores funcionan correctamente",
+      "sensors-warning": "Algunos sensores necesitan atención"
+    },
+    "charts": {
+      "occupancy-title": "Ocupación por Hora",
+      "occupancy-sub": "Monitorea la utilización del estacionamiento durante el día",
+      "weekly-title": "Tendencias Semanales",
+      "weekly-sub": "Resumen de ocupación e ingresos de 7 días",
+      "total-capacity": "Capacidad Total",
+      "units": "espacios",
+      "efficiency-index": "Índice de Eficiencia"
+    },
+    "spots": {
+      "title": "Espacios Más Utilizados",
+      "subtitle": "Análisis de los espacios de estacionamiento con mejor desempeño",
+      "export": "Exportar Reporte",
+      "col-location": "Ubicación",
+      "col-status": "Estado",
+      "col-turnover": "Rotación Diaria",
+      "col-peak": "Utilización Pico",
+      "col-revenue": "Impacto en Ingresos",
+      "status": {
+        "available": "Disponible",
+        "occupied": "Ocupado",
+        "maintenance": "Mantenimiento"
+      },
+      "vehicles": "vehículos",
+      "load-more": "Cargar Más Espacios"
+    }
+  },
+
   "shared": {
     "confirm-dialog": {
       "confirm": "Confirmar",

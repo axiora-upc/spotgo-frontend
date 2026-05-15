@@ -1,39 +1,212 @@
-<div class="subscriptions-view">
-  <h1 class="subscriptions-title">Subscriptions</h1>
-  <p class="subscriptions-subtitle">Choose the plan that best fits your needs.</p>
+<div class="page">
+  <h1 class="page-title">{{ 'subscription.title' | translate }}</h1>
+  <p class="page-subtitle">{{ 'subscription.subtitle' | translate }}</p>
 
-  @if (loading()) {
-    <p class="subscriptions-loading">Loading plans...</p>
+  @if (store.loading()) {
+    <p class="loading-text">{{ 'subscription.loading' | translate }}</p>
   }
 
-  @if (!loading() && plans().length > 0) {
-    <div class="subscriptions-plans">
-      @for (plan of plans(); track plan.id) {
-        <div class="plan-card" [ngClass]="'plan-card--' + plan.type">
-          <div class="plan-header">
-            <h2 class="plan-name">{{ plan.name }}</h2>
-            <p class="plan-price">
-              @if (plan.monthlyPrice === 0) {
-                <span class="plan-price__amount">Free</span>
-              } @else {
-                <span class="plan-price__amount">S/ {{ plan.monthlyPrice }}</span>
-                <span class="plan-price__period">/mo</span>
-              }
-            </p>
+  @if (!store.loading() && store.subscription(); as sub) {
+
+    <!-- Current plan card -->
+    <div class="current-card">
+      <div class="current-card__header">
+        <div class="current-card__title-row">
+          <span class="current-card__plan-name">{{ currentPlanNameKey() | translate }}</span>
+          <span class="current-card__badge">{{ 'subscription.status.active' | translate }}</span>
+        </div>
+        <p class="current-card__renews">
+          {{ 'subscription.renews-on' | translate }} {{ renewsOnFormatted() }} · S/.{{ sub.pricePerMonth }}{{ 'subscription.per-month' | translate }}
+        </p>
+        <span class="current-card__price">S/.{{ sub.pricePerMonth }} <small>{{ 'subscription.per-mo' | translate }}</small></span>
+      </div>
+
+      <div class="usage">
+        <div class="usage__label">
+          <span>{{ 'subscription.usage.label' | translate }}</span>
+          <span>{{ sub.usageHours }}h / {{ sub.maxHours }}h</span>
+        </div>
+        <div class="usage__bar">
+          <div class="usage__fill" [style.width.%]="usagePercent()"></div>
+        </div>
+        <p class="usage__remaining">{{ hoursRemaining() }} {{ 'subscription.usage.hours-remaining' | translate }}</p>
+      </div>
+
+      <div class="stats">
+        <div class="stats__item">
+          <span class="stats__label">{{ 'subscription.stats.sessions' | translate }}</span>
+          <span class="stats__value">{{ sub.sessions }}</span>
+        </div>
+        <div class="stats__item">
+          <span class="stats__label">{{ 'subscription.stats.saved' | translate }}</span>
+          <span class="stats__value stats__value--green">S/.{{ sub.savedThisMonth }}</span>
+        </div>
+        <div class="stats__item">
+          <span class="stats__label">{{ 'subscription.stats.member-since' | translate }}</span>
+          <span class="stats__value">{{ memberSinceFormatted() }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auto-renewal and payment method row -->
+    <div class="info-row">
+      <div class="info-card">
+        <div class="info-card__icon">&#128197;</div>
+        <div class="info-card__content">
+          <p class="info-card__title">{{ 'subscription.auto-renewal.title' | translate }}</p>
+          <p class="info-card__subtitle">{{ 'subscription.auto-renewal.subtitle' | translate }}</p>
+        </div>
+        <label class="toggle">
+          <input
+            type="checkbox"
+            [checked]="sub.autoRenewal"
+            (change)="onToggleAutoRenewal()"
+          />
+          <span class="toggle__slider"></span>
+        </label>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card__icon">&#128179;</div>
+        <div class="info-card__content">
+          <p class="info-card__title">{{ 'subscription.payment-method.title' | translate }}</p>
+          <p class="info-card__subtitle">
+            {{ 'subscription.payment-method.subtitle' | translate: { lastFour: sub.paymentMethodLastFour, expiry: sub.paymentMethodExpiry } }}
+          </p>
+        </div>
+        <button class="btn-outline" type="button" (click)="openPaymentModal()">
+          {{ 'subscription.payment-method.update-btn' | translate }}
+        </button>
+      </div>
+    </div>
+
+  }
+
+  <!-- Available plans -->
+  @if (store.plans().length > 0) {
+    <h2 class="section-title">{{ 'subscription.plans.title' | translate }}</h2>
+    <p class="section-subtitle">{{ 'subscription.plans.subtitle' | translate }}</p>
+
+    <div class="plans-grid">
+      @for (plan of store.plans(); track plan.id) {
+        <div class="plan-card" [class.plan-card--active]="isCurrentPlan(plan.id)">
+
+          <div class="plan-card__header">
+            <p class="plan-card__name">{{ ('subscription.plans.' + plan.type + '.name') | translate }}</p>
+            <p class="plan-card__description">{{ ('subscription.plans.' + plan.type + '.description') | translate }}</p>
           </div>
-          <p class="plan-description">{{ plan.description }}</p>
-          <p class="plan-reservations">
-            @if (plan.reservationsPerMonth) {
-              Up to {{ plan.reservationsPerMonth }} reservations/month
+
+          <p class="plan-card__price">
+            @if (plan.monthlyPrice === 0) {
+              <span class="plan-card__amount">$0</span>
+              <span class="plan-card__period">{{ 'subscription.per-month' | translate }}</span>
             } @else {
-              Unlimited reservations
+              <span class="plan-card__amount">S/.{{ plan.monthlyPrice }}</span>
+              <span class="plan-card__period">{{ 'subscription.per-month' | translate }}</span>
             }
           </p>
-          <button class="plan-btn" type="button">
-            @if (plan.type === 'free') { Get Started } @else { Subscribe }
+
+          <ul class="plan-card__features">
+            @for (feature of getPlanFeatures(plan.type); track feature) {
+              <li class="plan-card__feature">{{ feature | translate }}</li>
+            }
+          </ul>
+
+          <button
+            class="plan-card__btn"
+            [class.plan-card__btn--current]="isCurrentPlan(plan.id)"
+            [disabled]="isCurrentPlan(plan.id)"
+            (click)="onSwitchPlan(plan)"
+            type="button"
+          >
+            @if (isCurrentPlan(plan.id)) {
+              {{ 'subscription.plans.current' | translate }}
+            } @else if (plan.type === 'free') {
+              {{ 'subscription.plans.switch' | translate }}
+            } @else {
+              {{ 'subscription.plans.upgrade' | translate }}
+            }
           </button>
+
         </div>
       }
     </div>
   }
+
 </div>
+
+<!-- Payment method modal -->
+@if (showPaymentModal()) {
+  <div class="modal-backdrop" (click)="closePaymentModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h3 class="modal__title">{{ 'subscription.modal.payment.title' | translate }}</h3>
+
+      <form [formGroup]="paymentForm" (ngSubmit)="onSubmitPayment()" class="payment-form">
+
+        <div class="form-field">
+          <label class="form-label">{{ 'subscription.modal.payment.card-number' | translate }}</label>
+          <input class="form-input" formControlName="cardNumber" placeholder="1234567890123456" maxlength="16" />
+          @if (getError('cardNumber'); as err) {
+            <span class="form-error">{{ err | translate }}</span>
+          }
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">{{ 'subscription.modal.payment.card-holder' | translate }}</label>
+          <input class="form-input" formControlName="cardHolder" placeholder="María García" />
+          @if (getError('cardHolder'); as err) {
+            <span class="form-error">{{ err | translate }}</span>
+          }
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">{{ 'subscription.modal.payment.expiry' | translate }}</label>
+            <input class="form-input" formControlName="expiry" placeholder="MM/YY" maxlength="5" />
+            @if (getError('expiry'); as err) {
+              <span class="form-error">{{ err | translate }}</span>
+            }
+          </div>
+
+          <div class="form-field">
+            <label class="form-label">{{ 'subscription.modal.payment.cvv' | translate }}</label>
+            <input class="form-input" formControlName="cvv" placeholder="123" maxlength="4" type="password" />
+            @if (getError('cvv'); as err) {
+              <span class="form-error">{{ err | translate }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="modal__actions">
+          <button class="modal__btn modal__btn--cancel" type="button" (click)="closePaymentModal()">
+            {{ 'subscription.modal.cancel' | translate }}
+          </button>
+          <button class="modal__btn modal__btn--confirm" type="submit">
+            {{ 'subscription.modal.save' | translate }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+}
+
+<!-- Confirmation modal -->
+@if (selectedPlan(); as plan) {
+  <div class="modal-backdrop" (click)="onCancelSwitch()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h3 class="modal__title">{{ 'subscription.modal.plan.title' | translate }}</h3>
+      <p class="modal__body">
+        {{ 'subscription.modal.plan.confirm-prefix' | translate }}<strong>{{ ('subscription.plans.' + plan.type + '.name') | translate }}</strong>{{ 'subscription.modal.plan.confirm-suffix' | translate }}
+      </p>
+      <div class="modal__actions">
+        <button class="modal__btn modal__btn--cancel" type="button" (click)="onCancelSwitch()">
+          {{ 'subscription.modal.cancel' | translate }}
+        </button>
+        <button class="modal__btn modal__btn--confirm" type="button" (click)="onConfirmSwitch()">
+          {{ 'subscription.modal.confirm' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

@@ -30,6 +30,8 @@ export interface DashboardStats {
   savedLocations: number;
   avgSavings: number;
 }
+import { ParkingAnalytics } from '../domain/model/analytics.entity';
+import { MonitoringApi } from '../infrastructure/monitoring-api';
 
 @Injectable({ providedIn: 'root' })
 export class MonitoringStore {
@@ -257,5 +259,38 @@ export class MonitoringStore {
         : err.message;
     }
     return fallback;
+  }
+
+  /* ─── Analytics ──────────────────────────────────────────────────────────── */
+
+  /*
+    analyticsSignal almacena el agregado ParkingAnalytics del parking
+    del administrador autenticado. La vista AnalyticsComponent lo lee
+    a través del readonly signal analytics().
+  */
+  private readonly analyticsSignal = signal<ParkingAnalytics | null>(null);
+  readonly analytics = this.analyticsSignal.asReadonly();
+
+  private readonly analyticsLoadingSignal = signal(false);
+  readonly analyticsLoading = this.analyticsLoadingSignal.asReadonly();
+
+  /*
+    Carga el agregado completo de analytics para el parking dado.
+    El componente lo llama en ngOnInit con el id del parking del admin.
+  */
+  loadAnalytics(parkingId: string): void {
+    this.analyticsLoadingSignal.set(true);
+    this.errorSignal.set(null);
+
+    this.monitoringApi.getAnalytics(parkingId).subscribe({
+      next: (data) => {
+        this.analyticsSignal.set(data);
+        this.analyticsLoadingSignal.set(false);
+      },
+      error: (err) => {
+        this.errorSignal.set(this.formatError(err, 'Failed to load analytics'));
+        this.analyticsLoadingSignal.set(false);
+      },
+    });
   }
 }

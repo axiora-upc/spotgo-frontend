@@ -186,6 +186,89 @@
     "brand-subtitle": "Urban Ecosystem"
   },
 
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your personal information and parking lot blueprints.",
+    "info": {
+      "title": "Personal Information",
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel",
+      "loading": "Loading information...",
+      "full-name": "Full Name",
+      "email": "Email",
+      "verified": "Verified",
+      "business-name": "Business Name",
+      "phone": "Phone",
+      "district": "District"
+    },
+    "blueprint": {
+      "upload": "Upload Blueprint",
+      "delete": "Delete Blueprint",
+      "list-title": "Uploaded Blueprints",
+      "empty": "You have not uploaded any blueprints yet.",
+      "view-btn": "View",
+      "dialog-title": "Upload Blueprint",
+      "drop-hint-short": "Drag an image here or click to select",
+      "upload-btn": "Upload",
+      "cancel-btn": "Cancel",
+      "name-label": "Blueprint name",
+      "name-placeholder": "E.g. Ground floor",
+      "error-duplicate": "A blueprint with that name already exists.",
+      "error-type": "Only PNG, JPG, and WebP images are allowed.",
+      "error-size": "The image must be smaller than 1 MB.",
+      "error-storage": "Not enough browser storage. Delete a blueprint and try again."
+    }
+  },
+
+  "analytics": {
+    "loading": "Loading analytics data...",
+    "title": "Analytics Dashboard",
+    "subtitle": "Real-time insights into parking occupancy, revenue, and system health.",
+    "period": {
+      "today": "Today",
+      "last7": "Last 7 Days",
+      "custom": "Custom Date"
+    },
+    "kpi": {
+      "avg-occupancy": "Average Occupancy",
+      "vs-yesterday": "vs yesterday",
+      "peak-hour": "Peak Hour",
+      "peak-note": "Highest occupancy during the day",
+      "total-revenue": "Total Revenue",
+      "projected": "projected",
+      "system-health": "System Health",
+      "all-sensors": "All sensors operating normally",
+      "sensors-warning": "Some sensors need attention"
+    },
+    "charts": {
+      "occupancy-title": "Occupancy by Hour",
+      "occupancy-sub": "Track parking utilization throughout the day",
+      "weekly-title": "Weekly Trends",
+      "weekly-sub": "7-day occupancy and revenue overview",
+      "total-capacity": "Total Capacity",
+      "units": "spaces",
+      "efficiency-index": "Efficiency Index"
+    },
+    "spots": {
+      "title": "Most Utilized Spots",
+      "subtitle": "Breakdown of highest-performing parking spaces",
+      "export": "Export Report",
+      "col-location": "Location",
+      "col-status": "Status",
+      "col-turnover": "Daily Turnover",
+      "col-peak": "Peak Utilization",
+      "col-revenue": "Revenue Impact",
+      "status": {
+        "available": "Available",
+        "occupied": "Occupied",
+        "maintenance": "Maintenance"
+      },
+      "vehicles": "vehicles",
+      "load-more": "Load More Spots"
+    }
+  },
+
   "shared": {
     "confirm-dialog": {
       "confirm": "Confirm",
