@@ -242,7 +242,7 @@
       "totalSpaces": 50,
       "availableSpaces": 32,
       "totalFloors": 1,
-      "averageOccupancy": 36.0,
+      "averageOccupancy": 36,
       "peakHour": "08:00",
       "totalRevenue": 980,
       "systemStatus": "active",
@@ -290,11 +290,11 @@
       "totalSpaces": 40,
       "availableSpaces": 24,
       "totalFloors": 1,
-      "averageOccupancy": 40.0,
+      "averageOccupancy": 40,
       "peakHour": "12:00",
       "totalRevenue": 1200,
       "systemStatus": "active",
-      "rating": 5.0,
+      "rating": 5,
       "pricePerHour": 3
     },
     {
@@ -310,7 +310,7 @@
       "peakHour": "15:00",
       "totalRevenue": 1750,
       "systemStatus": "active",
-      "rating": 4.0,
+      "rating": 4,
       "pricePerHour": 5
     }
   ],
@@ -767,7 +767,7 @@
       "status": "occupied",
       "dailyTurnover": 8,
       "peakUtilization": 95,
-      "revenueImpact": 120.50
+      "revenueImpact": 120.5
     },
     {
       "id": "sut-002",
@@ -803,7 +803,7 @@
       "status": "maintenance",
       "dailyTurnover": 5,
       "peakUtilization": 75,
-      "revenueImpact": 85.00
+      "revenueImpact": 85
     },
     {
       "id": "sut-005",
@@ -815,7 +815,7 @@
       "status": "occupied",
       "dailyTurnover": 9,
       "peakUtilization": 98,
-      "revenueImpact": 135.60
+      "revenueImpact": 135.6
     }
   ],
   "receipts": [

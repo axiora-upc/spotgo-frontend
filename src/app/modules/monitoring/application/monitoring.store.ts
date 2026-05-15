@@ -259,73 +259,19 @@ export class MonitoringStore {
   }
 
   updateReservation(reservation: Reservation): void {
-    const oldRes = this.userReservationsSignal().find(r => r.id === reservation.id);
-    const diffAmount = oldRes ? reservation.totalAmount - oldRes.totalAmount : 0;
-    const diffDuration = oldRes ? reservation.duration - oldRes.duration : 0;
-
-    // Update locally for immediate responsiveness
     this.userReservationsSignal.update(current => 
       current.map(r => r.id === reservation.id ? reservation : r)
     );
-
-    // Map updated structure back to persistent schema and PUT to server
-    const [year, month, day] = reservation.date.split('-').map(Number);
-    const [hour, min] = reservation.startTime.split(':').map(Number);
-    const startObj = new Date(year, month - 1, day, hour, min);
-    const endObj = new Date(startObj.getTime() + reservation.duration * 60 * 60 * 1000);
-
-    const rawRes = new ReservationRaw(
-      reservation.id,
-      'cli-001',
-      reservation.parkingId,
-      reservation.code,
-      reservation.spotId,
-      startObj.toISOString(),
-      endObj.toISOString(),
-      reservation.status,
-      reservation.totalAmount,
-      null // rating managed separately
-    );
-
-    // Persist reservation state/cancellation/extension
-    this.historyApi.updateReservation(rawRes).subscribe();
-
-    // Construct dynamic receipt if updating transaction represented a duration extension
-    if (diffAmount > 0) {
-      const matchedPkg = this.parkingsSignal().find(p => p.id === reservation.parkingId);
-      const pkgName = matchedPkg ? matchedPkg.name : 'SpotGo Parking';
-      const extInvoiceId = `INV-EXT-${new Date().toISOString().split('T')[0].replace(/-/g, '')}-${reservation.code}`;
-
-      const extReceipt = new Receipt({
-        id: '',
-        clientId: 'cli-001',
-        invoiceNumber: extInvoiceId,
-        locationName: `${pkgName} (Extension)`,
-        date: new Date().toISOString().split('T')[0],
-        durationHours: Math.floor(diffDuration),
-        durationMinutes: Math.round((diffDuration % 1) * 60),
-        paymentMethod: 'Visa •• 4242',
-        bookingCode: reservation.code,
-        amount: diffAmount,
-        status: 'paid'
-      });
-
-      this.paymentApi.addReceipt(extReceipt).subscribe();
-    }
-
-    // Sync stats after updating reservation
-    this.dashboardStatsSignal.update(stats => ({
-      ...stats,
-      activeReservations: this.userReservationsSignal().filter(r => r.status === 'completed').length
-    }));
   }
 
   loadUserReservations(): void {
     this.historyApi.getReservations().subscribe({
       next: (rawReservations) => {
-        // Filter by client, map to domain structure, and sync the master signal
+        const now = Date.now();
+        // Filter by client, ignore past reservations, map to domain structure
         const mapped = rawReservations
           .filter(r => r.clientId === 'cli-001')
+          .filter(r => new Date(r.endDate).getTime() > now)
           .map(r => this.mapRawToReservation(r));
           
         this.userReservationsSignal.set(mapped);
@@ -340,7 +286,6 @@ export class MonitoringStore {
     const start = new Date(raw.startDate);
     const end = new Date(raw.endDate);
 
-    // Correct local calendar values safely
     const year = start.getFullYear();
     const month = String(start.getMonth() + 1).padStart(2, '0');
     const day = String(start.getDate()).padStart(2, '0');
@@ -350,7 +295,6 @@ export class MonitoringStore {
     const min = String(start.getMinutes()).padStart(2, '0');
     const timeStr = `${hour}:${min}`;
 
-    // Fraction calculation matches floating duration hour definitions
     const duration = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
 
     return {

@@ -107,7 +107,7 @@ export class ParkingDetailsDialog implements OnInit {
   }
 
   protected get totalAmount(): number {
-    return this.duration() * 2.5; // Mock price: $2.5 per hour
+    return this.duration() * this.parking.pricePerHour;
   }
 
   private getLocalDateString(d: Date): string {
