@@ -186,6 +186,174 @@
     "brand-subtitle": "Ecosistema Urbano"
   },
 
+  "subscription": {
+    "title": "Suscripción",
+    "subtitle": "Gestiona tu pase mensual de estacionamiento y preferencias de facturación",
+    "loading": "Cargando...",
+    "renews-on": "Se renueva el",
+    "per-month": "/mes",
+    "per-mo": "/mes",
+    "status": {
+      "active": "Activo"
+    },
+    "usage": {
+      "label": "Uso del mes actual",
+      "hours-remaining": "horas restantes · se reinicia el 1 de mayo"
+    },
+    "stats": {
+      "sessions": "Sesiones",
+      "saved": "Ahorrado este mes",
+      "member-since": "Miembro desde"
+    },
+    "auto-renewal": {
+      "title": "Renovación automática",
+      "subtitle": "Tu pase se renueva automáticamente cada mes"
+    },
+    "payment-method": {
+      "title": "Método de pago",
+      "subtitle": "termina en {{ lastFour }} · vence {{ expiry }}",
+      "update-btn": "Actualizar método de pago"
+    },
+    "plans": {
+      "title": "Planes Disponibles",
+      "subtitle": "Mejora o cambia tu pase mensual",
+      "current": "Plan Actual",
+      "switch": "Cambiar Plan",
+      "upgrade": "Mejorar",
+      "free": {
+        "name": "Plan Gratuito (Básico)",
+        "description": "Diseñado para usuarios ocasionales.",
+        "features": {
+          "availability": "Disponibilidad de estacionamiento en tiempo real",
+          "search": "Búsqueda de estacionamiento",
+          "reservation": "Reserva de espacios",
+          "pay-per-use": "Pago por uso (pago por hora)"
+        }
+      },
+      "monthly": {
+        "name": "Plan Mensual (Suscripción)",
+        "description": "Diseñado para usuarios frecuentes.",
+        "features": {
+          "unlimited": "Uso ilimitado por 30 días",
+          "entry-exit": "Entrada y salida sin pago por hora",
+          "receipts": "Acceso a recibos del historial de uso",
+          "extensions": "Extensiones de reserva gratuitas",
+          "faster": "Proceso de reserva más rápido"
+        }
+      },
+      "annual": {
+        "name": "Plan Anual (Suscripción)",
+        "description": "Diseñado para usuarios a largo plazo o de alta frecuencia.",
+        "features": {
+          "monthly-benefits": "Todos los beneficios del Plan Mensual",
+          "valid": "Válido por 12 meses",
+          "discount": "Descuento frente a pagos mensuales",
+          "priority": "Mayor prioridad en horas pico",
+          "preferred": "Acceso preferencial a zonas específicas"
+        }
+      }
+    },
+    "modal": {
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "confirm": "Confirmar",
+      "payment": {
+        "title": "Actualizar método de pago",
+        "card-number": "Número de tarjeta",
+        "card-holder": "Titular de la tarjeta",
+        "expiry": "Fecha de vencimiento",
+        "cvv": "CVV"
+      },
+      "plan": {
+        "title": "Cambiar Plan",
+        "confirm-prefix": "¿Estás seguro de que quieres cambiar a ",
+        "confirm-suffix": "? Tu facturación se actualizará en tu próxima fecha de renovación."
+      }
+    },
+    "errors": {
+      "required": "Este campo es obligatorio.",
+      "card-number-invalid": "Ingresa un número de tarjeta válido de 16 dígitos.",
+      "cvv-invalid": "Ingresa un CVV válido (3 o 4 dígitos).",
+      "name-too-short": "El nombre debe tener al menos 3 caracteres.",
+      "expiry-format": "Ingresa una fecha de vencimiento válida (MM/AA).",
+      "expiry-past": "Esta tarjeta ya está vencida."
+    }
+  },
+
+  "history": {
+    "title": "Historial de Estacionamiento",
+    "subtitle": "{{count}} reservas pasadas",
+    "loading": "Cargando historial...",
+    "empty": "Aún no tienes historial de estacionamiento.",
+    "spot": "Espacio",
+    "btn-report": "Reportar",
+    "btn-rate": "Calificar",
+    "modal": {
+      "cancel": "Cancelar",
+      "rate": {
+        "title": "Califica tu experiencia",
+        "confirm": "Enviar calificación"
+      },
+      "report": {
+        "title": "Reportar un problema",
+        "placeholder": "Selecciona un motivo",
+        "confirm": "Enviar reporte"
+      }
+    },
+    "report": {
+      "types": {
+        "safety-concern": "Problema de seguridad",
+        "maintenance-issue": "Problema de mantenimiento",
+        "billing-dispute": "Disputa de facturación",
+        "other": "Otro"
+      }
+    }
+  },
+
+  "favorites": {
+    "title": "Favoritos",
+    "subtitle": "{{count}} ubicaciones guardadas",
+    "loading": "Cargando favoritos...",
+    "empty": "Aún no tienes ubicaciones guardadas.",
+    "spots": "espacios",
+    "per-hour": "/hr",
+    "btn-navigate": "Navegar",
+    "btn-reserve": "Reservar",
+    "btn-delete": "Eliminar de favoritos",
+    "time": {
+      "today": "Hoy",
+      "yesterday": "Ayer",
+      "days-ago": "Hace {{days}} días",
+      "week-ago": "Hace 1 semana",
+      "weeks-ago": "Hace {{weeks}} semanas",
+      "month-ago": "Hace 1 mes",
+      "months-ago": "Hace {{months}} meses"
+    }
+  },
+
+  "receipts": {
+    "title": "Recibos Digitales",
+    "subtitle": "Accede, descarga y envía por correo tu historial de transacciones de estacionamiento",
+    "loading": "Cargando recibos...",
+    "empty": "No se encontraron recibos.",
+    "search-placeholder": "Buscar por ubicación, factura o ID de reserva",
+    "booking-prefix": "Reserva",
+    "stats": {
+      "total": "Total de recibos",
+      "spent": "Total gastado",
+      "this-month": "Este mes"
+    },
+    "status": {
+      "paid": "Pagado",
+      "refunded": "Reembolsado",
+      "pending": "Pendiente"
+    },
+    "actions": {
+      "pdf": "PDF",
+      "email": "Correo"
+    }
+  },
+
   "settings": {
     "title": "Configuración",
     "subtitle": "Gestiona tu información personal y los croquis de tu estacionamiento.",

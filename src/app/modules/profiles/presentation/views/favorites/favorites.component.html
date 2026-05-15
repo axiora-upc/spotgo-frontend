@@ -1,0 +1,59 @@
+<div class="page">
+  <h1 class="page-title">{{ 'favorites.title' | translate }}</h1>
+  <p class="page-subtitle">{{ 'favorites.subtitle' | translate: { count: store.favorites().length } }}</p>
+
+  @if (store.loading()) {
+    <p class="loading-text">{{ 'favorites.loading' | translate }}</p>
+  }
+
+  @if (!store.loading() && store.favorites().length === 0) {
+    <p class="empty-text">{{ 'favorites.empty' | translate }}</p>
+  }
+
+  <div class="favorites-list">
+    @for (fav of store.favorites(); track fav.id) {
+      <div class="fav-card">
+
+        <div class="fav-card__icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#1a237e">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+          </svg>
+        </div>
+
+        <div class="fav-card__body">
+          <div class="fav-card__header">
+            <p class="fav-card__name">{{ fav.name }}</p>
+            <span class="fav-card__spots">{{ fav.availableSpots }} {{ 'favorites.spots' | translate }}</span>
+          </div>
+          <p class="fav-card__address">{{ fav.address }}</p>
+          <div class="fav-card__meta">
+            <span class="fav-card__meta-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              {{ fav.rating }}
+            </span>
+            <span class="fav-card__meta-item">${{ fav.pricePerHour }}{{ 'favorites.per-hour' | translate }}</span>
+            <span class="fav-card__meta-item">{{ fav.distanceMi }} mi</span>
+            <span class="fav-card__meta-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              {{ timeKey(fav.lastVisited) | translate: timeParams(fav.lastVisited) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="fav-card__actions">
+          <button class="btn-navigate" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            {{ 'favorites.btn-navigate' | translate }}
+          </button>
+          <button class="btn-reserve" type="button">
+            {{ 'favorites.btn-reserve' | translate }}
+          </button>
+          <button class="btn-delete" type="button" (click)="onRemove(fav.id)" [attr.aria-label]="'favorites.btn-delete' | translate">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          </button>
+        </div>
+
+      </div>
+    }
+  </div>
+</div>
