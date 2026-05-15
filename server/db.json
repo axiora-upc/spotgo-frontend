@@ -131,11 +131,34 @@
       "availableSpaces": 34,
       "totalFloors": 3,
       "averageOccupancy": 84.2,
+      "occupancyTrendPercent": 5.3,
       "peakHour": "14:00",
       "totalRevenue": 4200,
       "systemStatus": "active",
       "rating": 4,
       "pricePerHour": 3
+      "revenueTrendPercent": 8.7,
+      "systemStatus": "active",
+      "totalCapacity": 120,
+      "efficiencyIndex": 92.5,
+      "occupancyByHour": [
+        { "hour": "06:00", "intensity": 20 },
+        { "hour": "09:00", "intensity": 45 },
+        { "hour": "12:00", "intensity": 70 },
+        { "hour": "15:00", "intensity": 95 },
+        { "hour": "18:00", "intensity": 85 },
+        { "hour": "21:00", "intensity": 40 },
+        { "hour": "24:00", "intensity": 15 }
+      ],
+      "weeklyTrends": [
+        { "day": "Mon", "value": 0.6 },
+        { "day": "Tue", "value": 0.7 },
+        { "day": "Wed", "value": 0.8 },
+        { "day": "Thu", "value": 0.9 },
+        { "day": "Fri", "value": 0.95 },
+        { "day": "Sat", "value": 0.75 },
+        { "day": "Sun", "value": 0.5 }
+      ]
     },
     {
       "id": "prk-002",
@@ -436,7 +459,12 @@
       "monthlyPrice": 0,
       "description": "Designed for occasional users.",
       "reservationsPerMonth": 3,
-      "features": []
+      "features": [
+        "Real-time parking availability",
+        "Parking search",
+        "Spot reservation",
+        "Pay-per-use (hourly payment)"
+      ]
     },
     {
       "id": "pln-002",
@@ -445,7 +473,13 @@
       "monthlyPrice": 150,
       "description": "Designed for frequent users.",
       "reservationsPerMonth": null,
-      "features": []
+      "features": [
+        "Unlimited usage for 30 days",
+        "Entry and exit without hourly payment",
+        "Access to usage history receipts",
+        "Free reservation extensions",
+        "Faster reservation process"
+      ]
     },
     {
       "id": "pln-003",
@@ -454,7 +488,13 @@
       "monthlyPrice": 400,
       "description": "Designed for long-term or high-frequency users.",
       "reservationsPerMonth": null,
-      "features": []
+      "features": [
+        "All Monthly Plan benefits",
+        "Valid for 12 months",
+        "Discount compared to monthly payments",
+        "Higher priority during peak hours",
+        "Preferred access to specific zones"
+      ]
     }
   ],
   "parkingSnapshot": {
@@ -675,71 +715,66 @@
       "paymentMethodExpiry": "12/28"
     }
   ],
-  "receipts": [
+  "spotUtilization": [
     {
-      "id": "rec-001",
-      "clientId": "cli-001",
-      "invoiceNumber": "INV-2026-0412",
-      "locationName": "Central Plaza Parking",
-      "date": "2026-04-12",
-      "durationHours": 4,
-      "durationMinutes": 0,
-      "paymentMethod": "Visa •• 4242",
-      "bookingCode": "SPG-A1B2C3",
-      "amount": 12,
-      "status": "paid"
+      "id": "sut-001",
+      "parkingId": "prk-001",
+      "spotId": "L1-01",
+      "spotName": "L1-01",
+      "zone": "Level 1",
+      "type": "standard",
+      "status": "occupied",
+      "dailyTurnover": 8,
+      "peakUtilization": 95,
+      "revenueImpact": 120.50
     },
     {
-      "id": "rec-002",
-      "clientId": "cli-001",
-      "invoiceNumber": "INV-2026-0410",
-      "locationName": "Downtown Garage",
-      "date": "2026-04-10",
-      "durationHours": 4,
-      "durationMinutes": 0,
-      "paymentMethod": "Mastercard •• 8821",
-      "bookingCode": "SPG-D4E5F6",
-      "amount": 20,
-      "status": "paid"
+      "id": "sut-002",
+      "parkingId": "prk-001",
+      "spotId": "L1-02",
+      "spotName": "L1-02",
+      "zone": "Level 1",
+      "type": "ev",
+      "status": "available",
+      "dailyTurnover": 6,
+      "peakUtilization": 88,
+      "revenueImpact": 95.75
     },
     {
-      "id": "rec-003",
-      "clientId": "cli-001",
-      "invoiceNumber": "INV-2026-0408",
-      "locationName": "Mall Parking Complex",
-      "date": "2026-04-08",
-      "durationHours": 2,
-      "durationMinutes": 0,
-      "paymentMethod": "Apple Pay",
-      "bookingCode": "SPG-G7H8I9",
-      "amount": 8,
-      "status": "paid"
+      "id": "sut-003",
+      "parkingId": "prk-001",
+      "spotId": "L2-01",
+      "spotName": "L2-01",
+      "zone": "Level 2",
+      "type": "standard",
+      "status": "occupied",
+      "dailyTurnover": 7,
+      "peakUtilization": 92,
+      "revenueImpact": 110.25
     },
     {
-      "id": "rec-004",
-      "clientId": "cli-001",
-      "invoiceNumber": "INV-2026-0405",
-      "locationName": "Riverside Lot",
-      "date": "2026-04-05",
-      "durationHours": 9,
-      "durationMinutes": 0,
-      "paymentMethod": "Visa •• 4242",
-      "bookingCode": "SPG-J1K2L3",
-      "amount": 18,
-      "status": "paid"
+      "id": "sut-004",
+      "parkingId": "prk-001",
+      "spotId": "L2-02",
+      "spotName": "L2-02",
+      "zone": "Level 2",
+      "type": "standard",
+      "status": "maintenance",
+      "dailyTurnover": 5,
+      "peakUtilization": 75,
+      "revenueImpact": 85.00
     },
     {
-      "id": "rec-005",
-      "clientId": "cli-001",
-      "invoiceNumber": "INV-2026-0401",
-      "locationName": "Station Parking",
-      "date": "2026-04-01",
-      "durationHours": 2,
-      "durationMinutes": 0,
-      "paymentMethod": "Mastercard •• 8821",
-      "bookingCode": "SPG-M4N5O6",
-      "amount": 5,
-      "status": "refunded"
+      "id": "sut-005",
+      "parkingId": "prk-001",
+      "spotId": "L3-01",
+      "spotName": "L3-01",
+      "zone": "Level 3",
+      "type": "ev",
+      "status": "occupied",
+      "dailyTurnover": 9,
+      "peakUtilization": 98,
+      "revenueImpact": 135.60
     }
   ],
   "clientReports": [],

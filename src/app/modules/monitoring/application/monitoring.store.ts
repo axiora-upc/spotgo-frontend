@@ -21,7 +21,16 @@ import { retry } from 'rxjs';
 import { Employee } from '../domain/model/employee.entity';
 import { IncidentReport } from '../domain/model/incident-report.entity';
 import { ParkingSnapshot } from '../domain/model/parking-spot.entity';
-import { MonitoringApi } from '../infrastructure/monitoring-api';
+import { MonitoringApi, ParkingResource } from '../infrastructure/monitoring-api';
+import { Reservation } from '../domain/model/reservation.entity';
+import { ParkingAnalytics } from '../domain/model/analytics.entity';
+
+export interface DashboardStats {
+  availableNearby: number;
+  activeReservations: number;
+  savedLocations: number;
+  avgSavings: number;
+}
 
 @Injectable({ providedIn: 'root' })
 export class MonitoringStore {
@@ -42,6 +51,23 @@ export class MonitoringStore {
 
   private readonly errorSignal = signal<string | null>(null);
   readonly error = this.errorSignal.asReadonly();
+
+  private readonly dashboardStatsSignal = signal<DashboardStats>({
+    availableNearby: 0,
+    activeReservations: 0,
+    savedLocations: 0,
+    avgSavings: 0,
+  });
+  readonly dashboardStats = this.dashboardStatsSignal.asReadonly();
+
+  private readonly parkingsSignal = signal<ParkingResource[]>([]);
+  readonly parkings = this.parkingsSignal.asReadonly();
+
+  private readonly selectedParkingSignal = signal<ParkingResource | null>(null);
+  readonly selectedParking = this.selectedParkingSignal.asReadonly();
+
+  private readonly userReservationsSignal = signal<Reservation[]>([]);
+  readonly userReservations = this.userReservationsSignal.asReadonly();
 
   /*
     employeesLoaded becomes true after the first fetch resolves. Used
@@ -152,6 +178,46 @@ export class MonitoringStore {
     });
   }
 
+  loadParkings(): void {
+    this.monitoringApi.getParkings().subscribe({
+      next: (parkings) => {
+        this.parkingsSignal.set(parkings);
+        this.dashboardStatsSignal.set({
+          availableNearby: parkings.reduce((sum, p) => sum + p.availableSpaces, 0),
+          activeReservations: this.userReservationsSignal().filter(r => r.status === 'completed').length,
+          savedLocations: 5,
+          avgSavings: 15.50,
+        });
+      },
+      error: (err) =>
+        this.errorSignal.set(this.formatError(err, 'Failed to load parkings')),
+    });
+  }
+
+  selectParking(parking: ParkingResource | null): void {
+    this.selectedParkingSignal.set(parking);
+  }
+
+  completeReservation(reservation: Reservation): void {
+    this.userReservationsSignal.update(current => [...current, reservation]);
+    // Update stats after reservation
+    this.dashboardStatsSignal.update(stats => ({
+      ...stats,
+      activeReservations: this.userReservationsSignal().filter(r => r.status === 'completed').length
+    }));
+  }
+
+  updateReservation(reservation: Reservation): void {
+    this.userReservationsSignal.update(current => 
+      current.map(r => r.id === reservation.id ? reservation : r)
+    );
+    // Sync stats after updating reservation
+    this.dashboardStatsSignal.update(stats => ({
+      ...stats,
+      activeReservations: this.userReservationsSignal().filter(r => r.status === 'completed').length
+    }));
+  }
+
   /*
     Refreshes the snapshot AND updates facility.lastUpdated to the
     current client time, persisting the change in db.json.
@@ -176,6 +242,15 @@ export class MonitoringStore {
     });
   }
 
+  loadDashboardStats(): void {
+    this.dashboardStatsSignal.set({
+      availableNearby: 12,
+      activeReservations: 3,
+      savedLocations: 5,
+      avgSavings: 15.50,
+    });
+  }
+
   private formatError(err: any, fallback: string): string {
     if (err instanceof Error) {
       return err.message.includes('Resource not found')
@@ -183,5 +258,38 @@ export class MonitoringStore {
         : err.message;
     }
     return fallback;
+  }
+
+  /* ─── Analytics ──────────────────────────────────────────────────────────── */
+
+  /*
+    analyticsSignal almacena el agregado ParkingAnalytics del parking
+    del administrador autenticado. La vista AnalyticsComponent lo lee
+    a través del readonly signal analytics().
+  */
+  private readonly analyticsSignal = signal<ParkingAnalytics | null>(null);
+  readonly analytics = this.analyticsSignal.asReadonly();
+
+  private readonly analyticsLoadingSignal = signal(false);
+  readonly analyticsLoading = this.analyticsLoadingSignal.asReadonly();
+
+  /*
+    Carga el agregado completo de analytics para el parking dado.
+    El componente lo llama en ngOnInit con el id del parking del admin.
+  */
+  loadAnalytics(parkingId: string): void {
+    this.analyticsLoadingSignal.set(true);
+    this.errorSignal.set(null);
+
+    this.monitoringApi.getAnalytics(parkingId).subscribe({
+      next: (data) => {
+        this.analyticsSignal.set(data);
+        this.analyticsLoadingSignal.set(false);
+      },
+      error: (err) => {
+        this.errorSignal.set(this.formatError(err, 'Failed to load analytics'));
+        this.analyticsLoadingSignal.set(false);
+      },
+    });
   }
 }

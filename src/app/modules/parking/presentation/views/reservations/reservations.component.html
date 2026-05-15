@@ -1,0 +1,104 @@
+<div class="reservations-view">
+  <header class="view-header">
+    <h1>{{ 'reservations.title' | translate }}</h1>
+    <p class="subtitle">{{ 'reservations.subtitle' | translate }}</p>
+  </header>
+
+  <!-- 1. Banner de Expiración Próxima -->
+  @if (expiringSoonReservation(); as activeBannerRes) {
+    <div class="warning-banner animate-fade-in">
+      <div class="banner-content">
+        <div class="banner-icon">
+          <mat-icon>warning</mat-icon>
+        </div>
+        <div class="banner-text">
+          <h3>{{ 'reservations.banner-expiring' | translate }}</h3>
+          <p>
+            {{ 'reservations.banner-expires-text' | translate:{ parkingName: activeBannerRes.parkingName, time: activeBannerRes.remainingTimeStr } }}
+          </p>
+        </div>
+      </div>
+      <button class="banner-btn" (click)="extendTime(activeBannerRes)">
+        {{ 'reservations.action-extend' | translate }}
+      </button>
+    </div>
+  }
+
+  <!-- 2. Listado de Reservas -->
+  <div class="reservations-list">
+    @for (res of reservations(); track res.id) {
+      <div class="reservation-card" [class.active-card]="res.status === 'completed'">
+        <div class="card-main">
+          <!-- Left Icon Area -->
+          <div class="card-icon" [ngClass]="res.status === 'completed' ? 'icon-active' : 'icon-upcoming'">
+            <mat-icon>{{ res.status === 'completed' ? 'timer' : 'schedule' }}</mat-icon>
+          </div>
+
+          <!-- Card Center Data -->
+          <div class="card-details">
+            <h2>{{ res.parkingName }}</h2>
+            
+            <div class="meta-info">
+              <div class="meta-item">
+                <mat-icon>location_on</mat-icon>
+                <span>{{ 'reservations.spot-label' | translate }} {{ res.spotId }}</span>
+              </div>
+              <span class="separator">•</span>
+              <div class="meta-item">
+                <mat-icon>event</mat-icon>
+                <span>{{ res.date }}</span>
+              </div>
+              <span class="separator">•</span>
+              <div class="meta-item">
+                <mat-icon>access_time</mat-icon>
+                <span>{{ res.startTime }} - {{ res.endTimeStr }}</span>
+              </div>
+            </div>
+
+            <div class="booking-code">
+              {{ 'reservations.booking-label' | translate }} #{{ res.code }}
+            </div>
+          </div>
+
+          <!-- Card Right Actions/Status -->
+          <div class="card-status-area">
+            <!-- Top: Badge -->
+            <span class="status-badge" [ngClass]="res.status === 'completed' ? 'badge-active' : 'badge-upcoming'">
+              {{ (res.status === 'completed' ? 'reservations.badge-active' : 'reservations.badge-upcoming') | translate }}
+            </span>
+
+            <!-- Middle: Countdown/Amount -->
+            <div class="card-pricing">
+              @if (res.status === 'completed') {
+                <span class="live-timer">{{ res.remainingTimeStr }}</span>
+              }
+              <span class="total-amount">{{ res.totalAmount | currency }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Acciones Disponibles (Solo para activas/completed) -->
+        @if (res.status === 'completed') {
+          <div class="card-footer">
+            <div class="left-actions">
+              <button class="action-btn-outline" (click)="extendTime(res)">
+                {{ 'reservations.action-extend' | translate }}
+              </button>
+              <button class="action-btn-text" (click)="navigateToParking()">
+                {{ 'reservations.action-navigate' | translate }}
+              </button>
+            </div>
+            <button class="action-btn-danger" (click)="cancelReservation(res)">
+              {{ 'reservations.action-cancel' | translate }}
+            </button>
+          </div>
+        }
+      </div>
+    } @empty {
+      <div class="empty-state animate-fade-in">
+        <mat-icon class="empty-icon">event_busy</mat-icon>
+        <p>No active or upcoming reservations found.</p>
+      </div>
+    }
+  </div>
+</div>
