@@ -23,6 +23,7 @@ import { IncidentReport } from '../domain/model/incident-report.entity';
 import { ParkingSnapshot } from '../domain/model/parking-spot.entity';
 import { MonitoringApi, ParkingResource } from '../infrastructure/monitoring-api';
 import { Reservation } from '../domain/model/reservation.entity';
+import { ParkingAnalytics } from '../domain/model/analytics.entity';
 
 export interface DashboardStats {
   availableNearby: number;
@@ -30,8 +31,6 @@ export interface DashboardStats {
   savedLocations: number;
   avgSavings: number;
 }
-import { ParkingAnalytics } from '../domain/model/analytics.entity';
-import { MonitoringApi } from '../infrastructure/monitoring-api';
 
 @Injectable({ providedIn: 'root' })
 export class MonitoringStore {

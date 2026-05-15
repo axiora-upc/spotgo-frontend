@@ -70,6 +70,8 @@ export class MonitoringApi extends BaseApi {
 
   getParkings(): Observable<ParkingResource[]> {
     return this.parkingsEndpoint.getAll();
+  }
+
   getAnalytics(parkingId: string): Observable<ParkingAnalytics> {
     return this.analyticsEndpoint.getByParkingId(parkingId);
   }
