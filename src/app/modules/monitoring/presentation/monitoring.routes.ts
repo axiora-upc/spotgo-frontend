@@ -28,7 +28,7 @@ import { Routes } from '@angular/router';
   only when the user navigates to its route.
 */
 const dashboard = () =>
-  import('./views/dashboard/dashboard.component').then((m) => m.DashboardComponent);
+  import('./views/dashboard/dashboard').then((m) => m.Dashboard);
 
 /*
   This function loads the RealtimeMapComponent asynchronously.
@@ -61,14 +61,6 @@ const realtimeMapEmployees = () =>
   import('./views/realtime-map/employees/employees').then((m) => m.Employees);
 
 /*
-  This function loads the AnalyticsComponent asynchronously.
-
-  This is the admin-only view that shows charts and statistics.
-*/
-const analytics = () =>
-  import('./views/analytics/analytics.component').then((m) => m.AnalyticsComponent);
-
-/*
   Define all monitoring bounded context routes.
 
   These are child routes of the 'monitoring' path from app.routes.ts.
@@ -83,7 +75,6 @@ const analytics = () =>
   /monitoring/realtime-map/overview
   /monitoring/realtime-map/reports
   /monitoring/realtime-map/employees
-  /monitoring/analytics
 */
 export const MONITORING_ROUTES: Routes = [
   /*
@@ -137,15 +128,4 @@ export const MONITORING_ROUTES: Routes = [
       { path: 'employees', loadComponent: realtimeMapEmployees },
     ],
   },
-
-  /*
-    Analytics route. Admin-only view.
-
-    When the user navigates to:
-    /monitoring/analytics
-
-    Angular loads:
-    AnalyticsComponent
-  */
-  { path: 'analytics', loadComponent: analytics },
 ];

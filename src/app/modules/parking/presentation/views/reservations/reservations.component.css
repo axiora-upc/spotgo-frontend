@@ -1,0 +1,379 @@
+.reservations-view {
+  padding: 32px;
+  background: #f8fafc;
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.view-header {
+  margin-bottom: 28px;
+}
+
+.view-header h1 {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* 1. Warning Banner CSS */
+.warning-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.05);
+}
+
+.banner-content {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.banner-icon {
+  background: #fef3c7;
+  color: #d97706;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner-icon mat-icon {
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+}
+
+.banner-text h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 4px 0;
+}
+
+.banner-text p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.banner-btn {
+  background: #f59e0b;
+  color: #1e293b;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2);
+}
+
+.banner-btn:hover {
+  background: #d97706;
+  color: #fff;
+}
+
+/* 2. Reservations List & Card CSS */
+.reservations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.reservation-card {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reservation-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.05);
+}
+
+.card-main {
+  padding: 24px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+/* Icon Style */
+.card-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-active {
+  background: #ecfdf5;
+  color: #10b981;
+}
+
+.icon-upcoming {
+  background: #eff6ff;
+  color: #3b82f6;
+}
+
+.card-icon mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+/* Details Content */
+.card-details {
+  flex-grow: 1;
+}
+
+.card-details h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+}
+
+.meta-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.meta-item mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #94a3b8;
+}
+
+.separator {
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+.booking-code {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* Card Status Area (Badge, Timer, Price) */
+.card-status-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  min-width: 120px;
+}
+
+/* Status Badge */
+.status-badge {
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.badge-active {
+  background: #10b981;
+  color: #fff;
+}
+
+.badge-upcoming {
+  background: #3b82f6;
+  color: #fff;
+}
+
+.card-pricing {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.live-timer {
+  font-family: 'Courier New', monospace;
+  font-size: 18px;
+  font-weight: 800;
+  color: #2563eb;
+  letter-spacing: 0.02em;
+}
+
+.total-amount {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* 3. Footer Buttons CSS (Active Cards only) */
+.card-footer {
+  border-top: 1px solid #f1f5f9;
+  padding: 16px 24px;
+  background: #fafafa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.left-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.action-btn-outline {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  color: #334155;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-btn-outline:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.action-btn-text {
+  background: transparent;
+  border: none;
+  color: #334155;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.action-btn-text:hover {
+  background: #f1f5f9;
+}
+
+.action-btn-danger {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+.action-btn-danger:hover {
+  background: #fef2f2;
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  color: #94a3b8;
+}
+
+.empty-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 12px;
+}
+
+/* Fade In Animation */
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .reservations-view {
+    padding: 20px;
+  }
+
+  .warning-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .banner-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .card-main {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .card-status-area {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .card-pricing {
+    align-items: flex-end;
+  }
+
+  .card-footer {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .left-actions {
+    flex-direction: column;
+  }
+}

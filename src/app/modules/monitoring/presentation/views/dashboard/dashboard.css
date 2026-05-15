@@ -1,0 +1,326 @@
+.dashboard {
+  padding: 24px;
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+.dashboard__hero {
+  margin-bottom: 32px;
+}
+
+.dashboard__title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 0 0 4px 0;
+}
+
+.dashboard__subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 24px 0;
+}
+
+/* Nearby Parkings - Bubble Map Interface */
+.dashboard__nearby {
+  background: #ffffff;
+}
+
+.dashboard__section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 0 0 20px 0;
+}
+
+.dashboard__map {
+  position: relative;
+  height: 400px;
+  background: #f8fafc;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+/* Grid background */
+.dashboard__map::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(rgba(203, 213, 225, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(203, 213, 225, 0.3) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* User Location Indicator */
+.user-location {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.user-dot {
+  width: 16px;
+  height: 16px;
+  background: #2563eb;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.25);
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 16px rgba(37, 99, 235, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+  }
+}
+
+/* Parking Bubbles */
+.parking-bubble {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 5;
+  transform: translate(-50%, -50%);
+}
+
+.parking-bubble:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  z-index: 10;
+}
+
+/* Bubble States */
+.parking-bubble.available {
+  background: #10b981;
+  color: white;
+}
+
+.parking-bubble.limited {
+  background: #f59e0b;
+  color: white;
+}
+
+.parking-bubble.full {
+  background: #6b7280;
+  color: white;
+}
+
+/* Pin Effect */
+.parking-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent;
+  border-top-color: inherit;
+  z-index: -1;
+}
+
+/* Bubble Content */
+.bubble-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* Legend */
+.map-legend {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: flex;
+  gap: 24px;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(209, 213, 219, 0.3);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-color.available { background: #10b981; }
+.legend-color.limited { background: #f59e0b; }
+.legend-color.full { background: #6b7280; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard__map {
+    height: 300px;
+  }
+  
+  .parking-bubble {
+    width: 48px;
+    height: 48px;
+    font-size: 16px;
+  }
+  
+  .parking-bubble::after {
+    border-width: 4px;
+    bottom: -4px;
+  }
+  
+  .map-legend {
+    bottom: 12px;
+    padding: 6px 12px;
+    gap: 16px;
+  }
+  
+  .legend-item {
+    font-size: 12px;
+  }
+  
+  .legend-color {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard__map {
+    height: 250px;
+  }
+  
+  .parking-bubble {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+  }
+  
+  .parking-bubble::after {
+    border-width: 3px;
+    bottom: -3px;
+  }
+  
+  .map-legend {
+    bottom: 8px;
+    padding: 4px 8px;
+    gap: 12px;
+  }
+  
+  .legend-item {
+    font-size: 11px;
+  }
+  
+  .legend-color {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+/* Keep existing styles for other sections */
+.dashboard__stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.dashboard__stat-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.dashboard__stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+}
+
+.dashboard__stat-icon--available {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.dashboard__stat-icon--reservations {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.dashboard__stat-icon--saved {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.dashboard__stat-icon--savings {
+  background: #f3e8ff;
+  color: #9333ea;
+}
+
+.dashboard__stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard__stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.dashboard__stat-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Stats responsive */
+@media (max-width: 1024px) {
+  .dashboard__stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard__stats {
+    grid-template-columns: 1fr;
+  }
+}

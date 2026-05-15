@@ -1,0 +1,87 @@
+<div class="dashboard">
+  <header class="dashboard__hero">
+    <div class="dashboard__stats">
+      <div class="dashboard__stat-card">
+        <div class="dashboard__stat-icon dashboard__stat-icon--available">
+          <mat-icon>location_on</mat-icon>
+        </div>
+        <div class="dashboard__stat-content">
+          <span class="dashboard__stat-value">{{ stats().availableNearby }}</span>
+          <span class="dashboard__stat-label">{{ 'dashboard.stats.spotsAvailableNearby' | translate }}</span>
+        </div>
+      </div>
+
+      <div class="dashboard__stat-card">
+        <div class="dashboard__stat-icon dashboard__stat-icon--reservations">
+          <mat-icon>event</mat-icon>
+        </div>
+        <div class="dashboard__stat-content">
+          <span class="dashboard__stat-value">{{ stats().activeReservations }}</span>
+          <span class="dashboard__stat-label">{{ 'dashboard.stats.activeReservations' | translate }}</span>
+        </div>
+      </div>
+
+      <div class="dashboard__stat-card">
+        <div class="dashboard__stat-icon dashboard__stat-icon--saved">
+          <mat-icon>bookmark</mat-icon>
+        </div>
+        <div class="dashboard__stat-content">
+          <span class="dashboard__stat-value">{{ stats().savedLocations }}</span>
+          <span class="dashboard__stat-label">{{ 'dashboard.stats.savedLocations' | translate }}</span>
+        </div>
+      </div>
+
+      <div class="dashboard__stat-card">
+        <div class="dashboard__stat-icon dashboard__stat-icon--savings">
+          <mat-icon>savings</mat-icon>
+        </div>
+        <div class="dashboard__stat-content">
+          <span class="dashboard__stat-value">{{ stats().avgSavings | currency:'S/.':'symbol':'1.2-2' }}</span>
+          <span class="dashboard__stat-label">{{ 'dashboard.stats.avgSavings' | translate }}</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="dashboard__nearby">
+    <h2 class="dashboard__section-title">{{ 'dashboard.nearby.title' | translate }}</h2>
+
+    <div class="dashboard__map">
+      <!-- User Location Indicator -->
+      <div class="user-location">
+        <div class="user-dot"></div>
+      </div>
+
+      <!-- Parking Bubbles -->
+      @for (parking of parkingsWithPosition(); track parking.id) {
+        <div 
+          class="parking-bubble" 
+          [class]="getBubbleClass(parking.availableSpaces)"
+          (click)="openParkingDetails(parking)"
+          [style.left.%]="parking.mapX"
+          [style.top.%]="parking.mapY"
+        >
+          <span class="bubble-content">
+            {{ parking.availableSpaces > 0 ? parking.availableSpaces : '0' }}
+          </span>
+        </div>
+      }
+
+      <!-- Legend -->
+      <div class="map-legend">
+        <div class="legend-item">
+          <div class="legend-color available"></div>
+          <span>{{ 'dashboard.map.legend.available' | translate }}</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color limited"></div>
+          <span>{{ 'dashboard.map.legend.limited' | translate }}</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color full"></div>
+          <span>{{ 'dashboard.map.legend.full' | translate }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

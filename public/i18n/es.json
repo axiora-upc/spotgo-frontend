@@ -23,6 +23,67 @@
     "settings": "Configuración"
   },
 
+  "dashboard": {
+    "stats": {
+      "spotsAvailableNearby": "Spots Cercanos",
+      "activeReservations": "Reservas Activas",
+      "savedLocations": "Ubicaciones Guardadas",
+      "avgSavings": "Ahorro Promedio"
+    },
+    "nearby": {
+      "title": "Parkings Cercanos"
+    },
+    "parking": {
+      "spots": "espacios",
+      "total": "total"
+    },
+    "reservation": {
+      "parking-details": "Detalles del Parking",
+      "reserve-at": "Reservar en",
+      "choose-your-spot": "Elige tu Espacio",
+      "confirm-reservation": "Confirmar Reserva",
+      "reservation-confirmed": "¡Reserva Confirmada!",
+      "availability": "Disponibilidad",
+      "occupied": "ocupados",
+      "price": "Precio",
+      "hours": "Horario",
+      "services": "Servicios",
+      "floor-map-level": "Mapa de Piso - Nivel",
+      "reserve-a-spot": "Reservar un Espacio",
+      "select-date-time": "Selecciona fecha y hora",
+      "date": "Fecha",
+      "start-time": "Hora de Inicio",
+      "duration": "Duración",
+      "invalid-duration": "La duración mínima es 1 hora",
+      "cancel": "Cancelar",
+      "next": "Siguiente",
+      "tap-available-spot": "Toca un espacio disponible en el Nivel 1",
+      "available": "Disponible",
+      "selected": "Seleccionado",
+      "back": "Atrás",
+      "review": "Revisar",
+      "review-booking": "Por favor revisa los detalles de tu reserva",
+      "location": "Ubicación",
+      "time": "Hora",
+      "spot": "Espacio",
+      "total": "Total",
+      "confirm-pay": "Confirmar y Pagar",
+      "confirmed-title": "¡Reserva Confirmada!",
+      "your-spot": "Tu espacio",
+      "at": "en",
+      "is-reserved": "está reservado",
+      "booking-id": "ID de Reserva",
+      "done": "Listo"
+    },
+    "map": {
+      "legend": {
+        "available": "Disponible",
+        "limited": "Limitado",
+        "full": "Lleno"
+      }
+    }
+  },
+
   "realtime-map": {
     "tabs": {
       "overview": "Resumen",
@@ -34,7 +95,7 @@
       "subtitle": "Telemetría en tiempo real del Sector 04-A Smart Grid",
       "export-logs": "Exportar Registros",
       "refresh-sync": "Actualizar",
-      "total-spaces": "Espacios Totales",
+      "total-spots": "Spots Totales",
       "currently-available": "Disponibles Ahora",
       "occupancy-rate": "Tasa de Ocupación",
       "vs-last-hour": "vs última hr",
@@ -61,7 +122,7 @@
       "title": "Reportes",
       "subtitle": "Consulta una serie de registros que incluyen accidentes dentro del edificio, reservas perdidas, etc.",
       "incident-prefix": "Incidente #",
-      "spot-prefix": "Espacio",
+      "spot-prefix": "Spot",
       "types": {
         "unauthorised-parking": "Estacionamiento no autorizado",
         "payment-failure": "Fallo en el pago"
@@ -69,7 +130,7 @@
     },
     "employees": {
       "title": "Empleados",
-      "subtitle": "Consulta a tus empleados, su espacio de estacionamiento asignado si tienen uno y si están en turno o no.",
+      "subtitle": "Consulta a tus empleados, su spot de estacionamiento asignado si tienen uno y si están en turno o no.",
       "role-prefix": "Rol",
       "turn-prefix": "Turno",
       "booking-prefix": "Reserva #",
@@ -133,5 +194,25 @@
     "snackbar": {
       "close": "Cerrar"
     }
+  },
+
+  "reservations": {
+    "title": "Mis Reservas",
+    "subtitle": "Gestiona tus reservas activas y próximas",
+    "banner-expiring": "¡Reserva por expirar!",
+    "banner-expires-text": "Tu lugar en {{ parkingName }} expira en {{ time }}",
+    "badge-active": "Activa",
+    "badge-upcoming": "Próxima",
+    "action-extend": "Extender Tiempo",
+    "action-navigate": "Navegar",
+    "action-cancel": "Cancelar",
+    "booking-label": "Reserva",
+    "spot-label": "Espacio",
+    "extend-title": "Extender Reserva",
+    "extend-desc": "Selecciona cuántas horas adicionales quieres añadir para",
+    "extend-hours": "Horas Adicionales",
+    "extend-rate": "Tarifa por Hora",
+    "extend-total": "Total Adicional",
+    "extend-confirm": "Confirmar Extensión"
   }
 }
