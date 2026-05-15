@@ -136,9 +136,8 @@
       "totalRevenue": 4200,
       "systemStatus": "active",
       "rating": 4,
-      "pricePerHour": 3
+      "pricePerHour": 3,
       "revenueTrendPercent": 8.7,
-      "systemStatus": "active",
       "totalCapacity": 120,
       "efficiencyIndex": 92.5,
       "occupancyByHour": [
