@@ -25,10 +25,12 @@ import { ParkingForHistory } from '../domain/model/parking-for-history.entity';
 import { ReservationRaw } from '../domain/model/reservation-raw.entity';
 import { ClientReport, ReportType } from '../domain/model/client-report.entity';
 import { HistoryApi } from '../infrastructure/history-api';
+import { CurrentUserService } from '../../../shared/services/current-user.service';
 
 @Injectable({ providedIn: 'root' })
 export class HistoryStore {
-  private readonly historyApi = inject(HistoryApi);
+  private readonly historyApi   = inject(HistoryApi);
+  private readonly currentUser  = inject(CurrentUserService);
 
   /* ── Private raw state ─────────────────────────────────────────────── */
 
@@ -38,6 +40,7 @@ export class HistoryStore {
     the computed 'history' signal below.
   */
   private readonly rawReservationsSignal = signal<ReservationRaw[]>([]);
+  private readonly allReservationsSignal = signal<ReservationRaw[]>([]);
 
   /*
     All parkings loaded from /parkings, kept in the store so that:
@@ -64,12 +67,16 @@ export class HistoryStore {
   */
   readonly history = computed<ParkingHistory[]>(() => {
     const parkingMap = new Map(this.parkingsSignal().map(p => [p.id, p]));
+    const now = Date.now();
 
     return this.rawReservationsSignal()
-      .filter(r => r.status === 'completed')
       .sort((a, b) => b.startDate.localeCompare(a.startDate)) // newest first
       .map(r => {
         const p = parkingMap.get(r.parkingId);
+        const effectiveStatus =
+          r.status === 'active' && new Date(r.endDate).getTime() <= now
+            ? 'completed'
+            : r.status;
         return new ParkingHistory(
           r.id,
           r.clientId,
@@ -79,7 +86,7 @@ export class HistoryStore {
           r.spot,
           r.startDate,
           r.endDate,
-          r.status,
+          effectiveStatus,
           r.amount,
           r.rating,
         );
@@ -106,6 +113,7 @@ export class HistoryStore {
       parkings:     this.historyApi.getParkings(),
     }).subscribe({
       next: ({ reservations, parkings }) => {
+        this.allReservationsSignal.set(reservations);
         this.rawReservationsSignal.set(
           reservations.filter(r => r.clientId === clientId)
         );
@@ -146,7 +154,7 @@ export class HistoryStore {
     */
     const updated = new ReservationRaw(
       raw.id, raw.clientId, raw.parkingId, raw.code, raw.spot,
-      raw.startDate, raw.endDate, raw.status, raw.amount, stars,
+      raw.startDate, raw.endDate, raw.status, raw.amount, raw.baseAmount, stars,
     );
 
     this.historyApi.rateReservation(updated).pipe(retry(1)).subscribe({
@@ -155,13 +163,17 @@ export class HistoryStore {
         this.rawReservationsSignal.update(raws =>
           raws.map(r => r.id === reservationId ? saved : r)
         );
+        this.allReservationsSignal.update(raws =>
+          raws.map(r => r.id === reservationId ? saved : r)
+        );
 
         /* Step 4: recalculate average across all rated reservations for this parking */
-        const ratedForParking = this.rawReservationsSignal()
+        const ratedForParking = this.allReservationsSignal()
           .filter(r => r.parkingId === raw.parkingId && r.rating !== null);
 
-        const avg = ratedForParking.reduce((sum, r) => sum + (r.rating ?? 0), 0)
-          / ratedForParking.length;
+        const avg = ratedForParking.length === 0
+          ? 0
+          : ratedForParking.reduce((sum, r) => sum + (r.rating ?? 0), 0) / ratedForParking.length;
         const rounded = Math.round(avg * 10) / 10;
 
         /* Step 5: persist new average to the parking via PATCH (partial update) */
@@ -214,7 +226,7 @@ export class HistoryStore {
 
     const report = new ClientReport(
       '',            // id assigned by json-server on POST
-      'cli-001',     // will be replaced with auth user id
+      this.currentUser.clientId,
       parkingId,
       reservationId,
       type,

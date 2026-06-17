@@ -1,7 +1,7 @@
 /*
-  Component, signal e inject son los bloques básicos de Angular moderno.
+  Component e inject son los bloques básicos de Angular moderno.
 */
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 /*
   FormsModule permite usar [(ngModel)] para el campo de nombre.
@@ -21,7 +21,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   DeleteDialogData son los datos que el padre envía al abrir este dialog.
 
   existingNames - lista de nombres de croquis que existen actualmente,
-                  para validar si el nombre que escribe el admin es válido.
+                  mostrada como opciones seleccionables en el template.
 */
 export interface DeleteDialogData {
   existingNames: string[];
@@ -47,54 +47,29 @@ export class DeleteDialogComponent {
   */
   private data = inject<DeleteDialogData>(MAT_DIALOG_DATA);
 
+  /*
+    existingNames es la lista de croquis subidos que se muestra como
+    opciones seleccionables en el template.
+  */
+  existingNames = this.data.existingNames;
+
   // ─── Estado interno ───────────────────────────────────────────────────────
 
   /*
-    nameToDelete es el nombre que el admin escribe en el campo.
+    nameToDelete es el nombre del croquis elegido en la lista.
     Se enlaza con [(ngModel)] en el template.
   */
   nameToDelete = '';
 
-  /*
-    errorMessage contiene la clave de traducción del error a mostrar
-    cuando el nombre no existe en la lista.
-  */
-  errorMessage = signal('');
-
   // ─── Acciones ─────────────────────────────────────────────────────────────
 
   /*
-    confirm valida el nombre escrito y cierra el dialog si es válido.
-
-    Si el nombre NO existe en la lista → muestra el mensaje de error.
-    Si el nombre SÍ existe → cierra el dialog devolviendo el nombre al padre
+    confirm cierra el dialog devolviendo el nombre elegido al padre
     para que el padre llame al servicio de borrado.
   */
   confirm(): void {
-    const trimmedName = this.nameToDelete.trim();
-
-    /*
-      Busca si existe algún croquis con ese nombre.
-      La comparación ignora mayúsculas/minúsculas.
-    */
-    const exists = this.data.existingNames.some(
-      (n) => n.toLowerCase() === trimmedName.toLowerCase()
-    );
-
-    if (!exists) {
-      this.errorMessage.set('settings.blueprint.error-not-found');
-      return;
-    }
-
-    /*
-      Cierra el dialog devolviendo el nombre exacto (con el case original
-      que tiene en la lista) para que el servicio pueda borrarlo.
-    */
-    const originalName = this.data.existingNames.find(
-      (n) => n.toLowerCase() === trimmedName.toLowerCase()
-    )!;
-
-    this.dialogRef.close(originalName);
+    if (!this.nameToDelete) return;
+    this.dialogRef.close(this.nameToDelete);
   }
 
   /*

@@ -106,4 +106,12 @@ export class PaymentApi extends BaseApi {
   addReceipt(receipt: Receipt): Observable<Receipt> {
     return this.receiptsEndpoint.create(receipt);
   }
+
+  patchSubscriptionSaved(id: string, savedThisMonth: number, savingsMonth: string): Observable<void> {
+    return this.subscriptionsEndpoint.patchSavedThisMonth(id, savedThisMonth, savingsMonth);
+  }
+
+  deleteReceiptByCode(code: string): Observable<void> {
+    return this.receiptsEndpoint.deleteByBookingCode(code);
+  }
 }

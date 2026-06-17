@@ -56,28 +56,30 @@
 
     <div class="analytics__kpi-card">
       <p class="analytics__kpi-label">{{ 'analytics.kpi.total-revenue' | translate }}</p>
-      <p class="analytics__kpi-value">{{ data.totalRevenue | currency:'S/.':'symbol':'1.1-1' }}</p>
-      <p class="analytics__kpi-trend analytics__kpi-trend--up">
-        <mat-icon>trending_up</mat-icon>
-        +{{ data.revenueTrendPercent | number:'1.1-1' }}%
-        {{ 'analytics.kpi.projected' | translate }}
-      </p>
+      <p class="analytics__kpi-value">{{ data.totalRevenue | currency:'S/.':'symbol':'1.2-2' }}</p>
     </div>
 
     <div
       class="analytics__kpi-card analytics__kpi-card--health"
-      [class.analytics__kpi-card--health-ok]="data.isSystemHealthy">
+      [class.analytics__kpi-card--health-ok]="data.isSystemHealthy"
+      [class.analytics__kpi-card--maintenance]="!data.isSystemHealthy">
       <p class="analytics__kpi-label">{{ 'analytics.kpi.system-health' | translate }}</p>
       <p
         class="analytics__kpi-value"
-        [class.analytics__kpi-value--health-ok]="data.isSystemHealthy">
-        {{ data.systemHealthLabel }}
+        [class.analytics__kpi-value--health-ok]="data.isSystemHealthy"
+        [class.analytics__kpi-value--maintenance]="!data.isSystemHealthy">
+        {{ data.systemHealthLabel | translate }}
       </p>
       <p
         class="analytics__kpi-note"
-        [class.analytics__kpi-note--ok]="data.isSystemHealthy">
+        [class.analytics__kpi-note--ok]="data.isSystemHealthy"
+        [class.analytics__kpi-note--maintenance]="!data.isSystemHealthy">
         <mat-icon>{{ data.isSystemHealthy ? 'check_circle' : 'warning' }}</mat-icon>
-        {{ (data.isSystemHealthy ? 'analytics.kpi.all-sensors' : 'analytics.kpi.sensors-warning') | translate }}
+        @if (data.isSystemHealthy) {
+          {{ 'analytics.kpi.all-sensors' | translate }}
+        } @else {
+          {{ data.maintenanceSpotsCount }} {{ 'analytics.kpi.spots-in-maintenance' | translate }}
+        }
       </p>
     </div>
 

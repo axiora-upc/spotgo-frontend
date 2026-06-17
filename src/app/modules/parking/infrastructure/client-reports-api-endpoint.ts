@@ -7,6 +7,7 @@
        json-server assigns the id and returns the persisted record)
 */
 import { HttpClient } from '@angular/common/http';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { BaseApiEndpoint } from '../../../shared/infrastructure/base-api-endpoint';
 import { ClientReport } from '../domain/model/client-report.entity';
@@ -21,5 +22,11 @@ export class ClientReportsApiEndpoint extends BaseApiEndpoint<
 > {
   constructor(http: HttpClient) {
     super(http, `${environment.apiUrl}/clientReports`, new ClientReportAssembler());
+  }
+
+  patchStatus(id: string | number, status: string): Observable<ClientReport> {
+    return this.http
+      .patch<ClientReportResource>(`${this.endpointUrl}/${id}`, { status })
+      .pipe(map((resource) => this.assembler.toEntityFromResource(resource)));
   }
 }

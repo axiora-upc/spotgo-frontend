@@ -90,10 +90,40 @@ export class HistoryApi extends BaseApi {
   }
 
   /*
+    Hard-deletes a reservation. Keep only for internal/admin cleanup if needed.
+  */
+  deleteReservation(id: string): Observable<void> {
+    return this.reservationsEndpoint.delete(id);
+  }
+
+  /*
+    Updates only the status field of a reservation via PATCH.
+    Used to transition lifecycle: 'active' → 'completed' (expired) or 'cancelled'.
+    The record stays in the DB so History always shows all sessions.
+  */
+  setReservationStatus(id: string, status: string): Observable<ReservationRaw> {
+    return this.reservationsEndpoint.patchStatus(id, status);
+  }
+
+  /*
     Creates a new client report via POST /clientReports.
     json-server assigns the id and returns the saved record.
   */
   submitReport(report: ClientReport): Observable<ClientReport> {
     return this.reportsEndpoint.create(report);
+  }
+
+  /*
+    Returns all client-submitted reports. Admin views filter by parkingId.
+  */
+  getClientReports(): Observable<ClientReport[]> {
+    return this.reportsEndpoint.getAll();
+  }
+
+  /*
+    Updates only a report status, keeping the record visible for audit.
+  */
+  updateClientReportStatus(id: string | number, status: string): Observable<ClientReport> {
+    return this.reportsEndpoint.patchStatus(id, status);
   }
 }

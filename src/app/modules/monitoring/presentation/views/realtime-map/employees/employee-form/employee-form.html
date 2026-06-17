@@ -53,11 +53,6 @@
     </div>
 
     <mat-form-field appearance="outline" class="employee-form__field">
-      <mat-label>{{ 'realtime-map.employees.form.booking-code' | translate }}</mat-label>
-      <input matInput type="text" formControlName="bookingCode" required/>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="employee-form__field">
       <mat-label>{{ 'realtime-map.employees.form.status' | translate }}</mat-label>
       <mat-select formControlName="status" required>
         @for (status of statuses; track status) {

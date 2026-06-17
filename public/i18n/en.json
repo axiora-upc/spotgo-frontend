@@ -59,6 +59,7 @@
       "next": "Next",
       "tap-available-spot": "Tap an available spot on Level 1",
       "available": "Available",
+      "maintenance": "Maintenance",
       "selected": "Selected",
       "back": "Back",
       "review": "Review",
@@ -111,21 +112,60 @@
       "available": "Available",
       "occupied": "Occupied",
       "maintenance": "Maintenance",
-      "peak-hours-today": "Peak Hours Today",
-      "revenue-yield": "Revenue Yield",
+      "peak-hours-today": "Peak Total Hours",
+      "revenue-yield": "Estimated Revenue",
       "revenue-description": "Projected daily revenue based on current occupancy and turnover rate.",
       "need-help": "Need Technical Help?",
       "help-description": "Contact our IoT infrastructure team for sensor recalibration.",
-      "open-ticket": "Open Support Ticket"
+      "open-ticket": "Open Support Ticket",
+      "no-blueprint-title": "No Blueprint Uploaded",
+      "no-blueprint-subtitle": "Upload a parking lot blueprint in Settings to see the real-time map.",
+      "no-blueprint-cta": "Go to Settings",
+      "spot-modal": {
+        "spot": "Spot",
+        "active-reservation": "Active reservation",
+        "client": "Client",
+        "email": "Email",
+        "phone": "Phone",
+        "vehicle": "Vehicle",
+        "plate": "Plate",
+        "booking": "Booking",
+        "time": "Time",
+        "amount": "Amount",
+        "empty-title": "Nobody has reserved this spot yet",
+        "empty-desc": "You can block it for maintenance. Clients will not be able to select it until an admin unlocks it.",
+        "unlock": "Unlock spot",
+        "set-maintenance": "Set maintenance"
+      }
     },
     "reports": {
       "title": "Reports",
-      "subtitle": "Watch a series of records which englove, accidents inside the building, missing reservations, etc.",
+      "subtitle": "Review client-submitted reports for your parking facility.",
       "incident-prefix": "Incident #",
+      "report-prefix": "Report #",
+      "booking-prefix": "Booking",
+      "client-prefix": "Client",
       "spot-prefix": "Spot",
+      "empty": "No client reports for this parking yet.",
+      "resolve-button": "Mark resolved",
+      "resolved-button": "Resolved",
+      "status": {
+        "submitted": "Active",
+        "resolved": "Resolved"
+      },
+      "pagination": {
+        "summary": "Showing {{ start }}-{{ end }} of {{ total }} reports",
+        "previous": "Previous",
+        "next": "Next",
+        "page": "Page {{ page }} of {{ total }}"
+      },
       "types": {
         "unauthorised-parking": "Unathorised parking",
-        "payment-failure": "Payment failure"
+        "payment-failure": "Payment failure",
+        "safety-concern": "Safety concern",
+        "maintenance-issue": "Maintenance issue",
+        "billing-dispute": "Billing dispute",
+        "other": "Other"
       }
     },
     "employees": {
@@ -172,6 +212,12 @@
         "title": "No employees yet",
         "message": "Add your first employee using the button above and they will appear here."
       },
+      "pagination": {
+        "summary": "Showing {{ start }}-{{ end }} of {{ total }} employees",
+        "previous": "Previous",
+        "next": "Next",
+        "page": "Page {{ page }} of {{ total }}"
+      },
       "snackbar": {
         "create-success": "Employee added successfully.",
         "create-error": "We could not add the employee. Please try again.",
@@ -197,8 +243,9 @@
       "active": "Active"
     },
     "usage": {
-      "label": "This month's usage",
-      "hours-remaining": "hours remaining · resets on May 1"
+      "label": "Plan time used",
+      "hours-remaining": "hours remaining until renewal",
+      "hours-used": "hours used in this period"
     },
     "stats": {
       "sessions": "Sessions",
@@ -220,6 +267,7 @@
       "current": "Current Plan",
       "switch": "Switch Plan",
       "upgrade": "Upgrade",
+      "discount-badge": "{{ percent }}% OFF reservations",
       "free": {
         "name": "Free Plan (Basic)",
         "description": "Designed for occasional users.",
@@ -288,6 +336,7 @@
     "spot": "Spot",
     "btn-report": "Report",
     "btn-rate": "Rate",
+    "btn-edit-rate": "Edit rating",
     "modal": {
       "cancel": "Cancel",
       "rate": {
@@ -307,6 +356,12 @@
         "billing-dispute": "Billing dispute",
         "other": "Other"
       }
+    },
+    "pagination": {
+      "summary": "Showing {{ start }}-{{ end }} of {{ total }} reservations",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {{ page }} of {{ total }}"
     }
   },
 
@@ -351,6 +406,12 @@
     "actions": {
       "pdf": "PDF",
       "email": "Email"
+    },
+    "pagination": {
+      "summary": "Showing {{ start }}-{{ end }} of {{ total }} receipts",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {{ page }} of {{ total }}"
     }
   },
 
@@ -385,7 +446,12 @@
       "error-duplicate": "A blueprint with that name already exists.",
       "error-type": "Only PNG, JPG, and WebP images are allowed.",
       "error-size": "The image must be smaller than 1 MB.",
-      "error-storage": "Not enough browser storage. Delete a blueprint and try again."
+      "error-storage": "Could not save the blueprint. Please try again.",
+      "delete-dialog-title": "Delete Blueprint",
+      "delete-dialog-subtitle": "Select the blueprint you want to delete. This action cannot be undone.",
+      "select-label": "Blueprint",
+      "select-placeholder": "Select a blueprint",
+      "delete-btn": "Delete"
     }
   },
 
@@ -403,11 +469,14 @@
       "vs-yesterday": "vs yesterday",
       "peak-hour": "Peak Hour",
       "peak-note": "Highest occupancy during the day",
-      "total-revenue": "Total Revenue",
+      "total-revenue": "Estimated Revenue",
       "projected": "projected",
       "system-health": "System Health",
       "all-sensors": "All sensors operating normally",
-      "sensors-warning": "Some sensors need attention"
+      "sensors-warning": "Some sensors need attention",
+      "spots-in-maintenance": "spots in maintenance",
+      "optimum": "Optimum",
+      "maintenance": "Maintenance"
     },
     "charts": {
       "occupancy-title": "Occupancy by Hour",

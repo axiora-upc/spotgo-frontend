@@ -11,6 +11,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FavoritesStore } from '../../../application/favorites.store';
+import { CurrentUserService } from '../../../../../shared/services/current-user.service';
 
 @Component({
   selector: 'app-favorites',
@@ -20,14 +21,11 @@ import { FavoritesStore } from '../../../application/favorites.store';
   styleUrl: './favorites.component.css',
 })
 export class FavoritesComponent implements OnInit {
-  protected readonly store = inject(FavoritesStore);
+  protected readonly store      = inject(FavoritesStore);
+  private  readonly currentUser = inject(CurrentUserService);
 
   ngOnInit(): void {
-    /*
-      'cli-001' is hardcoded for now — will be replaced with the
-      logged-in client id once authentication is implemented.
-    */
-    this.store.loadFavoritesByClientId('cli-001');
+    this.store.loadFavoritesByClientId(this.currentUser.clientId);
   }
 
   protected onRemove(id: string): void {

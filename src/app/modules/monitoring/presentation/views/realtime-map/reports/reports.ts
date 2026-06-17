@@ -1,15 +1,35 @@
 /*
   Reports view of the Real-time Map page.
 
-  After the DDD refactor the component is a thin UI layer that simply
-  asks MonitoringStore for the incidents and renders them. The Store
-  owns the signal; this component does not subscribe to HttpClient.
+  Admins see the reports submitted by clients for the parking they manage.
+  Reports are stored in /clientReports and linked to reservations by
+  reservationId so the UI can show the spot and booking code.
 */
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
+import { forkJoin } from 'rxjs';
 
-import { MonitoringStore } from '../../../../application/monitoring.store';
+import { ClientReport } from '../../../../../parking/domain/model/client-report.entity';
+import { ReservationRaw } from '../../../../../parking/domain/model/reservation-raw.entity';
+import { HistoryApi } from '../../../../../parking/infrastructure/history-api';
+import { CurrentUserService } from '../../../../../../shared/services/current-user.service';
+
+interface AdminReportView {
+  id: string | number;
+  clientId: string;
+  code: string;
+  date: string;
+  icon: string;
+  reservationCode: string;
+  resolved: boolean;
+  resolveButtonKey: string;
+  spot: string;
+  status: string;
+  statusKey: string;
+  time: string;
+  type: string;
+}
 
 @Component({
   selector: 'app-realtime-map-reports',
@@ -18,9 +38,123 @@ import { MonitoringStore } from '../../../../application/monitoring.store';
   styleUrl: './reports.css',
 })
 export class Reports implements OnInit {
-  protected readonly store = inject(MonitoringStore);
+  private readonly historyApi = inject(HistoryApi);
+  private readonly currentUser = inject(CurrentUserService);
+
+  readonly reports = signal<AdminReportView[]>([]);
+  readonly currentPage = signal(1);
+  readonly pageSize = 5;
+
+  readonly totalPages = computed(() =>
+    Math.max(1, Math.ceil(this.reports().length / this.pageSize))
+  );
+
+  readonly pagedReports = computed(() => {
+    const safePage = Math.min(this.currentPage(), this.totalPages());
+    const start = (safePage - 1) * this.pageSize;
+    return this.reports().slice(start, start + this.pageSize);
+  });
+
+  readonly pageStart = computed(() => {
+    if (this.reports().length === 0) return 0;
+    return (Math.min(this.currentPage(), this.totalPages()) - 1) * this.pageSize + 1;
+  });
+
+  readonly pageEnd = computed(() =>
+    Math.min(this.pageStart() + this.pagedReports().length - 1, this.reports().length)
+  );
+
+  readonly shouldShowPagination = computed(() =>
+    this.reports().length > this.pageSize
+  );
 
   ngOnInit(): void {
-    this.store.loadIncidents();
+    this.loadReports();
+  }
+
+  private loadReports(): void {
+    forkJoin({
+      reports: this.historyApi.getClientReports(),
+      reservations: this.historyApi.getReservations(),
+    }).subscribe({
+      next: ({ reports, reservations }) => {
+        const reservationMap = new Map(reservations.map((reservation) => [reservation.id, reservation]));
+
+        const filtered = reports
+          .filter((report) => report.parkingId === this.currentUser.parkingId)
+          .map((report) => this.toViewModel(report, reservationMap.get(report.reservationId)))
+          .sort((a, b) => this.compareReports(a, b));
+
+        this.reports.set(filtered);
+        this.currentPage.set(1);
+      },
+    });
+  }
+
+  private toViewModel(report: ClientReport, reservation?: ReservationRaw): AdminReportView {
+    const resolved = report.status === 'resolved';
+
+    return {
+      id: report.id,
+      clientId: report.clientId,
+      code: `RPT-${report.id}`,
+      date: report.date,
+      icon: resolved ? 'check_circle' : 'error',
+      reservationCode: reservation?.code ?? report.reservationId,
+      resolved,
+      resolveButtonKey: resolved
+        ? 'realtime-map.reports.resolved-button'
+        : 'realtime-map.reports.resolve-button',
+      spot: reservation?.spot ?? '-',
+      status: report.status,
+      statusKey: `realtime-map.reports.status.${report.status}`,
+      time: reservation ? this.formatTime(reservation.startDate) : '-',
+      type: report.type,
+    };
+  }
+
+  markAsResolved(report: AdminReportView): void {
+    if (report.resolved) return;
+
+    this.historyApi.updateClientReportStatus(report.id, 'resolved').subscribe({
+      next: (updated) => {
+        this.reports.update((reports) =>
+          reports
+            .map((item) =>
+            item.id === report.id
+              ? {
+                  ...item,
+                  icon: 'check_circle',
+                  resolved: true,
+                  resolveButtonKey: 'realtime-map.reports.resolved-button',
+                  status: updated.status,
+                  statusKey: `realtime-map.reports.status.${updated.status}`,
+                }
+              : item
+            )
+            .sort((a, b) => this.compareReports(a, b))
+        );
+      },
+    });
+  }
+
+  goToPreviousPage(): void {
+    this.currentPage.update((page) => Math.max(1, page - 1));
+  }
+
+  goToNextPage(): void {
+    this.currentPage.update((page) => Math.min(this.totalPages(), page + 1));
+  }
+
+  private formatTime(iso: string): string {
+    const date = new Date(iso);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+
+  private compareReports(a: AdminReportView, b: AdminReportView): number {
+    if (a.resolved !== b.resolved) return a.resolved ? 1 : -1;
+    return `${b.date} ${b.time}`.localeCompare(`${a.date} ${a.time}`);
   }
 }

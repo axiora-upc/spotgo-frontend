@@ -24,6 +24,7 @@ export interface ClientPlanResource extends BaseResource {
   monthlyPrice: number;
   description: string;
   reservationsPerMonth: number | null;
+  discountPercent: number;
   features: string[];
 }
 

@@ -1,7 +1,7 @@
 /*
   Domain entities used by the Overview tab.
 
-  Unlike Employee or IncidentReport, the parking domain is a tree of
+  Unlike Employee, the parking domain is a tree of
   small entities and value objects that compose into a single
   ParkingSnapshot. We declare every layer here so the assembler can
   rebuild the same shape from the API response.
@@ -11,7 +11,7 @@
   spots and add metadata.
 */
 
-export type ParkingSpotStatus = 'available' | 'occupied' | 'maintenance';
+export type ParkingSpotStatus = 'available' | 'occupied' | 'maintenance' | 'empty';
 
 export class ParkingSpot {
   private _id: string;

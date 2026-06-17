@@ -12,17 +12,8 @@
   también debe declararse por contrato.
 */
 import { BaseAssembler } from '../../../shared/infrastructure/base-assembler';
-import {
-  OccupancyPoint,
-  ParkingAnalytics,
-  WeeklyTrendPoint,
-} from '../domain/model/analytics.entity';
-import {
-  OccupancyPointResource,
-  ParkingResource,
-  ParkingResponse,
-  WeeklyTrendPointResource,
-} from './analytics-response';
+import { ParkingAnalytics } from '../domain/model/analytics.entity';
+import { ParkingResource, ParkingResponse } from './analytics-response';
 
 export class ParkingAnalyticsAssembler
   implements BaseAssembler<ParkingAnalytics, ParkingResource, ParkingResponse>
@@ -44,15 +35,10 @@ export class ParkingAnalyticsAssembler
       systemStatus:          resource.systemStatus,
       totalCapacity:         resource.totalCapacity ?? resource.totalSpaces,
       efficiencyIndex:       resource.efficiencyIndex ?? 0,
-      occupancyByHour: (resource.occupancyByHour ?? []).map(
-        (p: OccupancyPointResource) =>
-          new OccupancyPoint({ hour: p.hour, intensity: p.intensity })
-      ),
-      weeklyTrends: (resource.weeklyTrends ?? []).map(
-        (p: WeeklyTrendPointResource) =>
-          new WeeklyTrendPoint({ day: p.day, value: p.value })
-      ),
-      mostUtilizedSpots: [],
+      occupancyByHour:       [],
+      weeklyTrends:          [],
+      mostUtilizedSpots:     [],
+      maintenanceSpotsCount: 0,
     });
   }
 
@@ -76,8 +62,6 @@ export class ParkingAnalyticsAssembler
       systemStatus:          entity.systemStatus,
       totalCapacity:         entity.totalCapacity,
       efficiencyIndex:       entity.efficiencyIndex,
-      occupancyByHour:       entity.occupancyByHour.map(p => ({ hour: p.hour, intensity: p.intensity })),
-      weeklyTrends:          entity.weeklyTrends.map(p => ({ day: p.day, value: p.value })),
     };
   }
 

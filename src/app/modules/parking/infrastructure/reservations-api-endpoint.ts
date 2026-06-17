@@ -8,6 +8,7 @@
        reservation object with the new rating value)
 */
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { BaseApiEndpoint } from '../../../shared/infrastructure/base-api-endpoint';
 import { ReservationRaw } from '../domain/model/reservation-raw.entity';
@@ -22,5 +23,9 @@ export class ReservationsApiEndpoint extends BaseApiEndpoint<
 > {
   constructor(http: HttpClient) {
     super(http, `${environment.apiUrl}/reservations`, new ReservationRawAssembler());
+  }
+
+  patchStatus(id: string, status: string): Observable<ReservationRaw> {
+    return this.http.patch<ReservationRaw>(`${this.endpointUrl}/${id}`, { status });
   }
 }

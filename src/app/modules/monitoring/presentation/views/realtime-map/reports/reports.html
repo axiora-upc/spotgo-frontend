@@ -6,32 +6,90 @@
 </header>
 
 <ul class="reports__list">
-  @for (incident of store.incidents(); track incident.id) {
-    <li class="reports__card">
-      <span class="reports__icon">
-        <mat-icon>error</mat-icon>
+  @for (report of pagedReports(); track report.id) {
+    <li class="reports__card" [class.reports__card--resolved]="report.resolved">
+      <span class="reports__icon" [class.reports__icon--resolved]="report.resolved">
+        <mat-icon>{{ report.icon }}</mat-icon>
       </span>
 
       <div class="reports__body">
-        <h3 class="reports__type">
-          {{ 'realtime-map.reports.types.' + incident.type | translate }}
-        </h3>
+        <div class="reports__title-row">
+          <h3 class="reports__type">
+            {{ 'realtime-map.reports.types.' + report.type | translate }}
+          </h3>
+          <span class="reports__status" [class.reports__status--resolved]="report.resolved">
+            {{ report.statusKey | translate }}
+          </span>
+        </div>
 
         <p class="reports__meta">
           <span class="reports__meta-item">
             <mat-icon>location_on</mat-icon>
-            {{ 'realtime-map.reports.spot-prefix' | translate }} {{ incident.spot }}
+            {{ 'realtime-map.reports.spot-prefix' | translate }} {{ report.spot }}
           </span>
           <span class="reports__dot">·</span>
-          <span class="reports__meta-item">{{ incident.date }}</span>
+          <span class="reports__meta-item">{{ report.date }}</span>
           <span class="reports__dot">·</span>
-          <span class="reports__meta-item">{{ incident.time }}</span>
+          <span class="reports__meta-item">{{ report.time }}</span>
+          <span class="reports__dot">·</span>
+          <span class="reports__meta-item">
+            {{ 'realtime-map.reports.client-prefix' | translate }} {{ report.clientId }}
+          </span>
         </p>
 
         <p class="reports__id">
-          {{ 'realtime-map.reports.incident-prefix' | translate }}{{ incident.code }}
+          {{ 'realtime-map.reports.report-prefix' | translate }}{{ report.code }}
+          <span class="reports__dot">·</span>
+          {{ 'realtime-map.reports.booking-prefix' | translate }} #{{ report.reservationCode }}
         </p>
       </div>
+
+      <button
+        class="reports__resolve-btn"
+        type="button"
+        [disabled]="report.resolved"
+        (click)="markAsResolved(report)"
+      >
+        {{ report.resolveButtonKey | translate }}
+      </button>
+    </li>
+  }
+
+  @if (reports().length === 0) {
+    <li class="reports__empty">
+      {{ 'realtime-map.reports.empty' | translate }}
     </li>
   }
 </ul>
+
+@if (shouldShowPagination()) {
+  <div class="reports__pagination">
+    <span class="reports__pagination-summary">
+      {{ 'realtime-map.reports.pagination.summary' | translate: { start: pageStart(), end: pageEnd(), total: reports().length } }}
+    </span>
+
+    <div class="reports__pagination-actions">
+      <button
+        class="reports__pagination-btn"
+        type="button"
+        [disabled]="currentPage() === 1"
+        (click)="goToPreviousPage()"
+      >
+        {{ 'realtime-map.reports.pagination.previous' | translate }}
+      </button>
+
+      <span class="reports__pagination-page">
+        {{ 'realtime-map.reports.pagination.page' | translate: { page: currentPage(), total: totalPages() } }}
+      </span>
+
+      <button
+        class="reports__pagination-btn"
+        type="button"
+        [disabled]="currentPage() === totalPages()"
+        (click)="goToNextPage()"
+      >
+        {{ 'realtime-map.reports.pagination.next' | translate }}
+      </button>
+    </div>
+  </div>
+}

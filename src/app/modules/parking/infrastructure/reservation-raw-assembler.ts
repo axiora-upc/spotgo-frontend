@@ -27,20 +27,11 @@ export class ReservationRawAssembler
       r.endDate,
       r.status,
       r.amount,
-      /*
-        r.rating ?? null normalises undefined → null.
-        undefined happens when a reservation record in the DB was created
-        before the rating field was added (old data without the field).
-        The domain and the template always expect null | number, never undefined.
-      */
+      r.baseAmount ?? r.amount,
       r.rating ?? null,
     );
   }
 
-  /*
-    Converts the entity back to a resource for PUT requests.
-    All fields must be included so json-server does not lose data.
-  */
   toResourceFromEntity(e: ReservationRaw): ReservationRawResource {
     return {
       id: e.id,
@@ -52,6 +43,7 @@ export class ReservationRawAssembler
       endDate: e.endDate,
       status: e.status,
       amount: e.amount,
+      baseAmount: e.baseAmount,
       rating: e.rating,
     };
   }

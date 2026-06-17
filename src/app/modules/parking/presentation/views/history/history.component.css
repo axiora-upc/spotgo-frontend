@@ -69,11 +69,34 @@
   min-width: 0;
 }
 
+.history-card__title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 2px;
+}
+
 .history-card__name {
   font-size: 1rem;
   font-weight: 700;
   margin: 0;
 }
+
+.history-status {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.history-status--completed { background: #dcfce7; color: #16a34a; }
+.history-status--cancelled  { background: #fee2e2; color: #dc2626; }
+.history-status--active     { background: #dbeafe; color: #2563eb; }
 
 .history-card__meta {
   display: flex;
@@ -276,3 +299,44 @@
 }
 
 .report-select:focus { border-color: #1a237e; }
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.pagination__summary,
+.pagination__page {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.pagination__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination__btn {
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  color: #374151;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 14px;
+}
+
+.pagination__btn:hover:not(:disabled) {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.pagination__btn:disabled {
+  color: #9ca3af;
+  cursor: default;
+}

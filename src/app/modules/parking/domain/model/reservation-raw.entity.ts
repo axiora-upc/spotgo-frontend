@@ -33,7 +33,8 @@ export class ReservationRaw implements BaseEntity {
     public readonly startDate: string,   // ISO 8601
     public readonly endDate: string,     // ISO 8601
     public readonly status: string,
-    public readonly amount: number,
+    public readonly amount: number,      // discounted amount paid by client
+    public readonly baseAmount: number,  // full amount earned by the parking
     public readonly rating: number | null, // null = not yet rated by this client
   ) {}
 }

@@ -11,13 +11,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BaseApi } from '../../../shared/infrastructure/base-api';
 import { EmployeesApiEndpoint } from './employees-api-endpoint';
-import { IncidentsApiEndpoint } from './incidents-api-endpoint';
 import { ParkingSnapshotApiEndpoint } from './parking-snapshot-api-endpoint';
 import { ParkingsApiEndpoint } from './parkings-api-endpoint';
 import type { ParkingResource } from './parkings-api-endpoint';
 import { AnalyticsApiEndpoint } from './analytics-api-endpoint';
 import { Employee } from '../domain/model/employee.entity';
-import { IncidentReport } from '../domain/model/incident-report.entity';
 import { ParkingSnapshot } from '../domain/model/parking-spot.entity';
 import { ParkingAnalytics } from '../domain/model/analytics.entity';
 
@@ -26,7 +24,6 @@ export type { ParkingResource };
 @Injectable({ providedIn: 'root' })
 export class MonitoringApi extends BaseApi {
   private readonly employeesEndpoint: EmployeesApiEndpoint;
-  private readonly incidentsEndpoint: IncidentsApiEndpoint;
   private readonly parkingSnapshotEndpoint: ParkingSnapshotApiEndpoint;
   private readonly parkingsEndpoint: ParkingsApiEndpoint;
   private readonly analyticsEndpoint: AnalyticsApiEndpoint;
@@ -34,7 +31,6 @@ export class MonitoringApi extends BaseApi {
   constructor(http: HttpClient) {
     super();
     this.employeesEndpoint = new EmployeesApiEndpoint(http);
-    this.incidentsEndpoint = new IncidentsApiEndpoint(http);
     this.parkingSnapshotEndpoint = new ParkingSnapshotApiEndpoint(http);
     this.parkingsEndpoint = new ParkingsApiEndpoint(http);
     this.analyticsEndpoint = new AnalyticsApiEndpoint(http);
@@ -54,10 +50,6 @@ export class MonitoringApi extends BaseApi {
 
   deleteEmployee(id: string): Observable<void> {
     return this.employeesEndpoint.delete(id);
-  }
-
-  getIncidentReports(): Observable<IncidentReport[]> {
-    return this.incidentsEndpoint.getAll();
   }
 
   getParkingSnapshot(): Observable<ParkingSnapshot> {

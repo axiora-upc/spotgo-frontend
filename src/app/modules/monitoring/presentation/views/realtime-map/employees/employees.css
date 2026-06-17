@@ -15,6 +15,15 @@
   align-items: center;
   gap: 8px;
   height: 42px;
+  border-radius: 999px !important;
+  background-color: #11176d !important;
+  color: #ffffff !important;
+  padding: 0 24px !important;
+  box-shadow: 0 8px 18px rgba(17, 23, 109, 0.18);
+}
+
+.employees__add-btn:hover {
+  background-color: #0d125c !important;
 }
 
 .employees__add-btn mat-icon {
@@ -208,4 +217,45 @@
 
 .employees__badge--off-duty {
   background-color: #94a3b8;
+}
+
+.employees__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.employees__pagination-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.employees__pagination-summary,
+.employees__pagination-page {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.employees__pagination-btn {
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  color: #374151;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 14px;
+}
+
+.employees__pagination-btn:hover:not(:disabled) {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.employees__pagination-btn:disabled {
+  color: #9ca3af;
+  cursor: default;
 }

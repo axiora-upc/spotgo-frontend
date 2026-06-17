@@ -6,7 +6,7 @@
     <h2 *ngIf="step() === 'choose-spot'">{{ 'dashboard.reservation.choose-your-spot' | translate }}</h2>
     <h2 *ngIf="step() === 'confirm'">{{ 'dashboard.reservation.confirm-reservation' | translate }}</h2>
     <h2 *ngIf="step() === 'success'">{{ 'dashboard.reservation.reservation-confirmed' | translate }}</h2>
-    
+
     <button mat-icon-button (click)="close()" class="close-btn">
       <mat-icon>close</mat-icon>
     </button>
@@ -17,7 +17,7 @@
     <div class="parking-info">
       <h3>{{ parking.name }}</h3>
       <div class="meta">
-        <mat-icon>location_on</mat-icon> 0.8 mi away • <mat-icon class="star">star</mat-icon> 3.8
+        <mat-icon>location_on</mat-icon> 0.8 mi away • <mat-icon class="star">star</mat-icon> {{ parking.rating | number:'1.1-1' }}
       </div>
     </div>
 
@@ -40,7 +40,12 @@
         <div class="info-icon price-icon"><mat-icon>attach_money</mat-icon></div>
         <div class="info-text">
           <span class="label">{{ 'dashboard.reservation.price' | translate }}</span>
-          <span class="value">{{ parking.pricePerHour | currency:'S/.':'symbol':'1.2-2' }}/hr</span>
+          <span class="value">
+            {{ parking.pricePerHour | currency:'S/.':'symbol':'1.2-2' }}/hr
+            @if (discountPercent > 0) {
+              <span class="discount-tag">-{{ discountPercent }}%</span>
+            }
+          </span>
         </div>
       </div>
       <div class="info-item">
@@ -62,11 +67,15 @@
     <div class="floor-preview">
       <h4>{{ 'dashboard.reservation.floor-map-level' | translate }} 1</h4>
       <div class="mini-grid">
-        <div *ngFor="let spot of spots().slice(0, 24)" class="mini-spot" [ngClass]="spot.status"></div>
+        <div *ngFor="let spot of visibleSpots.slice(0, 28)" class="mini-spot" [ngClass]="spot.status"></div>
       </div>
     </div>
 
     <footer class="dialog-footer">
+      <button class="fav-btn" [class.fav-btn--active]="isFavorite" (click)="toggleFavorite()" type="button">
+        <mat-icon>{{ isFavorite ? 'bookmark' : 'bookmark_border' }}</mat-icon>
+        {{ isFavorite ? 'Saved' : 'Save' }}
+      </button>
       <button class="primary-btn" (click)="goToReserve()">{{ 'dashboard.reservation.reserve-a-spot' | translate }}</button>
     </footer>
   </div>
@@ -94,16 +103,23 @@
 
     <div class="form-field">
       <label>{{ 'dashboard.reservation.duration' | translate }}</label>
-      <mat-form-field appearance="outline">
-        <input matInput type="number" min="1" [(ngModel)]="duration">
-        <mat-icon matPrefix>timer</mat-icon>
-        <mat-error *ngIf="duration() < 1">{{ 'dashboard.reservation.invalid-duration' | translate }}</mat-error>
-      </mat-form-field>
+      <div class="duration-row">
+        <mat-form-field appearance="outline" class="duration-part">
+          <input matInput type="number" min="0" max="23" [(ngModel)]="durationHours" placeholder="0">
+          <mat-icon matPrefix>timer</mat-icon>
+          <span matSuffix>h</span>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="duration-part">
+          <input matInput type="number" min="0" max="59" [(ngModel)]="durationMinutes" placeholder="0">
+          <span matSuffix>min</span>
+        </mat-form-field>
+      </div>
+      <mat-error *ngIf="totalDurationHours <= 0">{{ 'dashboard.reservation.invalid-duration' | translate }}</mat-error>
     </div>
 
     <footer class="dialog-footer split">
       <button class="secondary-btn" (click)="goBack()">{{ 'dashboard.reservation.cancel' | translate }}</button>
-      <button class="primary-btn" [disabled]="duration() < 1" (click)="goToChooseSpot()">{{ 'dashboard.reservation.next' | translate }}</button>
+      <button class="primary-btn" [disabled]="totalDurationHours <= 0" (click)="goToChooseSpot()">{{ 'dashboard.reservation.next' | translate }}</button>
     </footer>
   </div>
 
@@ -112,17 +128,18 @@
     <p class="subtitle">{{ 'dashboard.reservation.tap-available-spot' | translate }}</p>
 
     <div class="spot-grid">
-      <div *ngFor="let spot of spots()" 
-           class="spot-item" 
+      <div *ngFor="let spot of spots()"
+           class="spot-item"
            [ngClass]="spot.status"
            (click)="selectSpot(spot)">
-        <mat-icon>directions_car</mat-icon>
+        <mat-icon *ngIf="spot.status !== 'empty'">directions_car</mat-icon>
       </div>
     </div>
 
     <div class="legend">
       <div class="legend-item"><span class="dot available"></span> {{ 'dashboard.reservation.available' | translate }}</div>
       <div class="legend-item"><span class="dot occupied"></span> {{ 'dashboard.reservation.occupied' | translate }}</div>
+      <div class="legend-item"><span class="dot maintenance"></span> {{ 'dashboard.reservation.maintenance' | translate }}</div>
       <div class="legend-item"><span class="dot selected"></span> {{ 'dashboard.reservation.selected' | translate }}</div>
     </div>
 
@@ -143,11 +160,11 @@
       </div>
       <div class="summary-row">
         <span class="label">{{ 'dashboard.reservation.date' | translate }}</span>
-        <span class="value">{{ selectedDate() | date:'yyyy-MM-dd' }}</span>
+        <span class="value">{{ selectedDate | date:'yyyy-MM-dd' }}</span>
       </div>
       <div class="summary-row">
         <span class="label">{{ 'dashboard.reservation.time' | translate }}</span>
-        <span class="value">{{ startTime() }} ({{ duration() }}h)</span>
+        <span class="value">{{ startTime }} ({{ durationHours }}h {{ durationMinutes }}min)</span>
       </div>
       <div class="summary-row">
         <span class="label">{{ 'dashboard.reservation.spot' | translate }}</span>
@@ -156,7 +173,15 @@
       <hr>
       <div class="summary-row total">
         <span class="label">{{ 'dashboard.reservation.total' | translate }}</span>
-        <span class="value">{{ totalAmount | currency:'S/.':'symbol':'1.2-2' }}</span>
+        <span class="value">
+          @if (discountPercent > 0) {
+            <span class="price-original">{{ totalAmount | currency:'S/.':'symbol':'1.2-2' }}</span>
+            <span class="price-discounted">{{ discountedAmount | currency:'S/.':'symbol':'1.2-2' }}</span>
+            <span class="discount-tag">-{{ discountPercent }}%</span>
+          } @else {
+            {{ totalAmount | currency:'S/.':'symbol':'1.2-2' }}
+          }
+        </span>
       </div>
     </div>
 
@@ -177,11 +202,11 @@
     <div class="success-details">
       <div class="summary-row">
         <span class="label">{{ 'dashboard.reservation.date' | translate }}</span>
-        <span class="value">{{ selectedDate() | date:'yyyy-MM-dd' }}</span>
+        <span class="value">{{ selectedDate | date:'yyyy-MM-dd' }}</span>
       </div>
       <div class="summary-row">
         <span class="label">{{ 'dashboard.reservation.time' | translate }}</span>
-        <span class="value">{{ startTime() }}</span>
+        <span class="value">{{ startTime }}</span>
       </div>
       <div class="summary-row">
         <span class="label">{{ 'dashboard.reservation.booking-id' | translate }}</span>

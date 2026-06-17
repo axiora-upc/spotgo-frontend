@@ -10,7 +10,7 @@
   The Store owns the employees signal, the loading flag and the error
   state. The view just renders what is there and opens the dialogs.
 */
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -37,6 +37,31 @@ export class Employees implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
+  protected readonly currentPage = signal(1);
+  protected readonly pageSize = 5;
+
+  protected readonly totalPages = computed(() =>
+    Math.max(1, Math.ceil(this.store.employees().length / this.pageSize))
+  );
+
+  protected readonly pagedEmployees = computed(() => {
+    const safePage = Math.min(this.currentPage(), this.totalPages());
+    const start = (safePage - 1) * this.pageSize;
+    return this.store.employees().slice(start, start + this.pageSize);
+  });
+
+  protected readonly pageStart = computed(() => {
+    if (this.store.employees().length === 0) return 0;
+    return (Math.min(this.currentPage(), this.totalPages()) - 1) * this.pageSize + 1;
+  });
+
+  protected readonly pageEnd = computed(() =>
+    Math.min(this.pageStart() + this.pagedEmployees().length - 1, this.store.employees().length)
+  );
+
+  protected readonly shouldShowPagination = computed(() =>
+    this.store.employees().length > this.pageSize
+  );
 
   ngOnInit(): void {
     this.store.loadEmployees();
@@ -56,8 +81,10 @@ export class Employees implements OnInit {
           return;
         }
         this.store.addEmployee(result, {
-          onSuccess: () =>
-            this.showSuccess('realtime-map.employees.snackbar.create-success'),
+          onSuccess: () => {
+            this.currentPage.set(this.totalPages());
+            this.showSuccess('realtime-map.employees.snackbar.create-success');
+          },
           onError: () =>
             this.showError('realtime-map.employees.snackbar.create-error'),
         });
@@ -104,8 +131,10 @@ export class Employees implements OnInit {
           return;
         }
         this.store.deleteEmployee(employee.id, {
-          onSuccess: () =>
-            this.showSuccess('realtime-map.employees.snackbar.delete-success'),
+          onSuccess: () => {
+            this.currentPage.update((page) => Math.min(page, this.totalPages()));
+            this.showSuccess('realtime-map.employees.snackbar.delete-success');
+          },
           onError: () =>
             this.showError('realtime-map.employees.snackbar.delete-error'),
         });
@@ -128,5 +157,13 @@ export class Employees implements OnInit {
       duration: 5000,
       panelClass: ['snackbar', 'snackbar--error'],
     });
+  }
+
+  protected goToPreviousPage(): void {
+    this.currentPage.update((page) => Math.max(1, page - 1));
+  }
+
+  protected goToNextPage(): void {
+    this.currentPage.update((page) => Math.min(this.totalPages(), page + 1));
   }
 }

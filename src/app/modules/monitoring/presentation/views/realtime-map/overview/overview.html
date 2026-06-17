@@ -8,14 +8,14 @@
 
   <header class="overview__header">
     <div>
-      <h1 class="overview__title">{{ 'realtime-map.overview.title' | translate }}</h1>
+      <h1 class="overview__title">{{ snapshot.facility.name }}</h1>
       <p class="overview__subtitle">
         {{ 'realtime-map.overview.subtitle' | translate }}
       </p>
     </div>
 
     <div class="overview__actions">
-      <button class="overview__btn overview__btn--ghost" type="button">
+      <button class="overview__btn overview__btn--ghost" type="button" (click)="exportLogs()">
         <mat-icon>file_download</mat-icon>
         {{ 'realtime-map.overview.export-logs' | translate }}
       </button>
@@ -99,15 +99,7 @@
           <mat-icon>grid_view</mat-icon>
           {{ 'realtime-map.overview.sector-view' | translate }}
         </h2>
-        <div class="overview__view-toggle" role="tablist">
-          <button class="is-active" type="button">
-            {{ 'realtime-map.overview.map' | translate }}
-          </button>
-          <button type="button">
-            {{ 'realtime-map.overview.list' | translate }}
-          </button>
-        </div>
-      </header>
+        </header>
 
       <div class="overview__map-body">
         @for (row of snapshot.rows; track row.id; let rowIndex = $index) {
@@ -118,25 +110,12 @@
               <span
                 class="overview__spot"
                 [ngClass]="'overview__spot--' + spot.status"
-                [attr.title]="spot.id"></span>
+                [style.grid-column]="spotGridCol(spot.id)"
+                [attr.title]="spot.id"
+                (click)="openSpotDetails(spot)"></span>
             }
           </div>
 
-          @if (rowIndex === 0) {
-            <div class="overview__lane">
-              <span class="overview__lane-label">
-                {{ 'realtime-map.overview.one-way-drive-lane' | translate }}
-              </span>
-            </div>
-          }
-          @if (rowIndex === 1) {
-            <div class="overview__central-aisle">
-              <span class="overview__central-aisle-letter">P</span>
-              <span class="overview__central-aisle-label">
-                {{ 'realtime-map.overview.central-aisle' | translate }}
-              </span>
-            </div>
-          }
         }
 
         <div class="overview__map-zoom">
@@ -170,10 +149,13 @@
       </h3>
       <div class="overview__chart">
         @for (bar of snapshot.stats.peakHours; track bar.hour) {
-          <span
-            class="overview__chart-bar"
-            [class.overview__chart-bar--active]="bar.intensity > 0.75"
-            [style.height.%]="bar.intensity * 100"></span>
+          <div class="overview__chart-col">
+            <span
+              class="overview__chart-bar"
+              [class.overview__chart-bar--active]="bar.intensity > 0.75"
+              [style.height.%]="bar.intensity * 100"></span>
+            <span class="overview__chart-label">{{ bar.hour }}</span>
+          </div>
         }
       </div>
     </div>
@@ -202,9 +184,81 @@
       <p class="overview__help-desc">
         {{ 'realtime-map.overview.help-description' | translate }}
       </p>
-      <a class="overview__help-link" href="#">
+      <a class="overview__help-link" href="#" (click)="$event.preventDefault()">
         {{ 'realtime-map.overview.open-ticket' | translate }}
       </a>
     </div>
+  </div>
+
+  @if (selectedSpot(); as selected) {
+    <div class="spot-modal__backdrop" (click)="closeSpotDetails()">
+      <section class="spot-modal" (click)="$event.stopPropagation()">
+        <header class="spot-modal__header">
+          <div>
+            <p class="spot-modal__eyebrow">{{ 'realtime-map.overview.spot-modal.spot' | translate }} {{ selected.spot.id }}</p>
+            <h2 class="spot-modal__title">{{ 'realtime-map.overview.' + selected.spot.status | translate }}</h2>
+          </div>
+          <button class="spot-modal__close" type="button" (click)="closeSpotDetails()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </header>
+
+        @if (selected.reservation; as reservation) {
+          <div class="spot-modal__section">
+            <h3 class="spot-modal__section-title">{{ 'realtime-map.overview.spot-modal.active-reservation' | translate }}</h3>
+            <div class="spot-modal__grid">
+              <span>{{ 'realtime-map.overview.spot-modal.client' | translate }}</span>
+              <strong>{{ reservation.clientName }}</strong>
+              <span>{{ 'realtime-map.overview.spot-modal.email' | translate }}</span>
+              <strong>{{ reservation.email }}</strong>
+              <span>{{ 'realtime-map.overview.spot-modal.phone' | translate }}</span>
+              <strong>{{ reservation.phone }}</strong>
+              <span>{{ 'realtime-map.overview.spot-modal.vehicle' | translate }}</span>
+              <strong>{{ reservation.vehicle }}</strong>
+              <span>{{ 'realtime-map.overview.spot-modal.plate' | translate }}</span>
+              <strong>{{ reservation.licensePlate }}</strong>
+              <span>{{ 'realtime-map.overview.spot-modal.booking' | translate }}</span>
+              <strong>#{{ reservation.code }}</strong>
+              <span>{{ 'realtime-map.overview.spot-modal.time' | translate }}</span>
+              <strong>{{ reservation.start }} - {{ reservation.end }}</strong>
+              <span>{{ 'realtime-map.overview.spot-modal.amount' | translate }}</span>
+              <strong>{{ reservation.amount | currency:'S/.':'symbol':'1.2-2' }}</strong>
+            </div>
+          </div>
+        } @else {
+          <div class="spot-modal__empty">
+            <mat-icon>event_available</mat-icon>
+            <h3>{{ 'realtime-map.overview.spot-modal.empty-title' | translate }}</h3>
+            <p>{{ 'realtime-map.overview.spot-modal.empty-desc' | translate }}</p>
+          </div>
+
+          <footer class="spot-modal__actions">
+            @if (selected.spot.status === 'maintenance') {
+              <button class="spot-modal__btn spot-modal__btn--primary" type="button" (click)="setSelectedSpotAvailable()">
+                {{ 'realtime-map.overview.spot-modal.unlock' | translate }}
+              </button>
+            } @else {
+              <button class="spot-modal__btn spot-modal__btn--warning" type="button" (click)="setSelectedSpotMaintenance()">
+                {{ 'realtime-map.overview.spot-modal.set-maintenance' | translate }}
+              </button>
+            }
+          </footer>
+        }
+      </section>
+    </div>
+  }
+} @else {
+
+  <!--
+    Estado vacío: se muestra cuando el admin todavía no subió ningún
+    croquis, así no se muestran datos de ejemplo del API.
+  -->
+  <div class="overview__empty">
+    <mat-icon class="overview__empty-icon">map</mat-icon>
+    <h2 class="overview__empty-title">{{ 'realtime-map.overview.no-blueprint-title' | translate }}</h2>
+    <p class="overview__empty-subtitle">{{ 'realtime-map.overview.no-blueprint-subtitle' | translate }}</p>
+    <a class="overview__empty-cta" routerLink="/profiles/settings">
+      {{ 'realtime-map.overview.no-blueprint-cta' | translate }}
+    </a>
   </div>
 }

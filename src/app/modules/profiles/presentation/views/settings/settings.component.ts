@@ -20,29 +20,14 @@ import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '@ngx-translate/core';
 
 /*
-  BlueprintStorageService gestiona la lista de croquis en localStorage.
+  BlueprintStorageService gestiona los croquis del admin en la base de datos.
 */
 import { BlueprintStorageService } from '../../../application/blueprint-storage.service';
-
-/*
-  ProfilesStore es el store de la capa de aplicación que gestiona el estado
-  del administrador y orquesta las llamadas HTTP a través de ProfilesApi.
-*/
 import { ProfilesStore } from '../../../application/profiles.store';
-
-/*
-  Admin es la entidad de dominio del administrador.
-*/
 import { Admin } from '../../../domain/model/admin.entity';
-
+import { CurrentUserService } from '../../../../../shared/services/current-user.service';
 import { UploadDialogComponent, UploadDialogResult } from './upload-dialog/upload-dialog.component';
 import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
-
-/*
-  ADMIN_ID es el id fijo del administrador autenticado.
-  En el futuro vendrá del servicio de autenticación.
-*/
-const ADMIN_ID = 'adm-001';
 
 /*
   EditBuffer contiene una copia temporal de los campos editables
@@ -75,15 +60,9 @@ export class SettingsComponent implements OnInit {
   */
   private dialog = inject(MatDialog);
 
-  /*
-    blueprintStorage gestiona los croquis en localStorage.
-  */
-  blueprintStorage = inject(BlueprintStorageService);
-
-  /*
-    profilesStore gestiona el estado del administrador y los llamadas HTTP.
-  */
-  readonly profilesStore = inject(ProfilesStore);
+  blueprintStorage    = inject(BlueprintStorageService);
+  readonly profilesStore  = inject(ProfilesStore);
+  private currentUser     = inject(CurrentUserService);
 
   // ─── Estado de edición ────────────────────────────────────────────────────
 
@@ -112,7 +91,12 @@ export class SettingsComponent implements OnInit {
       Carga el administrador con id fijo al inicializar el componente.
       El store actualiza su signal admin() cuando la respuesta llega.
     */
-    this.profilesStore.loadAdmin(ADMIN_ID);
+    this.profilesStore.loadAdmin(this.currentUser.adminId);
+
+    /*
+      Carga los croquis guardados en la base de datos para este admin.
+    */
+    this.blueprintStorage.load();
   }
 
   // ─── Helpers de lectura ───────────────────────────────────────────────────
@@ -156,12 +140,13 @@ export class SettingsComponent implements OnInit {
     */
     const updated = new Admin({
       id:          current.id,
+      parkingId:   current.parkingId,
       firstName:   this.editBuffer.firstName,
       lastName:    this.editBuffer.lastName,
       email:       this.editBuffer.email,
-      parkingName: this.editBuffer.parkingName,
       phone:       this.editBuffer.phone,
       city:        this.editBuffer.city,
+      parkingName: this.editBuffer.parkingName,
     });
 
     this.profilesStore.updateAdmin(updated, {
@@ -188,8 +173,10 @@ export class SettingsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: UploadDialogResult | undefined) => {
       if (!result) return;
-      const error = this.blueprintStorage.add({ name: result.name, dataUrl: result.dataUrl });
-      if (error) this.blueprintError.set(error);
+      this.blueprintStorage.add(
+        { name: result.name, dataUrl: result.dataUrl, spots: result.spots },
+        { onError: (message) => this.blueprintError.set(message) }
+      );
     });
   }
 
@@ -203,7 +190,13 @@ export class SettingsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((name: string | undefined) => {
       if (!name) return;
-      this.blueprintStorage.remove(name);
+      this.blueprintStorage.remove(name, {
+        /*
+          Se limpia la vista previa para que no siga mostrando la imagen
+          de un croquis que ya fue eliminado.
+        */
+        onSuccess: () => this.selectedBlueprint.set(null),
+      });
     });
   }
 

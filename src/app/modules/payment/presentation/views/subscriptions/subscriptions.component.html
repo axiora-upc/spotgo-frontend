@@ -15,28 +15,28 @@
           <span class="current-card__plan-name">{{ currentPlanNameKey() | translate }}</span>
           <span class="current-card__badge">{{ 'subscription.status.active' | translate }}</span>
         </div>
-        <p class="current-card__renews">
-          {{ 'subscription.renews-on' | translate }} {{ renewsOnFormatted() }} · S/.{{ sub.pricePerMonth }}{{ 'subscription.per-month' | translate }}
-        </p>
+        @if (hasPlanTimeRemaining()) {
+          <p class="current-card__renews">
+            {{ 'subscription.renews-on' | translate }} {{ renewsOnFormatted() }} · S/.{{ sub.pricePerMonth }}{{ 'subscription.per-month' | translate }}
+          </p>
+        }
         <span class="current-card__price">S/.{{ sub.pricePerMonth }} <small>{{ 'subscription.per-mo' | translate }}</small></span>
       </div>
 
-      <div class="usage">
-        <div class="usage__label">
-          <span>{{ 'subscription.usage.label' | translate }}</span>
-          <span>{{ sub.usageHours }}h / {{ sub.maxHours }}h</span>
+      @if (hasPlanTimeRemaining()) {
+        <div class="usage">
+          <div class="usage__label">
+            <span>{{ 'subscription.usage.label' | translate }}</span>
+            <span>{{ hoursUsedInBillingPeriod() }}h / {{ totalHoursInBillingPeriod() }}h</span>
+          </div>
+          <div class="usage__bar">
+            <div class="usage__fill" [style.width.%]="timeUsedPercent()"></div>
+          </div>
+          <p class="usage__remaining">{{ hoursUsedInBillingPeriod() }} {{ 'subscription.usage.hours-used' | translate }}</p>
         </div>
-        <div class="usage__bar">
-          <div class="usage__fill" [style.width.%]="usagePercent()"></div>
-        </div>
-        <p class="usage__remaining">{{ hoursRemaining() }} {{ 'subscription.usage.hours-remaining' | translate }}</p>
-      </div>
+      }
 
       <div class="stats">
-        <div class="stats__item">
-          <span class="stats__label">{{ 'subscription.stats.sessions' | translate }}</span>
-          <span class="stats__value">{{ sub.sessions }}</span>
-        </div>
         <div class="stats__item">
           <span class="stats__label">{{ 'subscription.stats.saved' | translate }}</span>
           <span class="stats__value stats__value--green">S/.{{ sub.savedThisMonth }}</span>
@@ -94,6 +94,11 @@
           <div class="plan-card__header">
             <p class="plan-card__name">{{ ('subscription.plans.' + plan.type + '.name') | translate }}</p>
             <p class="plan-card__description">{{ ('subscription.plans.' + plan.type + '.description') | translate }}</p>
+            @if (plan.discountPercent > 0) {
+              <span class="plan-discount-badge">
+                {{ 'subscription.plans.discount-badge' | translate: { percent: plan.discountPercent } }}
+              </span>
+            }
           </div>
 
           <p class="plan-card__price">

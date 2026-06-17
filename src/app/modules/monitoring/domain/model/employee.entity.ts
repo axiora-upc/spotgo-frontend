@@ -21,31 +21,31 @@ export type EmployeeSchedule = 'all-week';
 
 export class Employee implements BaseEntity {
   private _id: string;
+  private _parkingId: string;
   private _name: string;
   private _role: EmployeeRole;
   private _schedule: EmployeeSchedule;
   private _shiftStart: string;
   private _shiftEnd: string;
-  private _bookingCode: string;
   private _status: EmployeeStatus;
 
   constructor(props: {
     id: string;
+    parkingId: string;
     name: string;
     role: EmployeeRole;
     schedule: EmployeeSchedule;
     shiftStart: string;
     shiftEnd: string;
-    bookingCode: string;
     status: EmployeeStatus;
   }) {
     this._id = props.id;
+    this._parkingId = props.parkingId;
     this._name = props.name;
     this._role = props.role;
     this._schedule = props.schedule;
     this._shiftStart = props.shiftStart;
     this._shiftEnd = props.shiftEnd;
-    this._bookingCode = props.bookingCode;
     this._status = props.status;
   }
 
@@ -55,6 +55,14 @@ export class Employee implements BaseEntity {
 
   set id(value: string) {
     this._id = value;
+  }
+
+  get parkingId(): string {
+    return this._parkingId;
+  }
+
+  set parkingId(value: string) {
+    this._parkingId = value;
   }
 
   get name(): string {
@@ -95,14 +103,6 @@ export class Employee implements BaseEntity {
 
   set shiftEnd(value: string) {
     this._shiftEnd = value;
-  }
-
-  get bookingCode(): string {
-    return this._bookingCode;
-  }
-
-  set bookingCode(value: string) {
-    this._bookingCode = value;
   }
 
   get status(): EmployeeStatus {

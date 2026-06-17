@@ -3,6 +3,7 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators, AbstractContro
 import { TranslatePipe } from '@ngx-translate/core';
 import { PaymentStore } from '../../../application/payment.store';
 import { ClientPlan } from '../../../domain/model/client-plan.entity';
+import { CurrentUserService } from '../../../../../shared/services/current-user.service';
 
 @Component({
   selector: 'app-subscriptions',
@@ -18,28 +19,67 @@ export class SubscriptionsComponent implements OnInit {
     It provides all signals (subscription, plans, loading, error)
     and all actions (loadSubscriptionByClientId, loadPlans, toggleAutoRenewal).
   */
-  protected readonly store = inject(PaymentStore);
+  protected readonly store      = inject(PaymentStore);
+  private  readonly currentUser = inject(CurrentUserService);
 
   /*
     Computed values derived from the subscription signal.
     They recalculate automatically whenever the subscription changes.
   */
-  protected readonly usagePercent = computed(() => {
+  private readonly effectiveRenewsOn = computed(() => {
     const sub = this.store.subscription();
-    if (!sub) return 0;
-    return Math.round((sub.usageHours / sub.maxHours) * 100);
+    if (!sub) return new Date();
+    if (!sub.renewsOn) return new Date();
+    const isAnnual = this.currentPlan()?.type === 'annual';
+    const date = new Date(sub.renewsOn);
+    if (Number.isNaN(date.getTime())) return new Date();
+    const now = new Date();
+    while (date <= now) {
+      if (isAnnual) {
+        date.setFullYear(date.getFullYear() + 1);
+      } else {
+        date.setMonth(date.getMonth() + 1);
+      }
+    }
+    return date;
   });
 
-  protected readonly hoursRemaining = computed(() => {
-    const sub = this.store.subscription();
-    if (!sub) return 0;
-    return sub.maxHours - sub.usageHours;
+  protected readonly hoursUntilRenewal = computed(() => {
+    const diffMs = this.effectiveRenewsOn().getTime() - Date.now();
+    return diffMs > 0 ? Math.round(diffMs / (1000 * 60 * 60)) : 0;
+  });
+
+  protected readonly totalHoursInBillingPeriod = computed(() => {
+    const renewsOn = this.effectiveRenewsOn();
+    const periodStart = new Date(renewsOn);
+    if (this.currentPlan()?.type === 'annual') {
+      periodStart.setFullYear(periodStart.getFullYear() - 1);
+    } else {
+      periodStart.setMonth(periodStart.getMonth() - 1);
+    }
+    return Math.round((renewsOn.getTime() - periodStart.getTime()) / (1000 * 60 * 60));
+  });
+
+  protected readonly hasPlanTimeRemaining = computed(() => {
+    const plan = this.currentPlan();
+    return plan?.type === 'monthly' || plan?.type === 'annual';
+  });
+
+  protected readonly hoursUsedInBillingPeriod = computed(() => {
+    const total = this.totalHoursInBillingPeriod();
+    const remaining = this.hoursUntilRenewal();
+    return Math.min(total, Math.max(0, total - remaining));
+  });
+
+  protected readonly timeUsedPercent = computed(() => {
+    const total = this.totalHoursInBillingPeriod();
+    const used = this.hoursUsedInBillingPeriod();
+    if (total === 0) return 0;
+    return Math.min(100, Math.max(0, Math.round((used / total) * 100)));
   });
 
   protected readonly renewsOnFormatted = computed(() => {
-    const sub = this.store.subscription();
-    if (!sub) return '';
-    return new Date(sub.renewsOn).toLocaleDateString('en-US', {
+    return this.effectiveRenewsOn().toLocaleDateString('en-US', {
       month: 'long', day: 'numeric', year: 'numeric'
     });
   });
@@ -99,11 +139,7 @@ export class SubscriptionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    /*
-      cli-001 is hardcoded for now — will be replaced with the
-      logged-in client id once authentication is implemented.
-    */
-    this.store.loadSubscriptionByClientId('cli-001');
+    this.store.loadSubscriptionByClientId(this.currentUser.clientId);
     this.store.loadPlans();
   }
 

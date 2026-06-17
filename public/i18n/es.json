@@ -59,6 +59,7 @@
       "next": "Siguiente",
       "tap-available-spot": "Toca un espacio disponible en el Nivel 1",
       "available": "Disponible",
+      "maintenance": "Mantenimiento",
       "selected": "Seleccionado",
       "back": "Atrás",
       "review": "Revisar",
@@ -111,21 +112,60 @@
       "available": "Disponible",
       "occupied": "Ocupado",
       "maintenance": "Mantenimiento",
-      "peak-hours-today": "Horas Pico Hoy",
+      "peak-hours-today": "Horas Pico Total",
       "revenue-yield": "Ingresos Estimados",
       "revenue-description": "Ingresos diarios proyectados según la ocupación y rotación actual.",
       "need-help": "¿Necesitas Ayuda Técnica?",
       "help-description": "Contacta a nuestro equipo de infraestructura IoT para recalibrar sensores.",
-      "open-ticket": "Abrir Ticket de Soporte"
+      "open-ticket": "Abrir Ticket de Soporte",
+      "no-blueprint-title": "No hay croquis subido",
+      "no-blueprint-subtitle": "Sube el croquis de tu estacionamiento en Configuración para ver el mapa en tiempo real.",
+      "no-blueprint-cta": "Ir a Configuración",
+      "spot-modal": {
+        "spot": "Spot",
+        "active-reservation": "Reserva activa",
+        "client": "Cliente",
+        "email": "Correo",
+        "phone": "Teléfono",
+        "vehicle": "Vehículo",
+        "plate": "Placa",
+        "booking": "Reserva",
+        "time": "Horario",
+        "amount": "Monto",
+        "empty-title": "Nadie ha reservado este spot aún",
+        "empty-desc": "Puedes bloquearlo para mantenimiento. Los clientes no podrán seleccionarlo hasta que un admin lo libere.",
+        "unlock": "Liberar spot",
+        "set-maintenance": "Poner en mantenimiento"
+      }
     },
     "reports": {
       "title": "Reportes",
-      "subtitle": "Consulta una serie de registros que incluyen accidentes dentro del edificio, reservas perdidas, etc.",
+      "subtitle": "Revisa los reportes enviados por clientes para tu estacionamiento.",
       "incident-prefix": "Incidente #",
+      "report-prefix": "Reporte #",
+      "booking-prefix": "Reserva",
+      "client-prefix": "Cliente",
       "spot-prefix": "Spot",
+      "empty": "Aún no hay reportes de clientes para este estacionamiento.",
+      "resolve-button": "Marcar resuelto",
+      "resolved-button": "Resuelto",
+      "status": {
+        "submitted": "Activo",
+        "resolved": "Resuelto"
+      },
+      "pagination": {
+        "summary": "Mostrando {{ start }}-{{ end }} de {{ total }} reportes",
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "page": "Página {{ page }} de {{ total }}"
+      },
       "types": {
         "unauthorised-parking": "Estacionamiento no autorizado",
-        "payment-failure": "Fallo en el pago"
+        "payment-failure": "Fallo en el pago",
+        "safety-concern": "Problema de seguridad",
+        "maintenance-issue": "Problema de mantenimiento",
+        "billing-dispute": "Disputa de facturación",
+        "other": "Otro"
       }
     },
     "employees": {
@@ -172,6 +212,12 @@
         "title": "Aún no hay empleados",
         "message": "Agrega tu primer empleado con el botón de arriba y aparecerá aquí."
       },
+      "pagination": {
+        "summary": "Mostrando {{ start }}-{{ end }} de {{ total }} empleados",
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "page": "Página {{ page }} de {{ total }}"
+      },
       "snackbar": {
         "create-success": "Empleado agregado correctamente.",
         "create-error": "No pudimos agregar al empleado. Inténtalo de nuevo.",
@@ -197,8 +243,9 @@
       "active": "Activo"
     },
     "usage": {
-      "label": "Uso del mes actual",
-      "hours-remaining": "horas restantes · se reinicia el 1 de mayo"
+      "label": "Tiempo usado del plan",
+      "hours-remaining": "horas restantes hasta la renovación",
+      "hours-used": "horas usadas en este periodo"
     },
     "stats": {
       "sessions": "Sesiones",
@@ -220,6 +267,7 @@
       "current": "Plan Actual",
       "switch": "Cambiar Plan",
       "upgrade": "Mejorar",
+      "discount-badge": "{{ percent }}% OFF en reservas",
       "free": {
         "name": "Plan Gratuito (Básico)",
         "description": "Diseñado para usuarios ocasionales.",
@@ -288,6 +336,7 @@
     "spot": "Espacio",
     "btn-report": "Reportar",
     "btn-rate": "Calificar",
+    "btn-edit-rate": "Editar calificación",
     "modal": {
       "cancel": "Cancelar",
       "rate": {
@@ -307,6 +356,12 @@
         "billing-dispute": "Disputa de facturación",
         "other": "Otro"
       }
+    },
+    "pagination": {
+      "summary": "Mostrando {{ start }}-{{ end }} de {{ total }} reservas",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "page": "Página {{ page }} de {{ total }}"
     }
   },
 
@@ -351,6 +406,12 @@
     "actions": {
       "pdf": "PDF",
       "email": "Correo"
+    },
+    "pagination": {
+      "summary": "Mostrando {{ start }}-{{ end }} de {{ total }} recibos",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "page": "Página {{ page }} de {{ total }}"
     }
   },
 
@@ -385,7 +446,12 @@
       "error-duplicate": "Ya existe un croquis con ese nombre.",
       "error-type": "Solo se permiten imágenes PNG, JPG y WebP.",
       "error-size": "La imagen debe pesar menos de 1 MB.",
-      "error-storage": "No hay suficiente espacio en el navegador. Elimina un croquis e intenta de nuevo."
+      "error-storage": "No se pudo guardar el croquis. Intenta de nuevo.",
+      "delete-dialog-title": "Eliminar Croquis",
+      "delete-dialog-subtitle": "Selecciona el croquis que deseas eliminar. Esta acción no se puede deshacer.",
+      "select-label": "Croquis",
+      "select-placeholder": "Selecciona un croquis",
+      "delete-btn": "Eliminar"
     }
   },
 
@@ -403,11 +469,14 @@
       "vs-yesterday": "vs ayer",
       "peak-hour": "Hora Pico",
       "peak-note": "Mayor ocupación durante el día",
-      "total-revenue": "Ingresos Totales",
+      "total-revenue": "Ingresos Estimados",
       "projected": "proyectado",
       "system-health": "Salud del Sistema",
       "all-sensors": "Todos los sensores funcionan correctamente",
-      "sensors-warning": "Algunos sensores necesitan atención"
+      "sensors-warning": "Algunos sensores necesitan atención",
+      "spots-in-maintenance": "espacios en mantenimiento",
+      "optimum": "Óptimo",
+      "maintenance": "Mantenimiento"
     },
     "charts": {
       "occupancy-title": "Ocupación por Hora",

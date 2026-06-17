@@ -1,317 +1,116 @@
-{
-  "admins": [
+﻿{
+  "users": [
     {
-      "id": "adm-001",
+      "id": "usr-001",
       "firstName": "Piero",
       "lastName": "Quiroz Montoya",
       "email": "piero.quiroz@spotgo.com",
       "phone": "+51 999 111 222",
-      "nationalId": "45678901",
-      "country": "Peru",
       "city": "Lima",
-      "password": "hashed_password",
       "parkingName": "Parking Central Lima",
-      "parkingAddress": "Av. Javier Prado Este 123, San Isidro",
-      "ruc": "20123456789",
-      "totalSpaces": 120,
-      "totalFloors": 3,
-      "operatingHours": "24/7",
-      "subscribedSensors": [
-        "occupancy",
-        "entry-exit",
-        "anpr-camera"
-      ],
-      "systemStatus": "active",
-      "createdAt": "2026-01-10T08:00:00Z"
+      "parkingId": "prk-001"
     },
     {
-      "id": "adm-002",
+      "id": "usr-002",
       "firstName": "Juan",
       "lastName": "Quispe Mamani",
       "email": "juan.quispe@spotgo.com",
       "phone": "+51 999 333 444",
-      "nationalId": "32109876",
-      "country": "Peru",
       "city": "Lima",
-      "password": "hashed_password",
       "parkingName": "SpotGo Miraflores",
-      "parkingAddress": "Calle Berlín 450, Miraflores",
-      "ruc": "20987654321",
-      "totalSpaces": 80,
-      "totalFloors": 2,
-      "operatingHours": "06:00-22:00",
-      "subscribedSensors": [
-        "occupancy",
-        "environmental"
-      ],
-      "systemStatus": "active",
-      "createdAt": "2026-02-15T09:30:00Z"
-    }
-  ],
-  "clients": [
+      "parkingId": "prk-002"
+    },
     {
-      "id": "cli-001",
+      "id": "usr-003",
       "firstName": "María",
       "lastName": "García López",
       "email": "maria.garcia@gmail.com",
       "phone": "+51 988 777 666",
-      "nationalId": "87654321",
-      "city": "Lima",
-      "password": "hashed_password",
-      "licensePlate": "ABC-123",
-      "vehicleType": "Car / Sedan",
-      "brand": "Toyota",
-      "model": "Corolla",
-      "year": 2022,
-      "subscriptionPlan": "monthly",
-      "parkingId": "prk-001",
-      "createdAt": "2026-03-01T10:00:00Z"
+      "city": "",
+      "parkingName": "",
+      "parkingId": null
     },
     {
-      "id": "cli-002",
+      "id": "usr-004",
       "firstName": "Carlos",
       "lastName": "Mendoza Torres",
       "email": "carlos.mendoza@gmail.com",
       "phone": "+51 977 555 444",
-      "nationalId": "12398765",
-      "city": "Lima",
-      "password": "hashed_password",
-      "licensePlate": "XYZ-456",
-      "vehicleType": "SUV / Pickup",
-      "brand": "Hyundai",
-      "model": "Tucson",
-      "year": 2023,
-      "subscriptionPlan": "annual",
-      "parkingId": "prk-001",
-      "createdAt": "2026-03-05T11:15:00Z"
+      "city": "",
+      "parkingName": "",
+      "parkingId": null
     }
   ],
-  "sensors": [
+  "roles": [
     {
-      "id": "sen-001",
-      "type": "occupancy",
-      "name": "Occupancy Sensor",
-      "description": "Detects space availability per spot in real time",
-      "tier": "live",
-      "active": true
+      "id": "rol-001",
+      "name": "admin",
+      "description": "Parking lot administrator"
     },
     {
-      "id": "sen-002",
-      "type": "entry-exit",
-      "name": "Entry / Exit Sensor",
-      "description": "Vehicle flow control and automatic counting",
-      "tier": "live",
-      "active": true
+      "id": "rol-002",
+      "name": "client",
+      "description": "Parking space user"
+    }
+  ],
+  "userRoles": [
+    {
+      "id": "ur-001",
+      "userId": "usr-001",
+      "roleId": "rol-001"
     },
     {
-      "id": "sen-003",
-      "type": "anpr-camera",
-      "name": "Camera / ANPR",
-      "description": "License plate recognition and vehicle detection",
-      "tier": "premium",
-      "active": true
+      "id": "ur-002",
+      "userId": "usr-002",
+      "roleId": "rol-001"
     },
     {
-      "id": "sen-004",
-      "type": "environmental",
-      "name": "Environmental Sensor",
-      "description": "CO₂, temperature and humidity per floor",
-      "tier": "premium",
-      "active": true
+      "id": "ur-003",
+      "userId": "usr-003",
+      "roleId": "rol-002"
+    },
+    {
+      "id": "ur-004",
+      "userId": "usr-004",
+      "roleId": "rol-002"
     }
   ],
   "parkings": [
     {
       "id": "prk-001",
-      "adminId": "adm-001",
+      "adminId": "usr-001",
       "name": "Parking Central Lima",
       "address": "Av. Javier Prado Este 123, San Isidro",
       "city": "Lima",
-      "totalSpaces": 120,
-      "availableSpaces": 34,
-      "totalFloors": 3,
+      "totalSpaces": 28,
+      "availableSpaces": 27,
+      "totalFloors": 1,
       "averageOccupancy": 84.2,
       "occupancyTrendPercent": 5.3,
       "peakHour": "14:00",
       "totalRevenue": 4200,
       "systemStatus": "active",
-      "rating": 4,
+      "rating": 1,
       "pricePerHour": 3,
       "revenueTrendPercent": 8.7,
       "totalCapacity": 120,
-      "efficiencyIndex": 92.5,
-      "occupancyByHour": [
-        {
-          "hour": "06:00",
-          "intensity": 20
-        },
-        {
-          "hour": "09:00",
-          "intensity": 45
-        },
-        {
-          "hour": "12:00",
-          "intensity": 70
-        },
-        {
-          "hour": "15:00",
-          "intensity": 95
-        },
-        {
-          "hour": "18:00",
-          "intensity": 85
-        },
-        {
-          "hour": "21:00",
-          "intensity": 40
-        },
-        {
-          "hour": "24:00",
-          "intensity": 15
-        }
-      ],
-      "weeklyTrends": [
-        {
-          "day": "Mon",
-          "value": 0.6
-        },
-        {
-          "day": "Tue",
-          "value": 0.7
-        },
-        {
-          "day": "Wed",
-          "value": 0.8
-        },
-        {
-          "day": "Thu",
-          "value": 0.9
-        },
-        {
-          "day": "Fri",
-          "value": 0.95
-        },
-        {
-          "day": "Sat",
-          "value": 0.75
-        },
-        {
-          "day": "Sun",
-          "value": 0.5
-        }
-      ]
+      "efficiencyIndex": 92.5
     },
     {
       "id": "prk-002",
-      "adminId": "adm-002",
+      "adminId": "usr-002",
       "name": "SpotGo Miraflores",
       "address": "Calle Berlín 450, Miraflores",
       "city": "Lima",
-      "totalSpaces": 80,
-      "availableSpaces": 12,
-      "totalFloors": 2,
+      "totalSpaces": 28,
+      "availableSpaces": 27,
+      "totalFloors": 1,
       "averageOccupancy": 72.5,
       "peakHour": "12:00",
       "totalRevenue": 2800,
       "systemStatus": "active",
-      "rating": 4.2,
+      "rating": 3,
       "pricePerHour": 2.8
-    },
-    {
-      "id": "prk-003",
-      "adminId": "adm-001",
-      "name": "Mall Parking Complex",
-      "address": "500 Commerce Dr",
-      "city": "Lima",
-      "totalSpaces": 60,
-      "availableSpaces": 8,
-      "totalFloors": 2,
-      "averageOccupancy": 86.7,
-      "peakHour": "13:00",
-      "totalRevenue": 1900,
-      "systemStatus": "active",
-      "rating": 4.7,
-      "pricePerHour": 4
-    },
-    {
-      "id": "prk-004",
-      "adminId": "adm-002",
-      "name": "Station Parking",
-      "address": "75 Transit Ave",
-      "city": "Lima",
-      "totalSpaces": 50,
-      "availableSpaces": 32,
-      "totalFloors": 1,
-      "averageOccupancy": 36,
-      "peakHour": "08:00",
-      "totalRevenue": 980,
-      "systemStatus": "active",
-      "rating": 4,
-      "pricePerHour": 2.5
-    },
-    {
-      "id": "prk-005",
-      "adminId": "adm-001",
-      "name": "Riverside Lot",
-      "address": "900 River Rd",
-      "city": "Lima",
-      "totalSpaces": 80,
-      "availableSpaces": 45,
-      "totalFloors": 1,
-      "averageOccupancy": 43.8,
-      "peakHour": "11:00",
-      "totalRevenue": 1100,
-      "systemStatus": "active",
-      "rating": 3.8,
-      "pricePerHour": 2
-    },
-    {
-      "id": "prk-006",
-      "adminId": "adm-002",
-      "name": "Airport Express Lot",
-      "address": "1 Airport Blvd",
-      "city": "Lima",
-      "totalSpaces": 200,
-      "availableSpaces": 3,
-      "totalFloors": 4,
-      "averageOccupancy": 98.5,
-      "peakHour": "06:00",
-      "totalRevenue": 8500,
-      "systemStatus": "active",
-      "rating": 4.3,
-      "pricePerHour": 8
-    },
-    {
-      "id": "prk-007",
-      "adminId": "adm-001",
-      "name": "Central Plaza Parking",
-      "address": "123 Main St, Downtown",
-      "city": "Lima",
-      "totalSpaces": 40,
-      "availableSpaces": 24,
-      "totalFloors": 1,
-      "averageOccupancy": 40,
-      "peakHour": "12:00",
-      "totalRevenue": 1200,
-      "systemStatus": "active",
-      "rating": 5,
-      "pricePerHour": 3
-    },
-    {
-      "id": "prk-008",
-      "adminId": "adm-002",
-      "name": "Downtown Garage",
-      "address": "456 Center Ave",
-      "city": "Lima",
-      "totalSpaces": 35,
-      "availableSpaces": 15,
-      "totalFloors": 2,
-      "averageOccupancy": 57.1,
-      "peakHour": "15:00",
-      "totalRevenue": 1750,
-      "systemStatus": "active",
-      "rating": 4,
-      "pricePerHour": 5
     }
   ],
   "employees": [
@@ -369,127 +168,98 @@
       "shiftStart": "09:00",
       "shiftEnd": "21:00",
       "status": "on-duty"
+    },
+    {
+      "id": "emp-006",
+      "parkingId": "prk-001",
+      "firstName": "Nes",
+      "lastName": "Rojas",
+      "role": "guard",
+      "schedule": "all-week",
+      "shiftStart": "09:00",
+      "shiftEnd": "17:00",
+      "bookingCode": "a23",
+      "status": "on-duty"
     }
   ],
   "reservations": [
     {
-      "id": "res-001",
-      "clientId": "cli-001",
+      "id": "71e4d2d5-9382-4bc4-87a8-f47e0295af5a",
+      "clientId": "usr-004",
       "parkingId": "prk-001",
-      "code": "SPG-J3P9QR",
-      "spot": "L2-03",
-      "startDate": "2026-04-25T09:30:00Z",
-      "endDate": "2026-04-25T11:30:00Z",
+      "code": "SPG-27F0F3",
+      "spot": "B5",
+      "startDate": "2026-06-16T20:46:00.000Z",
+      "endDate": "2026-06-16T20:47:00.000Z",
       "status": "completed",
-      "amount": 15,
+      "amount": 0.04,
+      "baseAmount": 0.05,
       "rating": null
     },
     {
-      "id": "res-002",
-      "code": "SPG-J3P9QT",
-      "clientId": "cli-002",
+      "id": "799535ce-36ef-47cc-b92b-659921de065d",
+      "clientId": "usr-004",
       "parkingId": "prk-001",
-      "spot": "L2-02",
-      "startDate": "2026-04-28T11:00:00Z",
-      "endDate": "2026-04-28T13:00:00Z",
+      "code": "SPG-864B48",
+      "spot": "A2",
+      "startDate": "2026-06-16T20:49:00.000Z",
+      "endDate": "2026-06-16T20:50:00.000Z",
       "status": "completed",
-      "amount": 15,
+      "amount": 0.05,
+      "baseAmount": 0.05,
       "rating": null
     },
     {
-      "id": "res-003",
-      "code": "SPG-A1B2C3",
-      "clientId": "cli-001",
-      "parkingId": "prk-007",
-      "spot": "L1-08",
-      "startDate": "2026-04-12T09:00:00Z",
-      "endDate": "2026-04-12T13:00:00Z",
+      "id": "e82559a1-6104-4674-bffc-9a805e5e737d",
+      "clientId": "usr-003",
+      "parkingId": "prk-001",
+      "code": "SPG-2ED920",
+      "spot": "A2",
+      "startDate": "2026-06-16T22:04:00.000Z",
+      "endDate": "2026-06-16T22:05:00.000Z",
       "status": "completed",
-      "amount": 12,
-      "rating": 5
+      "amount": 0.04,
+      "baseAmount": 0.05,
+      "rating": 1
     },
     {
-      "id": "res-004",
-      "code": "SPG-D4E5F6",
-      "clientId": "cli-001",
-      "parkingId": "prk-008",
-      "spot": "L3-22",
-      "startDate": "2026-04-10T14:00:00Z",
-      "endDate": "2026-04-10T18:00:00Z",
-      "status": "completed",
-      "amount": 20,
-      "rating": 4
+      "id": "c9fdbba4-991a-471e-a81e-37f9ecaba08c",
+      "clientId": "usr-003",
+      "parkingId": "prk-001",
+      "code": "SPG-F812CF",
+      "spot": "B4",
+      "startDate": "2026-06-16T22:05:00.000Z",
+      "endDate": "2026-06-16T23:35:00.000Z",
+      "status": "cancelled",
+      "amount": 3.83,
+      "baseAmount": 4.5,
+      "rating": 1
     },
     {
-      "id": "res-005",
-      "code": "SPG-G7H8I9",
-      "clientId": "cli-001",
-      "parkingId": "prk-003",
-      "spot": "L2-15",
-      "startDate": "2026-04-08T10:00:00Z",
-      "endDate": "2026-04-08T12:00:00Z",
+      "id": "3d7e7abd-0e16-48e9-ab23-0e99be59f733",
+      "clientId": "usr-004",
+      "parkingId": "prk-001",
+      "code": "SPG-5F9E6B",
+      "spot": "A3",
+      "startDate": "2026-06-16T23:49:00.000Z",
+      "endDate": "2026-06-16T23:50:00.000Z",
       "status": "completed",
-      "amount": 8,
+      "amount": 0.04,
+      "baseAmount": 0.05,
       "rating": null
     },
     {
-      "id": "res-006",
-      "code": "SPG-J1K2L3",
-      "clientId": "cli-001",
-      "parkingId": "prk-005",
-      "spot": "A-05",
-      "startDate": "2026-04-05T08:00:00Z",
-      "endDate": "2026-04-05T17:00:00Z",
-      "status": "completed",
-      "amount": 18,
-      "rating": 3
-    },
-    {
-      "id": "res-007",
-      "code": "SPG-M4N5O6",
-      "clientId": "cli-001",
-      "parkingId": "prk-004",
-      "spot": "B-12",
-      "startDate": "2026-04-01T07:00:00Z",
-      "endDate": "2026-04-01T09:00:00Z",
-      "status": "completed",
-      "amount": 5,
+      "id": "2d1ad901-f401-41dc-beb2-fe78c2a5553e",
+      "clientId": "usr-004",
+      "parkingId": "prk-002",
+      "code": "SPG-DAE479",
+      "spot": "A5",
+      "startDate": "2026-06-16T23:54:00.000Z",
+      "endDate": "2026-06-16T23:55:00.000Z",
+      "status": "active",
+      "amount": 0.04,
+      "baseAmount": 0.05,
       "rating": null
-    }
-  ],
-  "incidents": [
-    {
-      "id": "inc-001",
-      "code": "SPG-J3P9QR",
-      "parkingId": "prk-001",
-      "type": "unauthorised-parking",
-      "spot": "L2-03",
-      "date": "2026-04-25",
-      "time": "09:30",
-      "status": "registered",
-      "severity": "high"
-    },
-    {
-      "id": "inc-002",
-      "code": "SPG-J3P9QT",
-      "parkingId": "prk-001",
-      "type": "unauthorised-parking",
-      "spot": "L2-02",
-      "date": "2026-04-28",
-      "time": "11:00",
-      "status": "registered",
-      "severity": "high"
-    },
-    {
-      "id": "inc-003",
-      "code": "SPG-J3P9QS",
-      "parkingId": "prk-001",
-      "type": "payment-failure",
-      "spot": "L2-03",
-      "date": "2026-05-02",
-      "time": "08:45",
-      "status": "registered",
-      "severity": "high"
     }
   ],
   "clientPlans": [
@@ -500,6 +270,7 @@
       "monthlyPrice": 0,
       "description": "Designed for occasional users.",
       "reservationsPerMonth": 3,
+      "discountPercent": 0,
       "features": [
         "Real-time parking availability",
         "Parking search",
@@ -514,12 +285,14 @@
       "monthlyPrice": 150,
       "description": "Designed for frequent users.",
       "reservationsPerMonth": null,
+      "discountPercent": 15,
       "features": [
-        "Unlimited usage for 30 days",
-        "Entry and exit without hourly payment",
+        "Real-time parking availability",
+        "Parking search",
+        "Spot reservation",
+        "15% discount on every reservation",
         "Access to usage history receipts",
-        "Free reservation extensions",
-        "Faster reservation process"
+        "Free reservation extensions"
       ]
     },
     {
@@ -529,392 +302,995 @@
       "monthlyPrice": 400,
       "description": "Designed for long-term or high-frequency users.",
       "reservationsPerMonth": null,
+      "discountPercent": 25,
       "features": [
         "All Monthly Plan benefits",
+        "25% discount on every reservation",
         "Valid for 12 months",
-        "Discount compared to monthly payments",
         "Higher priority during peak hours",
         "Preferred access to specific zones"
       ]
     }
   ],
-  "parkingSnapshot": {
-    "facility": {
-      "name": "Main Terminal Hub",
-      "sector": "Sector 04-A Smart Grid",
-      "floor": "G01 (Ground)",
-      "lastUpdated": "04:10:01",
-      "live": true
-    },
-    "stats": {
-      "totalSpaces": 2480,
-      "currentlyAvailable": 1104,
-      "availableTrendPercent": 12,
-      "occupancyRate": 55.4,
-      "revenueYield": 12450,
-      "revenueTrendPercent": 4.2,
-      "peakHours": [
-        {
-          "hour": "06",
-          "intensity": 0.2
-        },
-        {
-          "hour": "09",
-          "intensity": 0.35
-        },
-        {
-          "hour": "12",
-          "intensity": 0.5
-        },
-        {
-          "hour": "15",
-          "intensity": 0.95
-        },
-        {
-          "hour": "18",
-          "intensity": 0.85
-        },
-        {
-          "hour": "21",
-          "intensity": 0.4
-        },
-        {
-          "hour": "24",
-          "intensity": 0.25
-        }
-      ]
-    },
-    "rows": [
-      {
-        "id": "A01",
-        "spots": [
-          {
-            "id": "A01-01",
-            "status": "available"
-          },
-          {
-            "id": "A01-02",
-            "status": "occupied"
-          },
-          {
-            "id": "A01-03",
-            "status": "occupied"
-          },
-          {
-            "id": "A01-04",
-            "status": "available"
-          },
-          {
-            "id": "A01-05",
-            "status": "available"
-          },
-          {
-            "id": "A01-06",
-            "status": "maintenance"
-          },
-          {
-            "id": "A01-07",
-            "status": "available"
-          },
-          {
-            "id": "A01-08",
-            "status": "occupied"
-          },
-          {
-            "id": "A01-09",
-            "status": "occupied"
-          },
-          {
-            "id": "A01-10",
-            "status": "available"
-          }
-        ]
-      },
-      {
-        "id": "B01",
-        "spots": [
-          {
-            "id": "B01-01",
-            "status": "occupied"
-          },
-          {
-            "id": "B01-02",
-            "status": "occupied"
-          },
-          {
-            "id": "B01-03",
-            "status": "occupied"
-          },
-          {
-            "id": "B01-04",
-            "status": "available"
-          },
-          {
-            "id": "B01-05",
-            "status": "available"
-          },
-          {
-            "id": "B01-06",
-            "status": "available"
-          },
-          {
-            "id": "B01-07",
-            "status": "occupied"
-          },
-          {
-            "id": "B01-08",
-            "status": "available"
-          },
-          {
-            "id": "B01-09",
-            "status": "maintenance"
-          },
-          {
-            "id": "B01-10",
-            "status": "occupied"
-          }
-        ]
-      },
-      {
-        "id": "C01",
-        "spots": [
-          {
-            "id": "C01-01",
-            "status": "occupied"
-          },
-          {
-            "id": "C01-02",
-            "status": "occupied"
-          },
-          {
-            "id": "C01-03",
-            "status": "available"
-          },
-          {
-            "id": "C01-04",
-            "status": "available"
-          },
-          {
-            "id": "C01-05",
-            "status": "maintenance"
-          },
-          {
-            "id": "C01-06",
-            "status": "available"
-          },
-          {
-            "id": "C01-07",
-            "status": "available"
-          },
-          {
-            "id": "C01-08",
-            "status": "available"
-          },
-          {
-            "id": "C01-09",
-            "status": "occupied"
-          },
-          {
-            "id": "C01-10",
-            "status": "occupied"
-          }
-        ]
-      }
-    ]
-  },
   "subscriptions": [
     {
       "id": "sub-001",
-      "clientId": "cli-001",
-      "planId": "pln-001",
+      "clientId": "usr-003",
+      "planId": "pln-002",
       "status": "active",
-      "renewsOn": "2026-05-01",
-      "pricePerMonth": 0,
-      "usageHours": 38,
-      "maxHours": 60,
-      "sessions": 14,
-      "savedThisMonth": 32.5,
-      "memberSince": "2026-01-01",
+      "renewsOn": "2026-07-16",
+      "pricePerMonth": 150,
+      "sessions": 1,
+      "savedThisMonth": 0.54,
+      "savingsMonth": "2026-06",
+      "memberSince": "2026-06-16",
       "autoRenewal": false,
       "paymentMethodLastFour": "3456",
       "paymentMethodExpiry": "12/28"
     },
     {
       "id": "sub-002",
-      "clientId": "cli-002",
-      "planId": "pln-003",
+      "clientId": "usr-004",
+      "planId": "pln-002",
       "status": "active",
-      "renewsOn": "2026-06-05",
-      "pricePerMonth": 400,
-      "usageHours": 20,
-      "maxHours": 60,
+      "renewsOn": "2026-07-17",
+      "pricePerMonth": 150,
       "sessions": 8,
-      "savedThisMonth": 15,
-      "memberSince": "2026-03-05",
+      "savedThisMonth": 0.03,
+      "savingsMonth": "2026-06",
+      "memberSince": "2026-06-17",
       "autoRenewal": false,
       "paymentMethodLastFour": "1234",
       "paymentMethodExpiry": "12/28"
     }
   ],
-  "spotUtilization": [
-    {
-      "id": "sut-001",
-      "parkingId": "prk-001",
-      "spotId": "L1-01",
-      "spotName": "L1-01",
-      "zone": "Level 1",
-      "type": "standard",
-      "status": "occupied",
-      "dailyTurnover": 8,
-      "peakUtilization": 95,
-      "revenueImpact": 120.5
-    },
-    {
-      "id": "sut-002",
-      "parkingId": "prk-001",
-      "spotId": "L1-02",
-      "spotName": "L1-02",
-      "zone": "Level 1",
-      "type": "ev",
-      "status": "available",
-      "dailyTurnover": 6,
-      "peakUtilization": 88,
-      "revenueImpact": 95.75
-    },
-    {
-      "id": "sut-003",
-      "parkingId": "prk-001",
-      "spotId": "L2-01",
-      "spotName": "L2-01",
-      "zone": "Level 2",
-      "type": "standard",
-      "status": "occupied",
-      "dailyTurnover": 7,
-      "peakUtilization": 92,
-      "revenueImpact": 110.25
-    },
-    {
-      "id": "sut-004",
-      "parkingId": "prk-001",
-      "spotId": "L2-02",
-      "spotName": "L2-02",
-      "zone": "Level 2",
-      "type": "standard",
-      "status": "maintenance",
-      "dailyTurnover": 5,
-      "peakUtilization": 75,
-      "revenueImpact": 85
-    },
-    {
-      "id": "sut-005",
-      "parkingId": "prk-001",
-      "spotId": "L3-01",
-      "spotName": "L3-01",
-      "zone": "Level 3",
-      "type": "ev",
-      "status": "occupied",
-      "dailyTurnover": 9,
-      "peakUtilization": 98,
-      "revenueImpact": 135.6
-    }
-  ],
   "receipts": [
     {
-      "id": "rec-001",
-      "clientId": "cli-001",
-      "invoiceNumber": "INV-2026-0412",
-      "locationName": "Central Plaza Parking",
-      "date": "2026-04-12",
-      "durationHours": 4,
-      "durationMinutes": 0,
+      "id": 1,
+      "clientId": "usr-004",
+      "invoiceNumber": "INV-20260616-SPG-27F0F3",
+      "locationName": "Parking Central Lima",
+      "date": "2026-06-16T20:46:00.000Z",
+      "durationHours": 0,
+      "durationMinutes": 1,
       "paymentMethod": "Visa •• 4242",
-      "bookingCode": "SPG-A1B2C3",
-      "amount": 12,
+      "bookingCode": "SPG-27F0F3",
+      "amount": 0.04,
       "status": "paid"
     },
     {
-      "id": "rec-002",
-      "clientId": "cli-001",
-      "invoiceNumber": "INV-2026-0410",
-      "locationName": "Downtown Garage",
-      "date": "2026-04-10",
-      "durationHours": 4,
-      "durationMinutes": 0,
-      "paymentMethod": "Mastercard •• 8821",
-      "bookingCode": "SPG-D4E5F6",
-      "amount": 20,
-      "status": "paid"
-    },
-    {
-      "id": "rec-003",
-      "clientId": "cli-001",
-      "invoiceNumber": "INV-2026-0408",
-      "locationName": "Mall Parking Complex",
-      "date": "2026-04-08",
-      "durationHours": 2,
-      "durationMinutes": 0,
-      "paymentMethod": "Apple Pay",
-      "bookingCode": "SPG-G7H8I9",
-      "amount": 8,
-      "status": "paid"
-    },
-    {
-      "id": "rec-004",
-      "clientId": "cli-001",
-      "invoiceNumber": "INV-2026-0405",
-      "locationName": "Riverside Lot",
-      "date": "2026-04-05",
-      "durationHours": 9,
-      "durationMinutes": 0,
+      "id": 2,
+      "clientId": "usr-004",
+      "invoiceNumber": "INV-20260616-SPG-864B48",
+      "locationName": "Parking Central Lima",
+      "date": "2026-06-16T20:49:00.000Z",
+      "durationHours": 0,
+      "durationMinutes": 1,
       "paymentMethod": "Visa •• 4242",
-      "bookingCode": "SPG-J1K2L3",
-      "amount": 18,
+      "bookingCode": "SPG-864B48",
+      "amount": 0.05,
       "status": "paid"
     },
     {
-      "id": "rec-005",
-      "clientId": "cli-001",
-      "invoiceNumber": "INV-2026-0401",
-      "locationName": "Station Parking",
-      "date": "2026-04-01",
-      "durationHours": 2,
-      "durationMinutes": 0,
-      "paymentMethod": "Mastercard •• 8821",
-      "bookingCode": "SPG-M4N5O6",
-      "amount": 5,
-      "status": "refunded"
+      "id": 3,
+      "clientId": "usr-003",
+      "invoiceNumber": "INV-20260616-SPG-2ED920",
+      "locationName": "Parking Central Lima",
+      "date": "2026-06-16T22:04:00.000Z",
+      "durationHours": 0,
+      "durationMinutes": 1,
+      "paymentMethod": "Visa •• 4242",
+      "bookingCode": "SPG-2ED920",
+      "amount": 0.04,
+      "status": "paid"
+    },
+    {
+      "id": 4,
+      "clientId": "usr-004",
+      "invoiceNumber": "INV-20260616-SPG-5F9E6B",
+      "locationName": "Parking Central Lima",
+      "date": "2026-06-16T23:49:00.000Z",
+      "durationHours": 0,
+      "durationMinutes": 1,
+      "paymentMethod": "Visa •• 4242",
+      "bookingCode": "SPG-5F9E6B",
+      "amount": 0.04,
+      "status": "paid"
+    },
+    {
+      "id": 5,
+      "clientId": "usr-004",
+      "invoiceNumber": "INV-20260616-SPG-DAE479",
+      "locationName": "SpotGo Miraflores",
+      "date": "2026-06-16T23:54:00.000Z",
+      "durationHours": 0,
+      "durationMinutes": 1,
+      "paymentMethod": "Visa •• 4242",
+      "bookingCode": "SPG-DAE479",
+      "amount": 0.04,
+      "status": "paid"
     }
   ],
-  "clientReports": [],
+  "clientReports": [
+    {
+      "clientId": "usr-003",
+      "parkingId": "prk-001",
+      "reservationId": "c9fdbba4-991a-471e-a81e-37f9ecaba08c",
+      "type": "safety-concern",
+      "date": "2026-06-16",
+      "status": "resolved",
+      "id": 1
+    },
+    {
+      "clientId": "usr-003",
+      "parkingId": "prk-001",
+      "reservationId": "e82559a1-6104-4674-bffc-9a805e5e737d",
+      "type": "maintenance-issue",
+      "date": "2026-06-16",
+      "status": "resolved",
+      "id": 2
+    }
+  ],
   "favorites": [
     {
-      "id": "fav-001",
-      "clientId": "cli-001",
-      "parkingId": "prk-001",
-      "distanceMi": 0.3,
-      "lastVisited": "2026-05-12T10:00:00Z"
-    },
-    {
-      "id": "fav-003",
-      "clientId": "cli-001",
-      "parkingId": "prk-004",
-      "distanceMi": 1.5,
-      "lastVisited": "2026-05-11T09:00:00Z"
-    },
-    {
-      "id": "fav-004",
-      "clientId": "cli-001",
-      "parkingId": "prk-005",
-      "distanceMi": 0.8,
-      "lastVisited": "2026-04-30T16:00:00Z"
-    },
-    {
-      "id": "fav-005",
-      "clientId": "cli-001",
-      "parkingId": "prk-006",
-      "distanceMi": 3.2,
-      "lastVisited": "2026-04-14T11:00:00Z"
+      "id": 1,
+      "clientId": "usr-003",
+      "parkingId": "prk-002",
+      "distanceMi": 0,
+      "lastVisited": "2026-06-16T21:49:02.253Z"
     }
   ],
-  "$schema": "./node_modules/json-server/schema.json"
+  "blueprints": [
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "adminId": "usr-002",
+      "parkingId": "prk-002",
+      "name": "Croquis2",
+      "dataUrl": ""
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "adminId": "usr-001",
+      "parkingId": "prk-001",
+      "name": "Croquis3",
+      "dataUrl": "data:image/png;base64,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"
+    }
+  ],
+  "occupancyByHour": [
+    {
+      "id": "occ-001",
+      "parkingId": "prk-001",
+      "hour": "06:00",
+      "intensity": 20
+    },
+    {
+      "id": "occ-002",
+      "parkingId": "prk-001",
+      "hour": "09:00",
+      "intensity": 45
+    },
+    {
+      "id": "occ-003",
+      "parkingId": "prk-001",
+      "hour": "12:00",
+      "intensity": 70
+    },
+    {
+      "id": "occ-004",
+      "parkingId": "prk-001",
+      "hour": "15:00",
+      "intensity": 95
+    },
+    {
+      "id": "occ-005",
+      "parkingId": "prk-001",
+      "hour": "18:00",
+      "intensity": 85
+    },
+    {
+      "id": "occ-006",
+      "parkingId": "prk-001",
+      "hour": "21:00",
+      "intensity": 40
+    },
+    {
+      "id": "occ-007",
+      "parkingId": "prk-001",
+      "hour": "24:00",
+      "intensity": 15
+    }
+  ],
+  "weeklyTrends": [
+    {
+      "id": "wt-001",
+      "parkingId": "prk-001",
+      "day": "Mon",
+      "value": 0.6
+    },
+    {
+      "id": "wt-002",
+      "parkingId": "prk-001",
+      "day": "Tue",
+      "value": 0.7
+    },
+    {
+      "id": "wt-003",
+      "parkingId": "prk-001",
+      "day": "Wed",
+      "value": 0.8
+    },
+    {
+      "id": "wt-004",
+      "parkingId": "prk-001",
+      "day": "Thu",
+      "value": 0.9
+    },
+    {
+      "id": "wt-005",
+      "parkingId": "prk-001",
+      "day": "Fri",
+      "value": 0.95
+    },
+    {
+      "id": "wt-006",
+      "parkingId": "prk-001",
+      "day": "Sat",
+      "value": 0.75
+    },
+    {
+      "id": "wt-007",
+      "parkingId": "prk-001",
+      "day": "Sun",
+      "value": 0.5
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json",
+  "detectedSpots": [
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r0c0",
+      "localId": 1,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 0,
+      "col": 0,
+      "x_pct": 5.84,
+      "y_pct": 8.05,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r0c1",
+      "localId": 2,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 0,
+      "col": 1,
+      "x_pct": 16.88,
+      "y_pct": 8.39,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r0c2",
+      "localId": 3,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 0,
+      "col": 2,
+      "x_pct": 28.08,
+      "y_pct": 8.61,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r0c3",
+      "localId": 4,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 0,
+      "col": 3,
+      "x_pct": 39.43,
+      "y_pct": 8.61,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r0c4",
+      "localId": 5,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 0,
+      "col": 4,
+      "x_pct": 50.71,
+      "y_pct": 8.72,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "occupied"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r0c5",
+      "localId": 6,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 0,
+      "col": 5,
+      "x_pct": 61.83,
+      "y_pct": 8.84,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r0c6",
+      "localId": 7,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 0,
+      "col": 6,
+      "x_pct": 72.87,
+      "y_pct": 8.5,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r0c7",
+      "localId": 8,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 0,
+      "col": 7,
+      "x_pct": 83.83,
+      "y_pct": 8.39,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r1c0",
+      "localId": 9,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 1,
+      "col": 0,
+      "x_pct": 5.76,
+      "y_pct": 31.77,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r1c1",
+      "localId": 10,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 1,
+      "col": 1,
+      "x_pct": 16.64,
+      "y_pct": 31.66,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r1c2",
+      "localId": 11,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 1,
+      "col": 2,
+      "x_pct": 27.84,
+      "y_pct": 32.55,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r1c5",
+      "localId": 12,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 1,
+      "col": 5,
+      "x_pct": 61.75,
+      "y_pct": 32.21,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r1c6",
+      "localId": 13,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 1,
+      "col": 6,
+      "x_pct": 72.95,
+      "y_pct": 32.55,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r1c7",
+      "localId": 14,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 1,
+      "col": 7,
+      "x_pct": 83.83,
+      "y_pct": 32.66,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r2c0",
+      "localId": 15,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 2,
+      "col": 0,
+      "x_pct": 5.99,
+      "y_pct": 54.03,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r2c1",
+      "localId": 16,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 2,
+      "col": 1,
+      "x_pct": 16.56,
+      "y_pct": 53.69,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r2c2",
+      "localId": 17,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 2,
+      "col": 2,
+      "x_pct": 28,
+      "y_pct": 54.47,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r2c5",
+      "localId": 18,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 2,
+      "col": 5,
+      "x_pct": 61.99,
+      "y_pct": 54.47,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r2c6",
+      "localId": 19,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 2,
+      "col": 6,
+      "x_pct": 72.63,
+      "y_pct": 54.47,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r2c7",
+      "localId": 20,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 2,
+      "col": 7,
+      "x_pct": 83.75,
+      "y_pct": 54.36,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r3c0",
+      "localId": 21,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 3,
+      "col": 0,
+      "x_pct": 6.15,
+      "y_pct": 74.05,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r3c1",
+      "localId": 22,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 3,
+      "col": 1,
+      "x_pct": 17.19,
+      "y_pct": 74.72,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r3c2",
+      "localId": 23,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 3,
+      "col": 2,
+      "x_pct": 28,
+      "y_pct": 74.38,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r3c3",
+      "localId": 24,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 3,
+      "col": 3,
+      "x_pct": 39.27,
+      "y_pct": 75.06,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r3c4",
+      "localId": 25,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 3,
+      "col": 4,
+      "x_pct": 50.95,
+      "y_pct": 75.06,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r3c5",
+      "localId": 26,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 3,
+      "col": 5,
+      "x_pct": 62.22,
+      "y_pct": 75.28,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r3c6",
+      "localId": 27,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 3,
+      "col": 6,
+      "x_pct": 73.03,
+      "y_pct": 75.28,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5__r3c7",
+      "localId": 28,
+      "blueprintId": "94fd8d55-3f21-4ec1-a676-d8c709d90bd5",
+      "parkingId": "prk-002",
+      "row": 3,
+      "col": 7,
+      "x_pct": 82.97,
+      "y_pct": 74.61,
+      "w_pct": 7.73,
+      "h_pct": 16.33,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r0c0",
+      "localId": 1,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 0,
+      "col": 0,
+      "x_pct": 6.29,
+      "y_pct": 8.04,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r0c1",
+      "localId": 2,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 0,
+      "col": 1,
+      "x_pct": 17.3,
+      "y_pct": 8.37,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r0c2",
+      "localId": 3,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 0,
+      "col": 2,
+      "x_pct": 28.46,
+      "y_pct": 8.59,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r0c5",
+      "localId": 4,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 0,
+      "col": 5,
+      "x_pct": 62.19,
+      "y_pct": 8.82,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r0c6",
+      "localId": 5,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 0,
+      "col": 6,
+      "x_pct": 73.19,
+      "y_pct": 8.48,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r0c7",
+      "localId": 6,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 0,
+      "col": 7,
+      "x_pct": 84.12,
+      "y_pct": 8.37,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r1c0",
+      "localId": 7,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 1,
+      "col": 0,
+      "x_pct": 6.21,
+      "y_pct": 31.7,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r1c1",
+      "localId": 8,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 1,
+      "col": 1,
+      "x_pct": 17.06,
+      "y_pct": 31.58,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r1c2",
+      "localId": 9,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 1,
+      "col": 2,
+      "x_pct": 28.22,
+      "y_pct": 32.48,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r1c3",
+      "localId": 10,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 1,
+      "col": 3,
+      "x_pct": 39.07,
+      "y_pct": 32.59,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "maintenance"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r1c4",
+      "localId": 11,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 1,
+      "col": 4,
+      "x_pct": 50.24,
+      "y_pct": 32.7,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r1c5",
+      "localId": 12,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 1,
+      "col": 5,
+      "x_pct": 62.11,
+      "y_pct": 32.14,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r1c6",
+      "localId": 13,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 1,
+      "col": 6,
+      "x_pct": 73.27,
+      "y_pct": 32.48,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r1c7",
+      "localId": 14,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 1,
+      "col": 7,
+      "x_pct": 84.12,
+      "y_pct": 32.59,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r2c0",
+      "localId": 15,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 2,
+      "col": 0,
+      "x_pct": 6.45,
+      "y_pct": 54.02,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r2c1",
+      "localId": 16,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 2,
+      "col": 1,
+      "x_pct": 16.98,
+      "y_pct": 53.68,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r2c2",
+      "localId": 17,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 2,
+      "col": 2,
+      "x_pct": 28.38,
+      "y_pct": 54.46,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r2c3",
+      "localId": 18,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 2,
+      "col": 3,
+      "x_pct": 38.84,
+      "y_pct": 54.58,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r2c4",
+      "localId": 19,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 2,
+      "col": 4,
+      "x_pct": 50.31,
+      "y_pct": 54.8,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r2c5",
+      "localId": 20,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 2,
+      "col": 5,
+      "x_pct": 62.34,
+      "y_pct": 54.46,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r2c6",
+      "localId": 21,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 2,
+      "col": 6,
+      "x_pct": 72.96,
+      "y_pct": 54.46,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r2c7",
+      "localId": 22,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 2,
+      "col": 7,
+      "x_pct": 84.04,
+      "y_pct": 54.35,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r3c0",
+      "localId": 23,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 3,
+      "col": 0,
+      "x_pct": 6.6,
+      "y_pct": 74,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r3c1",
+      "localId": 24,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 3,
+      "col": 1,
+      "x_pct": 17.61,
+      "y_pct": 74.67,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r3c2",
+      "localId": 25,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 3,
+      "col": 2,
+      "x_pct": 28.38,
+      "y_pct": 74.33,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r3c5",
+      "localId": 26,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 3,
+      "col": 5,
+      "x_pct": 62.58,
+      "y_pct": 75.22,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r3c6",
+      "localId": 27,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 3,
+      "col": 6,
+      "x_pct": 73.35,
+      "y_pct": 75.22,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    },
+    {
+      "id": "4172db97-ec70-4518-b972-e47e863a1d68__r3c7",
+      "localId": 28,
+      "blueprintId": "4172db97-ec70-4518-b972-e47e863a1d68",
+      "parkingId": "prk-001",
+      "row": 3,
+      "col": 7,
+      "x_pct": 83.25,
+      "y_pct": 74.55,
+      "w_pct": 7.7,
+      "h_pct": 16.29,
+      "status": "available"
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "veh-001",
+      "clientId": "usr-003",
+      "licensePlate": "ABC-123",
+      "vehicleType": "Car / Sedan",
+      "brand": "Toyota",
+      "model": "Corolla"
+    },
+    {
+      "id": "veh-002",
+      "clientId": "usr-004",
+      "licensePlate": "XYZ-456",
+      "vehicleType": "SUV / Pickup",
+      "brand": "Hyundai",
+      "model": "Tucson"
+    }
+  ]
 }
