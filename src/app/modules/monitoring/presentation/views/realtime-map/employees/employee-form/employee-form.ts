@@ -28,7 +28,6 @@ import {
   EmployeeSchedule,
   EmployeeStatus,
 } from '../../../../../domain/model/employee.entity';
-import { MonitoringStore } from '../../../../../application/monitoring.store';
 
 /*
   Dialog data shape consumed by the form. Create mode does not need
@@ -58,7 +57,6 @@ export interface EmployeeFormData {
 export class EmployeeForm {
   private readonly dialogRef = inject(MatDialogRef<EmployeeForm, Employee>);
   protected readonly data = inject<EmployeeFormData>(MAT_DIALOG_DATA);
-  private readonly store = inject(MonitoringStore);
 
   protected readonly roles: EmployeeRole[] = ['guard', 'cleaning-personnel'];
   protected readonly schedules: EmployeeSchedule[] = ['all-week'];
@@ -74,7 +72,6 @@ export class EmployeeForm {
     ],
     shiftStart: [this.data.employee?.shiftStart ?? '09:00', [Validators.required]],
     shiftEnd: [this.data.employee?.shiftEnd ?? '17:00', [Validators.required]],
-    bookingCode: [this.data.employee?.bookingCode ?? '', [Validators.required]],
     status: [
       this.data.employee?.status ?? ('on-duty' as EmployeeStatus),
       [Validators.required],
@@ -94,12 +91,12 @@ export class EmployeeForm {
     */
     const employee = new Employee({
       id: this.data.employee?.id ?? this.generateId(),
+      parkingId: this.data.employee?.parkingId ?? '',
       name: value.name.trim(),
       role: value.role,
       schedule: value.schedule,
       shiftStart: value.shiftStart,
       shiftEnd: value.shiftEnd,
-      bookingCode: value.bookingCode.trim(),
       status: value.status,
     });
 
@@ -111,7 +108,6 @@ export class EmployeeForm {
   }
 
   private generateId(): string {
-    const next = this.store.employeeCount() + 1;
-    return `emp-${next.toString().padStart(3, '0')}`;
+    return `emp-${crypto.randomUUID().slice(0, 8)}`;
   }
 }

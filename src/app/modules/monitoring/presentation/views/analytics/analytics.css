@@ -99,6 +99,19 @@
   border-left: 4px solid #00c97a;
 }
 
+.analytics__kpi-card--maintenance {
+  border-left: 4px solid #d97706;
+}
+
+.analytics__kpi-value--maintenance {
+  color: #d97706;
+  font-size: 28px;
+}
+
+.analytics__kpi-note--maintenance {
+  color: #d97706;
+}
+
 .analytics__kpi-label {
   font-size: 11px;
   font-weight: 600;

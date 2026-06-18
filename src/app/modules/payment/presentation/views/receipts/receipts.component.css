@@ -296,6 +296,47 @@
   margin: 0;
 }
 
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.pagination__summary,
+.pagination__page {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.pagination__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination__btn {
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  color: #374151;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 14px;
+}
+
+.pagination__btn:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.pagination__btn:disabled {
+  color: #9ca3af;
+  cursor: default;
+}
+
 /* ── Responsive ───────────────────────────────────────────────────────────── */
 
 @media (max-width: 700px) {
@@ -315,5 +356,10 @@
   .receipt-card__right {
     align-items: flex-start;
     width: 100%;
+  }
+
+  .pagination {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }

@@ -10,7 +10,7 @@
   The view never talks to PaymentApi directly.
   It only reads signals and calls store methods.
 */
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 
 /*
   retry retries a failed HTTP call once before showing the error.
@@ -64,6 +64,17 @@ export class PaymentStore {
   readonly loading      = this.loadingSignal.asReadonly();
   readonly error        = this.errorSignal.asReadonly();
 
+  readonly currentDiscount = computed(() => {
+    const sub = this.subscriptionSignal();
+    if (!sub) return 0;
+    const plan = this.plansSignal().find(p => p.id === sub.planId);
+    return plan?.discountPercent ?? 0;
+  });
+
+  readonly currentMonthSavings = computed(() =>
+    this.subscriptionSignal()?.savedThisMonth ?? 0
+  );
+
   /*
     Called by the view on init, passing the logged-in client id.
 
@@ -82,6 +93,14 @@ export class PaymentStore {
     this.paymentApi.getSubscriptions().subscribe({
       next: (subscriptions) => {
         const found = subscriptions.find((s) => s.clientId === clientId) ?? null;
+        if (found) {
+          const currentMonth = this.currentYearMonth();
+          if (found.savingsMonth !== currentMonth) {
+            found.savedThisMonth = 0;
+            found.savingsMonth   = currentMonth;
+            this.paymentApi.patchSubscriptionSaved(found.id, 0, currentMonth).subscribe();
+          }
+        }
         this.subscriptionSignal.set(found);
         this.loadingSignal.set(false);
       },
@@ -90,6 +109,11 @@ export class PaymentStore {
         this.loadingSignal.set(false);
       },
     });
+  }
+
+  private currentYearMonth(): string {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   }
 
   /*
@@ -176,6 +200,19 @@ export class PaymentStore {
     const newPlan = this.plansSignal().find(p => p.id === newPlanId);
     if (newPlan) current.pricePerMonth = newPlan.monthlyPrice;
 
+    const today = new Date();
+    current.memberSince = today.toISOString().split('T')[0];
+
+    if (newPlan?.type === 'annual') {
+      today.setFullYear(today.getFullYear() + 1);
+      current.renewsOn = today.toISOString().split('T')[0];
+    } else if (newPlan?.type === 'monthly') {
+      today.setMonth(today.getMonth() + 1);
+      current.renewsOn = today.toISOString().split('T')[0];
+    } else if (newPlan?.type === 'free') {
+      current.renewsOn = '';
+    }
+
     this.paymentApi
       .updateSubscription(current)
       .pipe(retry(1))
@@ -254,6 +291,34 @@ export class PaymentStore {
         this.errorSignal.set(this.formatError(err, 'Failed to load receipts'));
         this.loadingSignal.set(false);
       },
+    });
+  }
+
+  subtractFromSavedThisMonth(amount: number): void {
+    const sub = this.subscriptionSignal();
+    if (!sub || amount <= 0) return;
+    const newSaved = Math.max(0, Math.round((sub.savedThisMonth - amount) * 100) / 100);
+    const month = this.currentYearMonth();
+    this.paymentApi.patchSubscriptionSaved(sub.id, newSaved, month).subscribe({
+      next: () => {
+        sub.savedThisMonth = newSaved;
+        sub.savingsMonth   = month;
+        this.subscriptionSignal.set(sub);
+      }
+    });
+  }
+
+  addToSavedThisMonth(amount: number): void {
+    const sub = this.subscriptionSignal();
+    if (!sub || amount <= 0) return;
+    const newSaved = Math.round((sub.savedThisMonth + amount) * 100) / 100;
+    const month = this.currentYearMonth();
+    this.paymentApi.patchSubscriptionSaved(sub.id, newSaved, month).subscribe({
+      next: () => {
+        sub.savedThisMonth = newSaved;
+        sub.savingsMonth   = month;
+        this.subscriptionSignal.set(sub);
+      }
     });
   }
 

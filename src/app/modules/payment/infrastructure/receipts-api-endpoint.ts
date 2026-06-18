@@ -14,6 +14,8 @@
   case they are needed in the future.
 */
 import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 /*
   environment.apiUrl resolves to:
@@ -42,15 +44,22 @@ export class ReceiptsApiEndpoint extends BaseApiEndpoint<
   ReceiptAssembler
 > {
   constructor(http: HttpClient) {
-    /*
-      super() gives the parent everything it needs to start working.
-      After this, calling getAll() automatically does:
-        GET http://localhost:3000/receipts → JSON → Receipt[]
-    */
     super(
       http,
       `${environment.apiUrl}/receipts`,
       new ReceiptAssembler()
     );
+  }
+
+  deleteByBookingCode(code: string): Observable<void> {
+    return this.http
+      .get<ReceiptResource[]>(`${this.endpointUrl}?bookingCode=${code}`)
+      .pipe(
+        switchMap(receipts =>
+          receipts.length
+            ? this.http.delete<void>(`${this.endpointUrl}/${receipts[0].id}`)
+            : of(undefined as unknown as void)
+        )
+      );
   }
 }

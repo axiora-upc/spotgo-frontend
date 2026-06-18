@@ -5,12 +5,6 @@ import { Admin } from '../domain/model/admin.entity';
 import { AdminResource, AdminResponse } from './admin-response';
 import { AdminAssembler } from './admin-assembler';
 
-/*
-  Concrete HTTP endpoint for the /admins resource.
-
-  Inherits getAll / getById / create / update / delete from
-  BaseApiEndpoint – we only need to wire the URL and the assembler.
-*/
 export class AdminApiEndpoint extends BaseApiEndpoint<
   Admin,
   AdminResource,
@@ -20,7 +14,7 @@ export class AdminApiEndpoint extends BaseApiEndpoint<
   constructor(http: HttpClient) {
     super(
       http,
-      `${environment.apiUrl}/admins`,
+      `${environment.apiUrl}/users`,
       new AdminAssembler()
     );
   }

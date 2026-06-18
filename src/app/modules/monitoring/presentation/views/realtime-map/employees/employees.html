@@ -30,7 +30,7 @@
 }
 
 <ul class="employees__list">
-  @for (employee of store.employees(); track employee.id) {
+  @for (employee of pagedEmployees(); track employee.id) {
     <li class="employees__card">
       <span class="employees__avatar">
         <mat-icon>person</mat-icon>
@@ -56,9 +56,6 @@
           </span>
         </p>
 
-        <p class="employees__booking">
-          {{ 'realtime-map.employees.booking-prefix' | translate }}{{ employee.bookingCode }}
-        </p>
       </div>
 
       <span
@@ -91,3 +88,36 @@
     </li>
   }
 </ul>
+
+@if (shouldShowPagination()) {
+  <div class="employees__pagination">
+    <span class="employees__pagination-summary">
+      {{
+        'realtime-map.employees.pagination.summary'
+          | translate: { start: pageStart(), end: pageEnd(), total: store.employees().length }
+      }}
+    </span>
+
+    <div class="employees__pagination-actions">
+      <button
+        class="employees__pagination-btn"
+        type="button"
+        [disabled]="currentPage() === 1"
+        (click)="goToPreviousPage()">
+        {{ 'realtime-map.employees.pagination.previous' | translate }}
+      </button>
+
+      <span class="employees__pagination-page">
+        {{ 'realtime-map.employees.pagination.page' | translate: { page: currentPage(), total: totalPages() } }}
+      </span>
+
+      <button
+        class="employees__pagination-btn"
+        type="button"
+        [disabled]="currentPage() === totalPages()"
+        (click)="goToNextPage()">
+        {{ 'realtime-map.employees.pagination.next' | translate }}
+      </button>
+    </div>
+  </div>
+}

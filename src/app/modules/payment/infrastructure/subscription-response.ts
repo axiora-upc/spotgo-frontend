@@ -23,10 +23,9 @@ export interface SubscriptionResource extends BaseResource {
   status: string;
   renewsOn: string;
   pricePerMonth: number;
-  usageHours: number;
-  maxHours: number;
   sessions: number;
   savedThisMonth: number;
+  savingsMonth?: string;
   memberSince: string;
   autoRenewal: boolean;
   paymentMethodLastFour: string;

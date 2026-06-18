@@ -55,10 +55,9 @@ export class Subscription implements BaseEntity {
   private _status: SubscriptionStatus;
   private _renewsOn: string;
   private _pricePerMonth: number;
-  private _usageHours: number;
-  private _maxHours: number;
   private _sessions: number;
   private _savedThisMonth: number;
+  private _savingsMonth: string;
   private _memberSince: string;
   private _autoRenewal: boolean;
   private _paymentMethodLastFour: string;
@@ -86,10 +85,9 @@ export class Subscription implements BaseEntity {
     status: SubscriptionStatus;
     renewsOn: string;
     pricePerMonth: number;
-    usageHours: number;
-    maxHours: number;
     sessions: number;
     savedThisMonth: number;
+    savingsMonth: string;
     memberSince: string;
     autoRenewal: boolean;
     paymentMethodLastFour: string;
@@ -107,10 +105,9 @@ export class Subscription implements BaseEntity {
     this._status = props.status;
     this._renewsOn = props.renewsOn;
     this._pricePerMonth = props.pricePerMonth;
-    this._usageHours = props.usageHours;
-    this._maxHours = props.maxHours;
     this._sessions = props.sessions;
     this._savedThisMonth = props.savedThisMonth;
+    this._savingsMonth = props.savingsMonth;
     this._memberSince = props.memberSince;
     this._autoRenewal = props.autoRenewal;
     this._paymentMethodLastFour = props.paymentMethodLastFour;
@@ -174,22 +171,6 @@ export class Subscription implements BaseEntity {
     this._pricePerMonth = value;
   }
 
-  get usageHours(): number {
-    return this._usageHours;
-  }
-
-  set usageHours(value: number) {
-    this._usageHours = value;
-  }
-
-  get maxHours(): number {
-    return this._maxHours;
-  }
-
-  set maxHours(value: number) {
-    this._maxHours = value;
-  }
-
   get sessions(): number {
     return this._sessions;
   }
@@ -204,6 +185,14 @@ export class Subscription implements BaseEntity {
 
   set savedThisMonth(value: number) {
     this._savedThisMonth = value;
+  }
+
+  get savingsMonth(): string {
+    return this._savingsMonth;
+  }
+
+  set savingsMonth(value: string) {
+    this._savingsMonth = value;
   }
 
   get memberSince(): string {

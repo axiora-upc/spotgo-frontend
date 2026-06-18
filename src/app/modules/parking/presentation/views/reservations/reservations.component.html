@@ -4,7 +4,7 @@
     <p class="subtitle">{{ 'reservations.subtitle' | translate }}</p>
   </header>
 
-  <!-- 1. Banner de Expiración Próxima -->
+  <!-- 1. Banner de Expiración Próxima (solo para reservas activas) -->
   @if (expiringSoonReservation(); as activeBannerRes) {
     <div class="warning-banner animate-fade-in">
       <div class="banner-content">
@@ -27,17 +27,17 @@
   <!-- 2. Listado de Reservas -->
   <div class="reservations-list">
     @for (res of reservations(); track res.id) {
-      <div class="reservation-card" [class.active-card]="res.status === 'completed'">
+      <div class="reservation-card" [class.active-card]="res.isActive">
         <div class="card-main">
           <!-- Left Icon Area -->
-          <div class="card-icon" [ngClass]="res.status === 'completed' ? 'icon-active' : 'icon-upcoming'">
-            <mat-icon>{{ res.status === 'completed' ? 'timer' : 'schedule' }}</mat-icon>
+          <div class="card-icon" [ngClass]="res.isActive ? 'icon-active' : 'icon-upcoming'">
+            <mat-icon>{{ res.isActive ? 'timer' : 'schedule' }}</mat-icon>
           </div>
 
           <!-- Card Center Data -->
           <div class="card-details">
             <h2>{{ res.parkingName }}</h2>
-            
+
             <div class="meta-info">
               <div class="meta-item">
                 <mat-icon>location_on</mat-icon>
@@ -63,27 +63,33 @@
           <!-- Card Right Actions/Status -->
           <div class="card-status-area">
             <!-- Top: Badge -->
-            <span class="status-badge" [ngClass]="res.status === 'completed' ? 'badge-active' : 'badge-upcoming'">
-              {{ (res.status === 'completed' ? 'reservations.badge-active' : 'reservations.badge-upcoming') | translate }}
+            <span class="status-badge" [ngClass]="res.isActive ? 'badge-active' : 'badge-upcoming'">
+              {{ (res.isActive ? 'reservations.badge-active' : 'reservations.badge-upcoming') | translate }}
             </span>
 
-            <!-- Middle: Countdown/Amount -->
+            <!-- Middle: Countdown -->
             <div class="card-pricing">
-              @if (res.status === 'completed') {
+              @if (res.isActive) {
+                <!-- Activa: countdown HH:MM:SS hasta el fin -->
                 <span class="live-timer">{{ res.remainingTimeStr }}</span>
+              } @else if (res.isUpcoming) {
+                <!-- Próxima: "en Xd Xh" hasta que empiece -->
+                <span class="upcoming-timer">{{ res.remainingTimeStr }}</span>
               }
               <span class="total-amount">{{ res.totalAmount | currency:'S/.':'symbol':'1.2-2' }}</span>
             </div>
           </div>
         </div>
 
-        <!-- 3. Acciones Disponibles (Solo para activas/completed) -->
-        @if (res.status === 'completed') {
+        <!-- 3. Acciones Disponibles -->
+        @if (res.isActive || res.isUpcoming) {
           <div class="card-footer">
             <div class="left-actions">
-              <button class="action-btn-outline" (click)="extendTime(res)">
-                {{ 'reservations.action-extend' | translate }}
-              </button>
+              @if (res.isActive) {
+                <button class="action-btn-outline" (click)="extendTime(res)">
+                  {{ 'reservations.action-extend' | translate }}
+                </button>
+              }
               <button class="action-btn-text" (click)="navigateToParking()">
                 {{ 'reservations.action-navigate' | translate }}
               </button>

@@ -35,7 +35,7 @@
   color: #5f6673;
 }
 
-.name-input {
+.name-select {
   width: 100%;
   padding: 8px 12px;
   border: 1px solid #c7cfe0;
@@ -49,18 +49,9 @@
   transition: border-color 160ms ease;
 }
 
-.name-input:focus {
+.name-select:focus {
   border-color: #c0392b;
   background-color: #ffffff;
-}
-
-/* ─── Error ──────────────────────────────────────────────────────────────── */
-
-.error-message {
-  margin: 0;
-  font-size: 13px;
-  color: #c0392b;
-  font-weight: 500;
 }
 
 /* ─── Botones ────────────────────────────────────────────────────────────── */

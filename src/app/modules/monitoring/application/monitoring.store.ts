@@ -4,11 +4,10 @@
   only place that orchestrates the HTTP calls from MonitoringApi.
 
   Public API (consumed by the views):
-  - readonly signals: employees, incidents, parkingSnapshot,
+  - readonly signals: employees, parkingSnapshot,
                       loading, error, employeeCount
   - imperative methods: addEmployee, updateEmployee, deleteEmployee,
-                        refreshParkingSnapshot, loadEmployees,
-                        loadIncidents.
+                        refreshParkingSnapshot, loadEmployees.
 
   Why a Store?
   - Concentrates state mutation in one place so the views stay dumb.
@@ -17,10 +16,19 @@
   - Mirrors the LearningStore pattern used by the professor's example.
 */
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { retry } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { forkJoin, retry } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 import { Employee } from '../domain/model/employee.entity';
-import { IncidentReport } from '../domain/model/incident-report.entity';
-import { ParkingSnapshot } from '../domain/model/parking-spot.entity';
+import {
+  Facility,
+  ParkingRow,
+  ParkingSnapshot,
+  ParkingSpot,
+  ParkingStats,
+  PeakHour,
+} from '../domain/model/parking-spot.entity';
+import { DetectedSpot } from '../../profiles/domain/model/detected-spot.entity';
 import { MonitoringApi, ParkingResource } from '../infrastructure/monitoring-api';
 import { Reservation, ReservationStatus } from '../domain/model/reservation.entity';
 import { ParkingAnalytics } from '../domain/model/analytics.entity';
@@ -34,21 +42,24 @@ export interface DashboardStats {
 
 import { HistoryApi } from '../../parking/infrastructure/history-api';
 import { PaymentApi } from '../../payment/infrastructure/payment-api';
+import { PaymentStore } from '../../payment/application/payment.store';
 import { ReservationRaw } from '../../parking/domain/model/reservation-raw.entity';
 import { Receipt } from '../../payment/domain/model/receipt.entity';
+import { CurrentUserService } from '../../../shared/services/current-user.service';
 
 @Injectable({ providedIn: 'root' })
 export class MonitoringStore {
-  private readonly monitoringApi = inject(MonitoringApi);
-  private readonly historyApi = inject(HistoryApi);
-  private readonly paymentApi = inject(PaymentApi);
+  private readonly http           = inject(HttpClient);
+  private readonly monitoringApi  = inject(MonitoringApi);
+  private readonly historyApi     = inject(HistoryApi);
+  private readonly paymentApi     = inject(PaymentApi);
+  private readonly paymentStore   = inject(PaymentStore);
+  private readonly currentUser    = inject(CurrentUserService);
+  private readonly adminParkingIdSignal = signal('');
 
   private readonly employeesSignal = signal<Employee[]>([]);
   readonly employees = this.employeesSignal.asReadonly();
   readonly employeeCount = computed(() => this.employeesSignal().length);
-
-  private readonly incidentsSignal = signal<IncidentReport[]>([]);
-  readonly incidents = this.incidentsSignal.asReadonly();
 
   private readonly parkingSnapshotSignal = signal<ParkingSnapshot | null>(null);
   readonly parkingSnapshot = this.parkingSnapshotSignal.asReadonly();
@@ -87,9 +98,19 @@ export class MonitoringStore {
   loadEmployees(): void {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
-    this.monitoringApi.getEmployees().subscribe({
-      next: (employees) => {
-        this.employeesSignal.set(employees);
+    forkJoin({
+      employees: this.monitoringApi.getEmployees(),
+      parkings: this.monitoringApi.getParkings(),
+    }).subscribe({
+      next: ({ employees, parkings }) => {
+        const adminParkingId = parkings.find(
+          (parking) => parking.adminId === this.currentUser.adminId
+        )?.id ?? this.currentUser.parkingId;
+
+        this.adminParkingIdSignal.set(adminParkingId);
+        this.employeesSignal.set(
+          employees.filter((employee) => employee.parkingId === adminParkingId)
+        );
         this.employeesLoadedSignal.set(true);
         this.loadingSignal.set(false);
       },
@@ -112,12 +133,16 @@ export class MonitoringStore {
     employee: Employee,
     callbacks?: { onSuccess?: () => void; onError?: () => void }
   ): void {
+    employee.parkingId = this.adminParkingIdSignal() || this.currentUser.parkingId;
+
     this.monitoringApi
       .addEmployee(employee)
       .pipe(retry(1))
       .subscribe({
         next: (created) => {
-          this.employeesSignal.update((current) => [...current, created]);
+          if (created.parkingId === (this.adminParkingIdSignal() || this.currentUser.parkingId)) {
+            this.employeesSignal.update((current) => [...current, created]);
+          }
           callbacks?.onSuccess?.();
         },
         error: (err) => {
@@ -136,9 +161,12 @@ export class MonitoringStore {
       .pipe(retry(1))
       .subscribe({
         next: (updated) => {
-          this.employeesSignal.update((current) =>
-            current.map((e) => (e.id === updated.id ? updated : e))
-          );
+          this.employeesSignal.update((current) => {
+            if (updated.parkingId !== (this.adminParkingIdSignal() || this.currentUser.parkingId)) {
+              return current.filter((e) => e.id !== updated.id);
+            }
+            return current.map((e) => (e.id === updated.id ? updated : e));
+          });
           callbacks?.onSuccess?.();
         },
         error: (err) => {
@@ -169,14 +197,6 @@ export class MonitoringStore {
       });
   }
 
-  loadIncidents(): void {
-    this.monitoringApi.getIncidentReports().subscribe({
-      next: (incidents) => this.incidentsSignal.set(incidents),
-      error: (err) =>
-        this.errorSignal.set(this.formatError(err, 'Failed to load incidents')),
-    });
-  }
-
   loadParkingSnapshot(): void {
     this.monitoringApi.getParkingSnapshot().subscribe({
       next: (snapshot) => this.parkingSnapshotSignal.set(snapshot),
@@ -186,15 +206,38 @@ export class MonitoringStore {
   }
 
   loadParkings(): void {
-    this.monitoringApi.getParkings().subscribe({
-      next: (parkings) => {
-        this.parkingsSignal.set(parkings);
-        this.dashboardStatsSignal.set({
-          availableNearby: parkings.reduce((sum, p) => sum + p.availableSpaces, 0),
-          activeReservations: this.userReservationsSignal().filter(r => r.status === 'completed').length,
-          savedLocations: 5,
-          avgSavings: 15.50,
+    forkJoin({
+      parkings:      this.monitoringApi.getParkings(),
+      reservations:  this.historyApi.getReservations(),
+      detectedSpots: this.http.get<{ parkingId: string; status?: string }[]>(`${environment.apiUrl}/detectedSpots`),
+    }).subscribe({
+      next: ({ parkings, reservations, detectedSpots }) => {
+        const now = Date.now();
+
+        const maintenanceByParking = new Map<string, number>();
+        detectedSpots.forEach(s => {
+          if (s.status === 'maintenance')
+            maintenanceByParking.set(s.parkingId, (maintenanceByParking.get(s.parkingId) ?? 0) + 1);
         });
+
+        const reconciled = parkings.map(p => {
+          const occupied = reservations.filter(
+            r => r.parkingId === p.id &&
+                 r.status === 'active' &&
+                 new Date(r.endDate).getTime() > now
+          ).length;
+          const maintenance = maintenanceByParking.get(p.id) ?? 0;
+          const ratedForParking = reservations.filter(
+            r => r.parkingId === p.id && r.rating !== null
+          );
+          const rating = ratedForParking.length === 0
+            ? p.rating
+            : Math.round(
+                ratedForParking.reduce((sum, r) => sum + (r.rating ?? 0), 0) / ratedForParking.length * 10
+              ) / 10;
+          return { ...p, availableSpaces: Math.max(0, p.totalSpaces - occupied - maintenance), rating };
+        });
+        this.parkingsSignal.set(reconciled);
       },
       error: (err) =>
         this.errorSignal.set(this.formatError(err, 'Failed to load parkings')),
@@ -223,14 +266,15 @@ export class MonitoringStore {
     // 1. Construct raw persistent representation for user history (POST /reservations)
     const rawRes = new ReservationRaw(
       reservation.id,
-      'cli-001',
+      this.currentUser.clientId,
       reservation.parkingId,
       reservation.code,
       reservation.spotId,
       startObj.toISOString(),
       endObj.toISOString(),
-      'completed',
+      'active',
       reservation.totalAmount,
+      reservation.baseAmount ?? reservation.totalAmount,
       null // unrated
     );
 
@@ -241,10 +285,10 @@ export class MonitoringStore {
     
     const finalReceipt = new Receipt({
       id: '', // assigned by lowdb/json-server
-      clientId: 'cli-001',
+      clientId: this.currentUser.clientId,
       invoiceNumber: invoiceId,
       locationName: pkgName,
-      date: new Date().toISOString().split('T')[0],
+      date: rawRes.startDate,
       durationHours: Math.floor(reservation.duration),
       durationMinutes: Math.round((reservation.duration % 1) * 60),
       paymentMethod: 'Visa •• 4242',
@@ -253,25 +297,60 @@ export class MonitoringStore {
       status: 'paid'
     });
 
-    // 3. Perform transactional POSTs asynchronously to persist state
-    this.historyApi.createReservation(rawRes).subscribe();
+    // 3. Persist reservation and reload the list so My Reservations shows it immediately.
+    // Without the reload, there's a race: loadUserReservations() in the reservations
+    // page could run before the POST finishes, leaving the list empty.
+    this.historyApi.createReservation(rawRes).subscribe({
+      next: () => this.loadUserReservations(),
+      error: (e) => console.error('Failed to save reservation:', e),
+    });
     this.paymentApi.addReceipt(finalReceipt).subscribe();
   }
 
   updateReservation(reservation: Reservation): void {
-    this.userReservationsSignal.update(current => 
+    this.userReservationsSignal.update(current =>
       current.map(r => r.id === reservation.id ? reservation : r)
     );
   }
 
+  // Elimina la reserva de la base de datos (hard DELETE) y la quita del signal.
+  // El callback onSuccess permite que el componente libere el spot en el blueprint.
+  cancelReservation(
+    reservation: Reservation,
+    callbacks?: { onSuccess?: () => void; onError?: () => void }
+  ): void {
+    this.userReservationsSignal.update(current =>
+      current.filter(r => r.id !== reservation.id)
+    );
+
+    // Delete the associated receipt so it doesn't appear in Receipts / Avg. Savings
+    this.paymentApi.deleteReceiptByCode(reservation.code).subscribe();
+
+    // Reverse savings: savings = discountedAmount * discountPct / (100 - discountPct)
+    const discountPct = this.paymentStore.currentDiscount();
+    if (discountPct > 0) {
+      const savings = Math.round(reservation.totalAmount * discountPct / (100 - discountPct) * 100) / 100;
+      this.paymentStore.subtractFromSavedThisMonth(savings);
+    }
+
+    this.historyApi.setReservationStatus(reservation.id, 'cancelled').subscribe({
+      next: () => callbacks?.onSuccess?.(),
+      error: (e) => {
+        console.error('Failed to cancel reservation:', e);
+        callbacks?.onError?.();
+      },
+    });
+  }
+
   loadUserReservations(): void {
+    this.paymentStore.loadSubscriptionByClientId(this.currentUser.clientId);
     this.historyApi.getReservations().subscribe({
       next: (rawReservations) => {
         const now = Date.now();
         // Filter by client, ignore past reservations, map to domain structure
         const mapped = rawReservations
-          .filter(r => r.clientId === 'cli-001')
-          .filter(r => new Date(r.endDate).getTime() > now)
+          .filter(r => r.clientId === this.currentUser.clientId)
+          .filter(r => r.status === 'active' && new Date(r.endDate).getTime() > now)
           .map(r => this.mapRawToReservation(r));
           
         this.userReservationsSignal.set(mapped);
@@ -341,6 +420,156 @@ export class MonitoringStore {
       savedLocations: 5,
       avgSavings: 15.50,
     });
+  }
+
+  clearParkingSnapshot(): void {
+    this.parkingSnapshotSignal.set(null);
+  }
+
+  // Updates the in-memory available-spaces count for one parking without
+  // a round-trip. Called right after the server PATCH in parking-details-dialog
+  // or reservations so the dashboard bubbles reflect the change immediately.
+  updateParkingAvailableSpaces(parkingId: string, availableSpaces: number): void {
+    this.parkingsSignal.update(parkings =>
+      parkings.map(p => p.id === parkingId ? { ...p, availableSpaces } : p)
+    );
+  }
+
+  // Construye un ParkingSnapshot a partir de los spots detectados en el croquis
+  // y lo guarda en el signal para que Overview lo renderice igual que si viniera del API.
+  loadBlueprintSnapshot(spots: DetectedSpot[], name = 'Croquis', revenue?: number, peakHours?: PeakHour[]): void {
+    if (spots.length === 0) return;
+
+    const GRID_COLS = 8;
+
+    const rowMap = new Map<number, Map<number, DetectedSpot>>();
+    for (const spot of spots) {
+      if (!rowMap.has(spot.row)) rowMap.set(spot.row, new Map());
+      rowMap.get(spot.row)!.set(spot.col, spot);
+    }
+
+    const rows: ParkingRow[] = [];
+    const sortedRowKeys = [...rowMap.keys()].sort((a, b) => a - b);
+
+    for (const rowKey of sortedRowKeys) {
+      const rowLabel = String.fromCharCode(65 + rowKey);
+      const colMap   = rowMap.get(rowKey)!;
+      const parkingSpots: ParkingSpot[] = [];
+
+      for (let col = 0; col < GRID_COLS; col++) {
+        const detected = colMap.get(col);
+        parkingSpots.push(new ParkingSpot({
+          id:     `${rowLabel}${col + 1}`,
+          status: detected ? (detected.status ?? 'available') : 'empty',
+        }));
+      }
+
+      rows.push(new ParkingRow({ id: rowLabel, spots: parkingSpots }));
+    }
+
+    const total     = spots.length;
+    const available = spots.filter(s => (s.status ?? 'available') === 'available').length;
+    const occupied  = spots.filter(s => s.status === 'occupied').length;
+    const occupancyRate = total > 0 ? Math.round((occupied / total) * 1000) / 10 : 0;
+    const revenueYield  = revenue ?? this.parkingSnapshotSignal()?.stats.revenueYield ?? 0;
+
+    const stats = new ParkingStats({
+      totalSpaces:            total,
+      currentlyAvailable:     available,
+      availableTrendPercent:  0,
+      occupancyRate,
+      revenueYield,
+      revenueTrendPercent:    0,
+      peakHours: peakHours ?? Array.from({ length: 24 }, (_, i) =>
+        new PeakHour({ hour: `${String(i).padStart(2, '0')}:00`, intensity: 0 })
+      ),
+    });
+
+    const facility = new Facility({
+      name:        name,
+      sector:      'Blueprint',
+      floor:       '1',
+      lastUpdated: new Date().toLocaleString(),
+      live:        false,
+    });
+
+    this.parkingSnapshotSignal.set(new ParkingSnapshot({ facility, stats, rows }));
+  }
+
+  // Marca un spot como ocupado en el snapshot en memoria y recalcula las estadísticas.
+  // La persistencia (PATCH al blueprint en db.json) la hace el componente que llama,
+  // para no crear una dependencia de BlueprintsApi desde este store.
+  markSpotOccupied(spotId: string): void {
+    const snapshot = this.parkingSnapshotSignal();
+    if (!snapshot) return;
+
+    const updatedRows = snapshot.rows.map(row =>
+      new ParkingRow({
+        id: row.id,
+        spots: row.spots.map(spot =>
+          spot.id === spotId
+            ? new ParkingSpot({ id: spot.id, status: 'occupied' })
+            : spot
+        ),
+      })
+    );
+
+    const available = updatedRows
+      .flatMap(r => r.spots)
+      .filter(s => s.status === 'available').length;
+
+    const total = snapshot.stats.totalSpaces;
+
+    this.parkingSnapshotSignal.set(new ParkingSnapshot({
+      facility: snapshot.facility,
+      stats: new ParkingStats({
+        totalSpaces:           total,
+        currentlyAvailable:    available,
+        availableTrendPercent: snapshot.stats.availableTrendPercent,
+        occupancyRate:         total > 0 ? Math.round(((total - available) / total) * 100) : 0,
+        revenueYield:          snapshot.stats.revenueYield,
+        revenueTrendPercent:   snapshot.stats.revenueTrendPercent,
+        peakHours:             snapshot.stats.peakHours,
+      }),
+      rows: updatedRows,
+    }));
+  }
+
+  // Revierte un spot a disponible en el snapshot en memoria y recalcula estadísticas.
+  markSpotAvailable(spotId: string): void {
+    const snapshot = this.parkingSnapshotSignal();
+    if (!snapshot) return;
+
+    const updatedRows = snapshot.rows.map(row =>
+      new ParkingRow({
+        id: row.id,
+        spots: row.spots.map(spot =>
+          spot.id === spotId
+            ? new ParkingSpot({ id: spot.id, status: 'available' })
+            : spot
+        ),
+      })
+    );
+
+    const available = updatedRows
+      .flatMap(r => r.spots)
+      .filter(s => s.status === 'available').length;
+
+    const total = snapshot.stats.totalSpaces;
+
+    this.parkingSnapshotSignal.set(new ParkingSnapshot({
+      facility: snapshot.facility,
+      stats: new ParkingStats({
+        totalSpaces:           total,
+        currentlyAvailable:    available,
+        availableTrendPercent: snapshot.stats.availableTrendPercent,
+        occupancyRate:         total > 0 ? Math.round(((total - available) / total) * 100) : 0,
+        revenueYield:          snapshot.stats.revenueYield,
+        revenueTrendPercent:   snapshot.stats.revenueTrendPercent,
+        peakHours:             snapshot.stats.peakHours,
+      }),
+      rows: updatedRows,
+    }));
   }
 
   private formatError(err: any, fallback: string): string {

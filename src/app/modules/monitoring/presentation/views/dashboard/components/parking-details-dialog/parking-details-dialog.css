@@ -172,13 +172,24 @@
 }
 
 .mini-spot.available { background: #bbf7d0; }
-.mini-spot.occupied { background: #e5e7eb; }
+.mini-spot.occupied  { background: #e5e7eb; }
+.mini-spot.maintenance { background: #fde68a; }
+.mini-spot.empty     { background: transparent; }
 
 /* Form Fields */
 .form-field {
   display: flex;
   flex-direction: column;
   margin-bottom: 16px;
+}
+
+.duration-row {
+  display: flex;
+  gap: 8px;
+}
+
+.duration-part {
+  flex: 1;
 }
 
 .form-field label, .duration-selector label {
@@ -212,8 +223,8 @@
 /* Spot Grid */
 .spot-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
   margin-bottom: 24px;
 }
 
@@ -227,8 +238,10 @@
 }
 
 .spot-item.available { background: #d1fae5; color: #065f46; }
-.spot-item.occupied { background: #f3f4f6; color: #9ca3af; cursor: not-allowed; }
-.spot-item.selected { background: #2563eb; color: white; }
+.spot-item.occupied  { background: #f3f4f6; color: #9ca3af; cursor: not-allowed; }
+.spot-item.maintenance { background: #fef3c7; color: #92400e; cursor: not-allowed; }
+.spot-item.selected  { background: #2563eb; color: white; }
+.spot-item.empty     { background: transparent; pointer-events: none; border: none; }
 
 .legend {
   display: flex;
@@ -247,6 +260,7 @@
 .dot { width: 8px; height: 8px; border-radius: 50%; }
 .dot.available { background: #10b981; }
 .dot.occupied { background: #9ca3af; }
+.dot.maintenance { background: #f59e0b; }
 .dot.selected { background: #2563eb; }
 
 /* Summary Card */
@@ -301,6 +315,38 @@
 .dialog-footer {
   margin-top: 32px;
   display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.fav-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 18px;
+  background: transparent;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.fav-btn--active {
+  border-color: #1a1a2e;
+  color: #1a1a2e;
+}
+
+.fav-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.dialog-footer .primary-btn {
+  flex: 1;
 }
 
 .dialog-footer.split {
@@ -336,3 +382,25 @@
 }
 
 .secondary-btn.full { width: 100%; }
+
+.price-original {
+  text-decoration: line-through;
+  color: #aaa;
+  margin-right: 6px;
+  font-size: 0.9em;
+}
+
+.price-discounted {
+  color: #16a34a;
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+.discount-tag {
+  background: #dcfce7;
+  color: #16a34a;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.75em;
+  font-weight: 600;
+}

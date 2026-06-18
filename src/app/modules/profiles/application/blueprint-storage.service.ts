@@ -1,33 +1,26 @@
 /*
-  Injectable es el decorador que marca esta clase como un servicio
-  que puede ser inyectado en otros componentes.
-
+  Injectable e inject son los bloques básicos de Angular moderno.
   signal es la función que crea variables reactivas.
 */
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { Blueprint } from '../domain/model/blueprint.entity';
+import { DetectedSpot } from '../domain/model/detected-spot.entity';
+import { BlueprintsApi } from '../infrastructure/blueprints-api';
+import { CurrentUserService } from '../../../shared/services/current-user.service';
 
 /*
-  BlueprintItem es la interfaz que representa un croquis guardado.
-
-  name    - nombre único que el admin asignó al croquis.
-  dataUrl - la imagen codificada en base64 (formato data:image/...;base64,...).
-            Permite mostrar la imagen directamente en el browser sin servidor.
+  BlueprintInput son los datos que entrega el dialog de subida:
+  el nombre elegido, la imagen en base64 y los spots detectados.
 */
-export interface BlueprintItem {
+export interface BlueprintInput {
   name: string;
   dataUrl: string;
+  spots?: DetectedSpot[];
 }
 
 /*
-  STORAGE_KEY es la clave que se usa en localStorage para guardar
-  y recuperar la lista de croquis.
-
-  Usar una constante evita errores de tipeo si se usa en varios lugares.
-*/
-const STORAGE_KEY = 'spotgo_blueprints';
-
-/*
-  BlueprintStorageService gestiona el almacenamiento de croquis en localStorage.
+  BlueprintStorageService gestiona los croquis del admin autenticado
+  a través de la API (server/db.json, colección "blueprints").
 
   providedIn: 'root' significa que Angular crea una única instancia de este
   servicio para toda la aplicación (singleton).
@@ -36,47 +29,33 @@ const STORAGE_KEY = 'spotgo_blueprints';
 @Injectable({ providedIn: 'root' })
 export class BlueprintStorageService {
 
-  /*
-    blueprints es el signal que contiene la lista actual de croquis.
+  private readonly api         = inject(BlueprintsApi);
+  private readonly currentUser = inject(CurrentUserService);
 
-    Se inicializa leyendo localStorage al arrancar el servicio,
-    por lo que los croquis persisten entre recargas de página.
-    Si no hay nada guardado, se inicializa con un arreglo vacío.
+  /*
+    blueprints es el signal que contiene los croquis del admin actual.
+    Empieza vacío hasta que load() resuelve la petición HTTP.
   */
-  blueprints = signal<BlueprintItem[]>(this.loadFromStorage());
+  private readonly blueprintsSignal = signal<Blueprint[]>([]);
+  readonly blueprints = this.blueprintsSignal.asReadonly();
 
   // ─── Lectura ──────────────────────────────────────────────────────────────
 
   /*
-    loadFromStorage lee la lista de croquis desde localStorage.
-
-    JSON.parse convierte el string guardado de vuelta a un arreglo de objetos.
-    Si la clave no existe o hay un error de parseo, devuelve un arreglo vacío
-    para evitar que la aplicación falle.
+    load obtiene los croquis del admin autenticado desde la API y
+    actualiza el signal. callbacks.onSuccess recibe la lista cargada,
+    útil para componentes que necesitan reaccionar apenas llega (Overview).
   */
-  private loadFromStorage(): BlueprintItem[] {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? (JSON.parse(raw) as BlueprintItem[]) : [];
-    } catch {
-      return [];
-    }
+  load(callbacks?: { onSuccess?: (items: Blueprint[]) => void; onError?: () => void }): void {
+    this.api.getBlueprints().subscribe({
+      next: (all) => {
+        const mine = all.filter((b) => b.adminId === this.currentUser.adminId);
+        this.blueprintsSignal.set(mine);
+        callbacks?.onSuccess?.(mine);
+      },
+      error: () => callbacks?.onError?.(),
+    });
   }
-
-  // ─── Escritura ────────────────────────────────────────────────────────────
-
-  /*
-    saveToStorage guarda la lista actual del signal en localStorage.
-
-    JSON.stringify convierte el arreglo de objetos a un string
-    para que pueda ser guardado en localStorage.
-    Se llama internamente después de cada operación de agregar o borrar.
-  */
-  private saveToStorage(items: BlueprintItem[]): void {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-  }
-
-  // ─── Operaciones públicas ─────────────────────────────────────────────────
 
   /*
     getNames devuelve solo los nombres de los croquis actuales.
@@ -85,54 +64,74 @@ export class BlueprintStorageService {
     un nuevo croquis, sin exponer los dataUrl (que son muy grandes).
   */
   getNames(): string[] {
-    return this.blueprints().map((b) => b.name);
+    return this.blueprintsSignal().map((b) => b.name);
   }
 
-  /*
-    add agrega un nuevo croquis a la lista.
+  // ─── Escritura ────────────────────────────────────────────────────────────
 
-    1. Lee la lista actual del signal.
-    2. Agrega el nuevo item al final.
-    3. Actualiza el signal con la nueva lista (dispara re-render).
-    4. Persiste la nueva lista en localStorage.
+  /*
+    add envía un nuevo croquis a la API asociado al admin autenticado.
+
+    Si la petición tiene éxito, el croquis devuelto (con su id asignado
+    por la base de datos) se agrega al signal para que la lista se
+    actualice sin necesidad de recargar.
   */
-  add(item: BlueprintItem): string | null {
-    const updated = [...this.blueprints(), item];
-    try {
-      this.saveToStorage(updated);
-    } catch {
-      return 'settings.blueprint.error-storage';
-    }
-    this.blueprints.set(updated);
-    return null;
+  add(item: BlueprintInput, callbacks?: { onSuccess?: () => void; onError?: (message: string) => void }): void {
+    const blueprint = new Blueprint({
+      id:        crypto.randomUUID(),
+      adminId:   this.currentUser.adminId,
+      parkingId: this.currentUser.parkingId,
+      name:      item.name,
+      dataUrl:   item.dataUrl,
+      spots:     item.spots,
+    });
+
+    this.api.addBlueprint(blueprint).subscribe({
+      next: (created) => {
+        this.blueprintsSignal.update((current) => [...current, created]);
+        callbacks?.onSuccess?.();
+
+        /*
+          Si la detección encontró spots, se actualizan totalSpaces,
+          availableSpaces y totalFloors del parking principal para que
+          coincidan con el croquis recién subido.
+        */
+        const total = created.spots.length;
+        if (total > 0) {
+          this.api.updateParkingStats(this.currentUser.parkingId, {
+            totalSpaces:     total,
+            availableSpaces: total,
+            totalFloors:     1,
+          }).subscribe();
+        }
+      },
+      error: () => callbacks?.onError?.('settings.blueprint.error-storage'),
+    });
   }
 
   /*
-    remove elimina un croquis por su nombre.
+    remove elimina por nombre el croquis del admin autenticado.
 
     La comparación ignora mayúsculas/minúsculas para evitar
     que "Plano" y "plano" se consideren nombres diferentes.
 
-    1. Filtra la lista actual excluyendo el item con ese nombre.
-    2. Actualiza el signal con la lista filtrada.
-    3. Persiste la lista actualizada en localStorage.
-
-    Devuelve true si encontró y eliminó el item, false si no existía.
+    Si la petición tiene éxito, el croquis se quita del signal.
   */
-  remove(name: string): boolean {
-    const current = this.blueprints();
-    const filtered = current.filter(
-      (b) => b.name.toLowerCase() !== name.toLowerCase()
+  remove(name: string, callbacks?: { onSuccess?: () => void; onError?: () => void }): void {
+    const target = this.blueprintsSignal().find(
+      (b) => b.name.toLowerCase() === name.toLowerCase()
     );
+    if (!target) {
+      callbacks?.onError?.();
+      return;
+    }
 
-    /*
-      Si la longitud no cambió, significa que no existía ningún item
-      con ese nombre, por lo que se devuelve false.
-    */
-    if (filtered.length === current.length) return false;
-
-    this.blueprints.set(filtered);
-    this.saveToStorage(filtered);
-    return true;
+    this.api.removeBlueprint(target.id).subscribe({
+      next: () => {
+        this.blueprintsSignal.update((current) => current.filter((b) => b.id !== target.id));
+        callbacks?.onSuccess?.();
+      },
+      error: () => callbacks?.onError?.(),
+    });
   }
 }

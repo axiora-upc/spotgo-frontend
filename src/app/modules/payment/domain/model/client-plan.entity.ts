@@ -54,6 +54,7 @@ export class ClientPlan implements BaseEntity {
   private _monthlyPrice: number;
   private _description: string;
   private _reservationsPerMonth: number | null;  // null means unlimited
+  private _discountPercent: number;
   private _features: string[];
 
   /*
@@ -78,6 +79,7 @@ export class ClientPlan implements BaseEntity {
     monthlyPrice: number;
     description: string;
     reservationsPerMonth: number | null;
+    discountPercent: number;
     features: string[];
   }) {
     /**
@@ -92,6 +94,7 @@ export class ClientPlan implements BaseEntity {
     this._monthlyPrice = props.monthlyPrice;
     this._description = props.description;
     this._reservationsPerMonth = props.reservationsPerMonth;
+    this._discountPercent = props.discountPercent;
     this._features = props.features;
   }
 
@@ -150,6 +153,14 @@ export class ClientPlan implements BaseEntity {
 
   set reservationsPerMonth(value: number | null) {
     this._reservationsPerMonth = value;
+  }
+
+  get discountPercent(): number {
+    return this._discountPercent;
+  }
+
+  set discountPercent(value: number) {
+    this._discountPercent = value;
   }
 
   get features(): string[] {

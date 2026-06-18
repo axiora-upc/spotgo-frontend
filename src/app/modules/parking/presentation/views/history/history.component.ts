@@ -14,29 +14,53 @@
     ratingTarget signal → null = modal closed, item = modal open for that item
     reportTarget signal → null = modal closed, item = modal open for that item
 */
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { HistoryStore } from '../../../application/history.store';
 import { ParkingHistory } from '../../../domain/model/parking-history.entity';
 import { ReportType } from '../../../domain/model/client-report.entity';
+import { CurrentUserService } from '../../../../../shared/services/current-user.service';
 
 @Component({
   selector: 'app-history',
   standalone: true,
-  imports: [FormsModule, TranslatePipe],
+  imports: [DecimalPipe, FormsModule, TranslatePipe],
   templateUrl: './history.component.html',
   styleUrl: './history.component.css',
 })
 export class HistoryComponent implements OnInit {
-  protected readonly store = inject(HistoryStore);
+  protected readonly store       = inject(HistoryStore);
+  private  readonly currentUser  = inject(CurrentUserService);
+  protected readonly currentPage = signal(1);
+  protected readonly pageSize = 5;
+
+  protected readonly totalPages = computed(() =>
+    Math.max(1, Math.ceil(this.store.history().length / this.pageSize))
+  );
+
+  protected readonly pagedHistory = computed(() => {
+    const safePage = Math.min(this.currentPage(), this.totalPages());
+    const start = (safePage - 1) * this.pageSize;
+    return this.store.history().slice(start, start + this.pageSize);
+  });
+
+  protected readonly pageStart = computed(() => {
+    if (this.store.history().length === 0) return 0;
+    return (Math.min(this.currentPage(), this.totalPages()) - 1) * this.pageSize + 1;
+  });
+
+  protected readonly pageEnd = computed(() =>
+    Math.min(this.pageStart() + this.pagedHistory().length - 1, this.store.history().length)
+  );
+
+  protected readonly shouldShowPagination = computed(() =>
+    this.store.history().length > this.pageSize
+  );
 
   ngOnInit(): void {
-    /*
-      'cli-001' is hardcoded for now — will be replaced with the
-      logged-in client id once authentication is implemented.
-    */
-    this.store.loadHistoryByClientId('cli-001');
+    this.store.loadHistoryByClientId(this.currentUser.clientId);
   }
 
   /* ── Formatting helpers ───────────────────────────────────────────── */
@@ -47,9 +71,9 @@ export class HistoryComponent implements OnInit {
   */
   protected formatDate(iso: string): string {
     const d = new Date(iso);
-    const y = d.getUTCFullYear();
-    const m = String(d.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(d.getUTCDate()).padStart(2, '0');
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
     return `${y}-${m}-${day}`;
   }
 
@@ -59,9 +83,7 @@ export class HistoryComponent implements OnInit {
   */
   protected formatTime(iso: string): string {
     const d = new Date(iso);
-    const h = String(d.getUTCHours()).padStart(2, '0');
-    const min = String(d.getUTCMinutes()).padStart(2, '0');
-    return `${h}:${min}`;
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
   }
 
   /*
@@ -100,7 +122,7 @@ export class HistoryComponent implements OnInit {
   }
 
   protected onOpenRate(item: ParkingHistory): void {
-    this.selectedStars.set(0);
+    this.selectedStars.set(item.rating ?? 0);
     this.hoverStars.set(0);
     this.ratingTarget.set(item);
   }
@@ -161,5 +183,13 @@ export class HistoryComponent implements OnInit {
     this.store.submitReport(item.id, item.parkingId, type as ReportType, {
       onSuccess: () => this.reportTarget.set(null),
     });
+  }
+
+  protected goToPreviousPage(): void {
+    this.currentPage.update((page) => Math.max(1, page - 1));
+  }
+
+  protected goToNextPage(): void {
+    this.currentPage.update((page) => Math.min(this.totalPages(), page + 1));
   }
 }

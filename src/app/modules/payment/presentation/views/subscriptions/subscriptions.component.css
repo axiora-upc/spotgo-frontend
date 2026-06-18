@@ -259,16 +259,15 @@
 }
 
 .plans-grid {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
-  flex-wrap: wrap;
 }
 
 .plan-card {
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   padding: 24px;
-  width: 260px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -359,6 +358,17 @@
   color: #aaa;
   cursor: default;
   border-color: #e0e0e0;
+}
+
+.plan-discount-badge {
+  display: inline-block;
+  background: #dcfce7;
+  color: #16a34a;
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-top: 6px;
 }
 
 /* ── Modal ─────────────────────────────────────────────── */

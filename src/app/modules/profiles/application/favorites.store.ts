@@ -20,9 +20,10 @@
     forkJoin({ a$, b$ }) emits { a, b } once BOTH observables complete —
     equivalent to Promise.all() in the async/await world.
 */
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { Favorite } from '../domain/model/favorite.entity';
+import { FavoriteRaw } from '../domain/model/favorite-raw.entity';
 import { FavoritesApi } from '../infrastructure/favorites-api';
 
 @Injectable({ providedIn: 'root' })
@@ -37,13 +38,22 @@ export class FavoritesStore {
     Signals are the in-memory state of the page.
     The view receives readonly versions below — it can read but not write.
   */
-  private readonly favoritesSignal = signal<Favorite[]>([]);
-  private readonly loadingSignal   = signal(false);
-  private readonly errorSignal     = signal<string | null>(null);
+  private readonly favoritesSignal   = signal<Favorite[]>([]);
+  private readonly loadingSignal     = signal(false);
+  private readonly errorSignal       = signal<string | null>(null);
+  private loadedClientId: string | null = null;
 
   readonly favorites = this.favoritesSignal.asReadonly();
   readonly loading   = this.loadingSignal.asReadonly();
   readonly error     = this.errorSignal.asReadonly();
+
+  private readonly favoriteParkingIds = computed(() =>
+    new Set(this.favoritesSignal().map(f => f.parkingId))
+  );
+
+  isFavorite(parkingId: string): boolean {
+    return this.favoriteParkingIds().has(parkingId);
+  }
 
   /*
     Called by the view on init, passing the logged-in client id.
@@ -56,9 +66,15 @@ export class FavoritesStore {
       5. It combines both into a Favorite entity (the join)
       6. The result is saved in the signal; the view re-renders automatically
   */
+  loadFavoritesOnce(clientId: string): void {
+    if (this.loadedClientId === clientId) return;
+    this.loadFavoritesByClientId(clientId);
+  }
+
   loadFavoritesByClientId(clientId: string): void {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
+    this.loadedClientId = clientId;
 
     forkJoin({
       favRaws:  this.favoritesApi.getFavorites(),
@@ -134,6 +150,14 @@ export class FavoritesStore {
         this.errorSignal.set(this.formatError(err, 'Failed to remove favorite'));
         callbacks?.onError?.();
       },
+    });
+  }
+
+  addFavorite(clientId: string, parkingId: string, distanceMi = 0): void {
+    const raw = new FavoriteRaw('', clientId, parkingId, distanceMi, new Date().toISOString());
+    this.favoritesApi.addFavorite(raw).subscribe({
+      next: () => this.loadFavoritesByClientId(clientId),
+      error: (err) => this.errorSignal.set(this.formatError(err, 'Failed to add favorite')),
     });
   }
 

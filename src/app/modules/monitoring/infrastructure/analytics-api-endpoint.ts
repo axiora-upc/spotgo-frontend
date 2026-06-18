@@ -1,68 +1,144 @@
 /*
-  AnalyticsApiEndpoint orquesta las dos llamadas HTTP que necesita
-  la vista Analytics:
+  AnalyticsApiEndpoint orquesta las llamadas HTTP que necesita la vista Analytics.
 
-  1. GET /parkings/:parkingId  → datos del parking (KPIs, gráficos)
-  2. GET /spotUtilization?parkingId=:id → spots más utilizados
+  En vez de leer datos estáticos de una colección "parkingSpots" que no existe
+  en el backend real, todos los KPIs se computan en tiempo real:
 
-  Ambas llamadas se hacen en paralelo con forkJoin y el resultado se
-  fusiona en una sola entidad ParkingAnalytics antes de entregársela
-  al Store.
-
-  No extiende BaseApiEndpoint porque este endpoint no es una colección
-  estándar: combina dos fuentes distintas y siempre devuelve un único
-  agregado.
+  - totalRevenue     → suma de baseAmount de reservations no canceladas (igual al real-time map)
+  - systemStatus     → 'maintenance' si hay algún detectedSpot en mantenimiento, 'active' si no
+  - mostUtilizedSpots → reservations agrupadas por spot code, ordenadas por frecuencia
+  - peakHour         → hora con mayor intensidad según occupancyByHour
 */
 import { HttpClient } from '@angular/common/http';
 import { Observable, forkJoin, map, catchError, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { ParkingAnalytics } from '../domain/model/analytics.entity';
-import { ParkingResource, SpotUtilizationResource } from './analytics-response';
+import {
+  OccupancyPoint,
+  ParkingAnalytics,
+  SpotStatus,
+  SpotType,
+  SpotUtilization,
+  WeeklyTrendPoint,
+} from '../domain/model/analytics.entity';
+import {
+  OccupancyPointResource,
+  ParkingResource,
+  WeeklyTrendPointResource,
+} from './analytics-response';
 import { ParkingAnalyticsAssembler } from './parking-analytics-assembler';
-import { SpotUtilizationAssembler } from './spot-utilization-assembler';
+
+interface ReservationResource {
+  id: string;
+  parkingId: string;
+  spot: string;
+  status: string;
+  amount: number;
+  baseAmount: number;
+}
+
+interface DetectedSpotResource {
+  id: string;
+  parkingId: string;
+  row: number;
+  col: number;
+  status?: string;
+}
 
 export class AnalyticsApiEndpoint {
-  private readonly parkingUrl     = `${environment.apiUrl}/parkings`;
-  private readonly spotsUrl       = `${environment.apiUrl}/spotUtilization`;
+  private readonly parkingUrl      = `${environment.apiUrl}/parkings`;
+  private readonly occupancyUrl    = `${environment.apiUrl}/occupancyByHour`;
+  private readonly trendsUrl       = `${environment.apiUrl}/weeklyTrends`;
+  private readonly reservationsUrl = `${environment.apiUrl}/reservations`;
+  private readonly spotsUrl        = `${environment.apiUrl}/detectedSpots`;
   private readonly parkingAssembler = new ParkingAnalyticsAssembler();
-  private readonly spotAssembler    = new SpotUtilizationAssembler();
 
   constructor(private readonly http: HttpClient) {}
 
-  /*
-    Obtiene el agregado completo de analytics para un parking.
-
-    forkJoin espera a que ambas peticiones terminen y emite un único
-    valor con los dos resultados. Luego se fusionan en la entidad
-    ParkingAnalytics que consume el Store.
-
-    El filtro ?parkingId= lo soporta json-server de forma nativa.
-  */
   getByParkingId(parkingId: string): Observable<ParkingAnalytics> {
-    const parking$ = this.http.get<ParkingResource>(
-      `${this.parkingUrl}/${parkingId}`
-    );
+    const parking$      = this.http.get<ParkingResource>(`${this.parkingUrl}/${parkingId}`);
+    const occupancy$    = this.http.get<OccupancyPointResource[]>(`${this.occupancyUrl}?parkingId=${parkingId}`);
+    const trends$       = this.http.get<WeeklyTrendPointResource[]>(`${this.trendsUrl}?parkingId=${parkingId}`);
+    const reservations$ = this.http.get<ReservationResource[]>(`${this.reservationsUrl}?parkingId=${parkingId}`);
+    const spots$        = this.http.get<DetectedSpotResource[]>(`${this.spotsUrl}?parkingId=${parkingId}`);
 
-    const spots$ = this.http.get<SpotUtilizationResource[]>(
-      `${this.spotsUrl}?parkingId=${parkingId}`
-    );
+    return forkJoin([parking$, occupancy$, trends$, reservations$, spots$]).pipe(
+      map(([parkingResource, occupancyPoints, trendPoints, reservations, detectedSpots]) => {
 
-    return forkJoin([parking$, spots$]).pipe(
-      map(([parkingResource, spotResources]) => {
-        /* Convierte el parking resource en la entidad de dominio */
-        const analytics = this.parkingAssembler.toEntityFromResource(parkingResource);
+        // ── Revenue: misma fórmula que el real-time map ─────────────────────
+        const totalRevenue = Math.round(
+          reservations
+            .filter(r => r.status !== 'cancelled')
+            .reduce((sum, r) => sum + r.baseAmount, 0) * 100
+        ) / 100;
 
-        /* Inyecta los spots en el mismo agregado */
-        analytics.mostUtilizedSpots = spotResources.map((s) =>
-          this.spotAssembler.toEntityFromResource(s)
+        // ── Salud del sistema: derivada de spots en mantenimiento ────────────
+        const maintenanceSpotsCount = detectedSpots.filter(s => s.status === 'maintenance').length;
+        const systemStatus = maintenanceSpotsCount > 0 ? 'maintenance' : 'active';
+
+        // ── Hora pico: el punto de mayor intensidad en occupancyByHour ───────
+        const peakHour = occupancyPoints.length > 0
+          ? occupancyPoints.reduce((max, p) => p.intensity > max.intensity ? p : max, occupancyPoints[0]).hour
+          : parkingResource.peakHour;
+
+        // ── Espacios más utilizados: agrupados desde reservations ─────────────
+        // Construir mapa spot-code → { count, revenue }
+        const spotMap = new Map<string, { count: number; revenue: number }>();
+        reservations
+          .filter(r => r.status !== 'cancelled')
+          .forEach(r => {
+            const cur = spotMap.get(r.spot) ?? { count: 0, revenue: 0 };
+            spotMap.set(r.spot, {
+              count:   cur.count + 1,
+              revenue: Math.round((cur.revenue + r.baseAmount) * 100) / 100,
+            });
+          });
+
+        // Lookup de estado actual por código de spot (row/col → "A1", "B3", etc.)
+        const statusByCode = new Map<string, string>();
+        detectedSpots.forEach(s => {
+          const code = `${String.fromCharCode(65 + s.row)}${s.col + 1}`;
+          statusByCode.set(code, s.status ?? 'available');
+        });
+
+        const maxCount = spotMap.size > 0
+          ? Math.max(...Array.from(spotMap.values()).map(v => v.count))
+          : 1;
+
+        const mostUtilizedSpots: SpotUtilization[] = Array.from(spotMap.entries())
+          .sort((a, b) => b[1].count - a[1].count)
+          .map(([spotCode, stats], idx) => new SpotUtilization({
+            id:             `su-${idx + 1}`,
+            spotId:         spotCode,
+            spotName:       spotCode,
+            zone:           `Level ${spotCode.charAt(0)}`,
+            type:           'standard' as SpotType,
+            status:         (statusByCode.get(spotCode) ?? 'available') as SpotStatus,
+            dailyTurnover:  stats.count,
+            peakUtilization: Math.round((stats.count / maxCount) * 100),
+            revenueImpact:  stats.revenue,
+          }));
+
+        // ── Ensamblar la entidad ──────────────────────────────────────────────
+        const analytics = this.parkingAssembler.toEntityFromResource({
+          ...parkingResource,
+          totalRevenue,
+          systemStatus,
+          peakHour,
+        });
+
+        analytics.maintenanceSpotsCount = maintenanceSpotsCount;
+        analytics.mostUtilizedSpots     = mostUtilizedSpots;
+        analytics.occupancyByHour       = occupancyPoints.map(p =>
+          new OccupancyPoint({ hour: p.hour, intensity: p.intensity })
+        );
+        analytics.weeklyTrends          = trendPoints.map(p =>
+          new WeeklyTrendPoint({ day: p.day, value: p.value })
         );
 
         return analytics;
       }),
-      catchError((err) =>
-        throwError(
-          () => new Error('Failed to load analytics: ' + (err?.message ?? ''))
-        )
+      catchError(err =>
+        throwError(() => new Error('Failed to load analytics: ' + (err?.message ?? '')))
       )
     );
   }

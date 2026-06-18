@@ -30,6 +30,7 @@ export class ClientPlanAssembler
       monthlyPrice: resource.monthlyPrice,
       description: resource.description,
       reservationsPerMonth: resource.reservationsPerMonth,
+      discountPercent: resource.discountPercent ?? 0,
       features: resource.features ?? [],
     });
   }
@@ -47,6 +48,7 @@ export class ClientPlanAssembler
       monthlyPrice: entity.monthlyPrice,
       description: entity.description,
       reservationsPerMonth: entity.reservationsPerMonth,
+      discountPercent: entity.discountPercent,
       features: entity.features,
     } as ClientPlanResource;
   }

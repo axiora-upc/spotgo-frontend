@@ -11,7 +11,7 @@
   }
 
   <div class="history-list">
-    @for (item of store.history(); track item.id) {
+    @for (item of pagedHistory(); track item.id) {
       <div class="history-card">
 
         <!-- Left: location icon -->
@@ -23,7 +23,15 @@
 
         <!-- Center: main info -->
         <div class="history-card__body">
-          <p class="history-card__name">{{ item.parkingName }}</p>
+          <div class="history-card__title-row">
+            <p class="history-card__name">{{ item.parkingName }}</p>
+            <span class="history-status"
+                  [class.history-status--completed]="item.status === 'completed'"
+                  [class.history-status--cancelled]="item.status === 'cancelled'"
+                  [class.history-status--active]="item.status === 'active'">
+              {{ item.status }}
+            </span>
+          </div>
 
           <div class="history-card__meta">
             <!-- Date -->
@@ -48,7 +56,7 @@
 
         <!-- Right: amount + rating/actions -->
         <div class="history-card__right">
-          <p class="history-card__amount">S/. {{ item.amount }}.00</p>
+          <p class="history-card__amount">S/. {{ item.amount | number:'1.2-2' }}</p>
 
           <!-- Stars: shown only if the session has been rated -->
           @if (item.rating !== null) {
@@ -66,18 +74,45 @@
               {{ 'history.btn-report' | translate }}
             </button>
 
-            <!-- Rate button: only shown if not yet rated -->
-            @if (item.rating === null) {
-              <button class="btn-rate" type="button" (click)="onOpenRate(item)">
-                {{ 'history.btn-rate' | translate }}
-              </button>
-            }
+            <button class="btn-rate" type="button" (click)="onOpenRate(item)">
+              {{ (item.rating === null ? 'history.btn-rate' : 'history.btn-edit-rate') | translate }}
+            </button>
           </div>
         </div>
 
       </div>
     }
   </div>
+
+  @if (shouldShowPagination()) {
+    <div class="pagination">
+      <span class="pagination__summary">
+        {{ 'history.pagination.summary' | translate: { start: pageStart(), end: pageEnd(), total: store.history().length } }}
+      </span>
+
+      <div class="pagination__actions">
+        <button
+          class="pagination__btn"
+          type="button"
+          [disabled]="currentPage() === 1"
+          (click)="goToPreviousPage()">
+          {{ 'history.pagination.previous' | translate }}
+        </button>
+
+        <span class="pagination__page">
+          {{ 'history.pagination.page' | translate: { page: currentPage(), total: totalPages() } }}
+        </span>
+
+        <button
+          class="pagination__btn"
+          type="button"
+          [disabled]="currentPage() === totalPages()"
+          (click)="goToNextPage()">
+          {{ 'history.pagination.next' | translate }}
+        </button>
+      </div>
+    </div>
+  }
 </div>
 
 <!-- ── Rating modal ──────────────────────────────────────────────── -->

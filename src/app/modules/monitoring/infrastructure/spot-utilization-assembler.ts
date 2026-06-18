@@ -13,7 +13,7 @@ export class SpotUtilizationAssembler
     return new SpotUtilization({
       id:               resource.id,
       spotId:           resource.spotId,
-      spotName:         resource.spotName,
+      spotName:         resource.spotCode ?? resource.spotId,
       zone:             resource.zone,
       type:             resource.type as SpotType,
       status:           resource.status as SpotStatus,
@@ -29,10 +29,11 @@ export class SpotUtilizationAssembler
       id:               entity.id,
       parkingId:        '',
       spotId:           entity.spotId,
-      spotName:         entity.spotName,
+      spotCode:         entity.spotName,
       zone:             entity.zone,
       type:             entity.type,
       status:           entity.status,
+      isActive:         entity.status !== 'maintenance',
       dailyTurnover:    entity.dailyTurnover,
       peakUtilization:  entity.peakUtilization,
       revenueImpact:    entity.revenueImpact,
@@ -40,10 +41,8 @@ export class SpotUtilizationAssembler
   }
 
   /*
-    La colección /spotUtilization se filtra por parkingId en la URL
+    La colección /parkingSpots se filtra por parkingId en la URL
     (?parkingId=prk-001), así que json-server devuelve un array directo.
-    BaseApiEndpoint.getAll() lo maneja en su rama Array.isArray, por lo
-    que este método no se llama en la práctica.
   */
   toEntitiesFromResponse(_response: SpotUtilizationResponse): SpotUtilization[] {
     return [];

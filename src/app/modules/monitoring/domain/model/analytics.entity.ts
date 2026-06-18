@@ -131,6 +131,7 @@ export class ParkingAnalytics implements BaseEntity {
   private _occupancyByHour: OccupancyPoint[];
   private _weeklyTrends: WeeklyTrendPoint[];
   private _mostUtilizedSpots: SpotUtilization[];
+  private _maintenanceSpotsCount: number;
 
   constructor(props: {
     parkingId: string;
@@ -146,6 +147,7 @@ export class ParkingAnalytics implements BaseEntity {
     occupancyByHour: OccupancyPoint[];
     weeklyTrends: WeeklyTrendPoint[];
     mostUtilizedSpots: SpotUtilization[];
+    maintenanceSpotsCount?: number;
   }) {
     this._parkingId             = props.parkingId;
     this._parkingName           = props.parkingName;
@@ -160,6 +162,7 @@ export class ParkingAnalytics implements BaseEntity {
     this._occupancyByHour       = props.occupancyByHour;
     this._weeklyTrends          = props.weeklyTrends;
     this._mostUtilizedSpots     = props.mostUtilizedSpots;
+    this._maintenanceSpotsCount = props.maintenanceSpotsCount ?? 0;
   }
 
   get id(): string                        { return this._parkingId; }
@@ -204,18 +207,13 @@ export class ParkingAnalytics implements BaseEntity {
   get mostUtilizedSpots(): SpotUtilization[]     { return this._mostUtilizedSpots; }
   set mostUtilizedSpots(v: SpotUtilization[])    { this._mostUtilizedSpots = v; }
 
-  /*
-    Deriva el label de salud del sistema a partir de systemStatus.
-    La vista consume este getter en lugar del string crudo de la API.
-  */
+  get maintenanceSpotsCount(): number            { return this._maintenanceSpotsCount; }
+  set maintenanceSpotsCount(v: number)           { this._maintenanceSpotsCount = v; }
+
   get systemHealthLabel(): string {
-    return this._systemStatus === 'active' ? 'Optimum' : 'Degraded';
+    return this._systemStatus === 'active' ? 'analytics.kpi.optimum' : 'analytics.kpi.maintenance';
   }
 
-  /*
-    Devuelve true si el status del sistema es 'active'.
-    La vista lo usa para alternar el color del KPI de System Health.
-  */
   get isSystemHealthy(): boolean {
     return this._systemStatus === 'active';
   }

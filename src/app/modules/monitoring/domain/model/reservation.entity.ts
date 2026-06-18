@@ -1,4 +1,4 @@
-export type ReservationStatus = 'pending' | 'completed' | 'cancelled';
+export type ReservationStatus = 'pending' | 'active' | 'completed' | 'cancelled';
 
 export interface Reservation {
   id: string;
@@ -9,5 +9,6 @@ export interface Reservation {
   startTime: string;
   duration: number; // in hours
   totalAmount: number;
+  baseAmount?: number;
   status: ReservationStatus;
 }

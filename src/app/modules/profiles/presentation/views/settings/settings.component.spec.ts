@@ -22,7 +22,7 @@ function makeAdmin(overrides: Partial<{
   email: string; phone: string; parkingName: string; city: string;
 }> = {}): Admin {
   return new Admin({
-    id:          overrides.id          ?? 'adm-001',
+    id:          overrides.id          ?? 'usr-001',
     firstName:   overrides.firstName   ?? 'Piero',
     lastName:    overrides.lastName    ?? 'Quiroz Montoya',
     email:       overrides.email       ?? 'piero.quiroz@spotgo.com',
@@ -106,8 +106,8 @@ describe('SettingsComponent', () => {
   // 2. Carga inicial
   // ══════════════════════════════════════════════════════════════════════════
 
-  it('should call profilesStore.loadAdmin with "adm-001" on init', () => {
-    expect(storeStub.loadAdmin).toHaveBeenCalledOnceWith('adm-001');
+  it('should call profilesStore.loadAdmin with "usr-001" on init', () => {
+    expect(storeStub.loadAdmin).toHaveBeenCalledOnceWith('usr-001');
   });
 
   it('should expose the admin from the store via the admin getter', () => {
@@ -226,7 +226,7 @@ describe('SettingsComponent', () => {
     expect(updatedAdmin.phone).toBe('+51 111 222 333');
     expect(updatedAdmin.parkingName).toBe('Nuevo Parking');
     expect(updatedAdmin.city).toBe('San Isidro');
-    expect(updatedAdmin.id).toBe('adm-001'); // id must be preserved
+    expect(updatedAdmin.id).toBe('usr-001'); // id must be preserved
   });
 
   it('saveChanges should pass onSuccess callback that sets isEditing to false', () => {

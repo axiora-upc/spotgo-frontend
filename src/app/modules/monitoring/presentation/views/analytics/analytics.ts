@@ -5,8 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { MonitoringStore } from '../../../application/monitoring.store';
 import { SpotUtilization } from '../../../domain/model/analytics.entity';
-
-const ADMIN_PARKING_ID = 'prk-001';
+import { CurrentUserService } from '../../../../../shared/services/current-user.service';
 
 const INITIAL_SPOTS_SHOWN = 3;
 
@@ -17,7 +16,8 @@ const INITIAL_SPOTS_SHOWN = 3;
   styleUrl: './analytics.css',
 })
 export class Analytics implements OnInit {
-  protected readonly store = inject(MonitoringStore);
+  protected readonly store       = inject(MonitoringStore);
+  private  readonly currentUser  = inject(CurrentUserService);
 
   protected selectedPeriod = signal<'today' | 'last7' | 'custom'>('today');
 
@@ -57,7 +57,7 @@ export class Analytics implements OnInit {
       El store llama a la API solo una vez; si analytics() ya tiene
       data (por navegación de vuelta), la vista la reutiliza.
     */
-    this.store.loadAnalytics(ADMIN_PARKING_ID);
+    this.store.loadAnalytics(this.currentUser.parkingId);
   }
 
   /* ─── Acciones de la UI ──────────────────────────────────────────────────── */

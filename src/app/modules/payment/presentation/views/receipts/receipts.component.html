@@ -37,12 +37,12 @@
 
       <div class="stat-card">
         <p class="stat-card__label">{{ 'receipts.stats.spent' | translate }}</p>
-        <p class="stat-card__value">S/.{{ totalSpent() }}.00</p>
+        <p class="stat-card__value">S/.{{ totalSpent() | number:'1.2-2' }}</p>
       </div>
 
       <div class="stat-card stat-card--accent">
         <p class="stat-card__label">{{ 'receipts.stats.this-month' | translate }}</p>
-        <p class="stat-card__value stat-card__value--accent">S/.{{ thisMonthSpent() }}.00</p>
+        <p class="stat-card__value stat-card__value--accent">S/.{{ thisMonthSpent() | number:'1.2-2' }}</p>
       </div>
 
     </div>
@@ -65,7 +65,7 @@
     <!-- ── Receipt list ─────────────────────────────────────────────────── -->
     <div class="receipt-list">
 
-      @for (receipt of filteredReceipts(); track receipt.id) {
+      @for (receipt of pagedReceipts(); track receipt.id) {
         <div class="receipt-card">
 
           <!-- Left: icon + details -->
@@ -106,7 +106,7 @@
                     <line x1="8" y1="2" x2="8" y2="6" />
                     <line x1="3" y1="10" x2="21" y2="10" />
                   </svg>
-                  {{ formatDate(receipt.date) }}
+                  {{ formatDate(receipt.date) }}@if (formatTime(receipt.date)) { · {{ formatTime(receipt.date) }}}
                 </span>
 
                 <span class="meta-item">{{ formatDuration(receipt.durationHours, receipt.durationMinutes) }}</span>
@@ -126,7 +126,7 @@
 
           <!-- Right: amount + action buttons -->
           <div class="receipt-card__right">
-            <span class="receipt-card__amount">S/.{{ receipt.amount }}.00</span>
+            <span class="receipt-card__amount">S/.{{ receipt.amount | number:'1.2-2' }}</span>
 
             <div class="receipt-card__actions">
               <button class="btn-action" type="button" (click)="onDownloadPdf(receipt)">
@@ -163,6 +163,38 @@
       }
 
     </div>
+
+    @if (shouldShowPagination()) {
+      <div class="pagination">
+        <span class="pagination__summary">
+          {{ 'receipts.pagination.summary' | translate: { start: pageStart(), end: pageEnd(), total: filteredReceipts().length } }}
+        </span>
+
+        <div class="pagination__actions">
+          <button
+            class="pagination__btn"
+            type="button"
+            [disabled]="isFirstPage()"
+            (click)="goToPreviousPage()"
+          >
+            {{ 'receipts.pagination.previous' | translate }}
+          </button>
+
+          <span class="pagination__page">
+            {{ 'receipts.pagination.page' | translate: { page: currentPage(), total: totalPages() } }}
+          </span>
+
+          <button
+            class="pagination__btn"
+            type="button"
+            [disabled]="isLastPage()"
+            (click)="goToNextPage()"
+          >
+            {{ 'receipts.pagination.next' | translate }}
+          </button>
+        </div>
+      </div>
+    }
   }
 
 </div>

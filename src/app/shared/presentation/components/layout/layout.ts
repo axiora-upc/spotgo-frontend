@@ -16,7 +16,6 @@ import { RouterOutlet } from '@angular/router';
 */
 import { SidebarContent } from '../sidebar-content/sidebar-content';
 import { ToolbarContent } from '../toolbar-content/toolbar-content';
-import { FooterContent } from '../footer-content/footer-content';
 
 /*
   A component in Angular is a class that controls
@@ -44,12 +43,7 @@ import { FooterContent } from '../footer-content/footer-content';
     - <router-outlet>
     - <app-footer-content>
   */
-  imports: [
-    ToolbarContent,
-    SidebarContent,
-    RouterOutlet,
-    FooterContent
-  ],
+  imports: [ToolbarContent, SidebarContent, RouterOutlet],
 
   /*
     templateUrl defines which HTML file contains the structure
@@ -69,6 +63,4 @@ import { FooterContent } from '../footer-content/footer-content';
   */
   styleUrl: './layout.css',
 })
-export class Layout {
-
-}
+export class Layout {}

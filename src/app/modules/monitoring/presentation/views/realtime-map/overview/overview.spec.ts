@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -20,6 +21,7 @@ describe('Overview', () => {
     await TestBed.configureTestingModule({
       imports: [Overview],
       providers: [
+        provideRouter([]),
         provideHttpClient(),
         provideTranslateService({ fallbackLang: 'en', lang: 'en' }),
         provideTranslateHttpLoader({ prefix: './i18n/', suffix: '.json' }),

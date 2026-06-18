@@ -18,8 +18,9 @@ export class AdminAssembler
       lastName:    resource.lastName,
       email:       resource.email,
       phone:       resource.phone,
-      parkingName: resource.parkingName,
       city:        resource.city,
+      parkingName: resource.parkingName,
+      parkingId:   resource.parkingId,
     });
   }
 
@@ -30,12 +31,13 @@ export class AdminAssembler
       lastName:    entity.lastName,
       email:       entity.email,
       phone:       entity.phone,
-      parkingName: entity.parkingName,
       city:        entity.city,
+      parkingName: entity.parkingName,
+      parkingId:   entity.parkingId,
     };
   }
 
   toEntitiesFromResponse(response: AdminResponse): Admin[] {
-    return response.admins.map(r => this.toEntityFromResource(r));
+    return response.users.map(r => this.toEntityFromResource(r));
   }
 }

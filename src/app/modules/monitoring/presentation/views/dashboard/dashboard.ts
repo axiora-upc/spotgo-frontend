@@ -6,9 +6,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { MonitoringStore } from '../../../application/monitoring.store';
 import { ParkingResource } from '../../../infrastructure/monitoring-api';
 import { ParkingDetailsDialog } from './components/parking-details-dialog/parking-details-dialog';
-
 import { FavoritesStore } from '../../../../profiles/application/favorites.store';
 import { PaymentStore } from '../../../../payment/application/payment.store';
+import { CurrentUserService } from '../../../../../shared/services/current-user.service';
 
 interface ParkingWithPosition extends ParkingResource {
   mapX: number;
@@ -22,10 +22,11 @@ interface ParkingWithPosition extends ParkingResource {
   styleUrl: './dashboard.css',
 })
 export class Dashboard implements OnInit {
-  protected readonly store = inject(MonitoringStore);
-  private readonly dialog = inject(MatDialog);
-  private readonly favoritesStore = inject(FavoritesStore);
-  private readonly paymentStore = inject(PaymentStore);
+  protected readonly store       = inject(MonitoringStore);
+  private  readonly dialog       = inject(MatDialog);
+  private  readonly favoritesStore = inject(FavoritesStore);
+  private  readonly paymentStore   = inject(PaymentStore);
+  private  readonly currentUser    = inject(CurrentUserService);
 
   protected readonly stats = computed(() => {
     const parkings = this.store.parkings();
@@ -33,15 +34,14 @@ export class Dashboard implements OnInit {
     // Calculate spots available nearby from all parking facilities
     const availableNearby = parkings.reduce((acc, p) => acc + p.availableSpaces, 0);
 
-    // Filter and count only active completed reservations in session
-    const activeReservations = this.store.userReservations().filter(r => r.status === 'completed').length;
+    // Filter and count only active reservations in session
+    const activeReservations = this.store.userReservations().filter(r => r.status === 'active').length;
 
     // Count of dynamic favorites from backend favorite-store
     const savedLocations = this.favoritesStore.favorites().length;
 
-    // Actual monthly savings from client subscription profile
-    const sub = this.paymentStore.subscription();
-    const avgSavings = sub ? sub.savedThisMonth : 0;
+    // Actual monthly savings from the current client's receipts.
+    const avgSavings = this.paymentStore.currentMonthSavings();
 
     return {
       availableNearby,
@@ -73,8 +73,10 @@ export class Dashboard implements OnInit {
   ngOnInit(): void {
     this.store.loadParkings();
     this.store.loadUserReservations();
-    this.favoritesStore.loadFavoritesByClientId('cli-001');
-    this.paymentStore.loadSubscriptionByClientId('cli-001');
+    this.favoritesStore.loadFavoritesByClientId(this.currentUser.clientId);
+    this.paymentStore.loadSubscriptionByClientId(this.currentUser.clientId);
+    this.paymentStore.loadPlans();
+    this.paymentStore.loadReceiptsByClientId(this.currentUser.clientId);
   }
 
   protected openParkingDetails(parking: ParkingResource): void {
@@ -87,11 +89,8 @@ export class Dashboard implements OnInit {
       panelClass: 'custom-dialog-container',
     });
 
-    dialogRef.afterClosed().subscribe((reservation) => {
+    dialogRef.afterClosed().subscribe(() => {
       this.store.selectParking(null);
-      if (reservation) {
-        this.store.completeReservation(reservation);
-      }
     });
   }
 

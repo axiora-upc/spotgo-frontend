@@ -61,4 +61,8 @@ export class FavoritesApi extends BaseApi {
   removeFavorite(id: string): Observable<void> {
     return this.favoritesEndpoint.delete(id);
   }
+
+  addFavorite(raw: FavoriteRaw): Observable<FavoriteRaw> {
+    return this.favoritesEndpoint.create(raw);
+  }
 }

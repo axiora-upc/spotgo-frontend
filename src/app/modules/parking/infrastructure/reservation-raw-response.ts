@@ -20,6 +20,7 @@ export interface ReservationRawResource extends BaseResource {
   endDate: string;
   status: string;
   amount: number;
+  baseAmount?: number;
   rating: number | null;
 }
 

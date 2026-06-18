@@ -23,7 +23,6 @@ export interface EmployeesResource extends BaseResource {
   shiftStart: string;
   shiftEnd: string;
   status: string;
-  bookingCode?: string;
 }
 
 export interface EmployeesResponse extends BaseResponse {

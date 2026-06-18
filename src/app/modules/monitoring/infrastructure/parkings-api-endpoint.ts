@@ -15,6 +15,7 @@ export interface ParkingResource {
   peakHour: string;
   totalRevenue: number;
   systemStatus: string;
+  rating: number;
   pricePerHour: number;
 }
 
