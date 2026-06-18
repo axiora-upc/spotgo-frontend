@@ -67,7 +67,7 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
 
     // Default root url /api/reservations
     const targetUrl = `${backendUrl}/reservations`;
-    let body = req.body;
+    let body: any = req.body;
 
     // Translate outgoing request body if it is a POST
     if (req.method === 'POST' && body) {
