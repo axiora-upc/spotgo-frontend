@@ -58,6 +58,7 @@ async function migrate() {
   // However, we should register at least one blueprint and spots so reservation spot IDs exist!
   // Let's create a blueprint and some spots for each migrated parking so database foreign keys (spotId) are satisfied!
   console.log('\n--- Creating Blueprints and Spots ---');
+  const spotMapping = new Map(); // Maps oldParkingId_spotName -> new database spotId
 
   for (const [oldParkingId, newParkingId] of parkingIdMap.entries()) {
     try {
@@ -93,7 +94,11 @@ async function migrate() {
             })
           });
 
-          if (!spotResponse.ok) {
+          if (spotResponse.ok) {
+            const createdSpot = await spotResponse.json();
+            const spotName = String.fromCharCode(65 + charCode) + num;
+            spotMapping.set(oldParkingId + "_" + spotName, createdSpot.id);
+          } else {
             console.error(`Failed to create spot ${String.fromCharCode(65 + charCode)}${num}: ${await spotResponse.text()}`);
           }
         }
@@ -109,13 +114,11 @@ async function migrate() {
   const reservations = db.reservations || [];
 
   for (const res of reservations) {
-    // Determine spotId based on spot name (e.g., A2, B5) and parkingId
-    let spotId = 1;
-    const newParkingId = parkingIdMap.get(res.parkingId) || 1;
-    if (res.spot && typeof res.spot === 'string') {
-      const charCode = res.spot.charCodeAt(0) - 65; // 'A' -> 0, 'B' -> 1
-      const num = parseInt(res.spot.substring(1), 10) || 1;
-      spotId = (newParkingId - 1) * 100 + (charCode * 10) + num;
+    const spotKey = res.parkingId + "_" + res.spot;
+    const spotId = spotMapping.get(spotKey);
+    if (!spotId) {
+      console.warn(`Warning: Spot ${res.spot} for parking ${res.parkingId} not found in database. Skipping reservation for plate ${res.code}`);
+      continue;
     }
 
     // Convert dates to LocalDateTime string format
