@@ -1,8 +1,15 @@
 import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { map } from 'rxjs/operators';
+import { catchError } from 'rxjs';
+
+const MOCK_FALLBACK_HEADER = 'X-Mock-Fallback';
 
 export const apiInterceptor: HttpInterceptorFn = (req, next) => {
+  if (req.headers.get(MOCK_FALLBACK_HEADER)) {
+    return next(req);
+  }
+
   const backendUrl = (environment as any).backendUrl;
 
   if (!backendUrl) {
@@ -10,107 +17,91 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   const url = req.url;
+  const isParking = url.includes('/api/parkings') || url.includes('/parkings');
+  const isReservation = url.includes('/api/reservations') || url.includes('/reservations');
 
-  // 1. Intercept /api/parkings
-  if (url.includes('/api/parkings') || url.includes('/parkings')) {
-    // If it's a PATCH or PUT to /api/parkings/:id
-    // e.g. /api/parkings/prk-001 or /api/parkings/1
+  if (!isParking && !isReservation) {
+    return next(req);
+  }
+
+  const backendReq = buildBackendRequest(req, backendUrl, isParking, isReservation);
+
+  return next(backendReq).pipe(
+    map(event => {
+      if (event instanceof HttpResponse) {
+        return isParking
+          ? translateParkingResponse(event)
+          : translateReservationsResponse(event);
+      }
+      return event;
+    }),
+    catchError(() => {
+      const fallbackReq = req.clone({
+        setHeaders: { [MOCK_FALLBACK_HEADER]: 'true' },
+      });
+      return next(fallbackReq);
+    })
+  );
+};
+
+function buildBackendRequest(
+  req: any,
+  backendUrl: string,
+  isParking: boolean,
+  isReservation: boolean,
+): any {
+  const url = req.url;
+
+  if (isParking) {
     const match = url.match(/\/parkings\/([^\/]+)$/);
     if (match) {
       const id = match[1];
       const numericId = id.startsWith('prk-') ? parseInt(id.replace('prk-', ''), 10) : id;
-      const targetUrl = `${backendUrl}/parkings/${numericId}`;
-
-      let newReq = req.clone({ url: targetUrl });
-
-      return next(newReq).pipe(
-        map(event => {
-          if (event instanceof HttpResponse) {
-            return translateParkingResponse(event);
-          }
-          return event;
-        })
-      );
-    } else {
-      // It's a GET or POST to /api/parkings
-      const targetUrl = `${backendUrl}/parkings`;
-      let newReq = req.clone({ url: targetUrl });
-      return next(newReq).pipe(
-        map(event => {
-          if (event instanceof HttpResponse) {
-            return translateParkingResponse(event);
-          }
-          return event;
-        })
-      );
+      return req.clone({ url: `${backendUrl}/parkings/${numericId}` });
     }
+    return req.clone({ url: `${backendUrl}/parkings` });
   }
 
-  // 2. Intercept /api/reservations
-  if (url.includes('/api/reservations') || url.includes('/reservations')) {
-    // Check if it is a spot-specific lookup or GET/POST to root
+  if (isReservation) {
     const spotMatch = url.match(/\/reservations\/spot\/([^\/]+)$/);
     if (spotMatch) {
-      // E.g. GET /api/reservations/spot/1
-      const spotId = spotMatch[1];
-      const targetUrl = `${backendUrl}/reservations/spot/${spotId}`;
-      let newReq = req.clone({ url: targetUrl });
-      return next(newReq).pipe(
-        map(event => {
-          if (event instanceof HttpResponse) {
-            return translateReservationsResponse(event);
-          }
-          return event;
-        })
-      );
+      return req.clone({ url: `${backendUrl}/reservations/spot/${spotMatch[1]}` });
     }
 
-    // Default root url /api/reservations
     const targetUrl = `${backendUrl}/reservations`;
     let body: any = req.body;
 
-    // Translate outgoing request body if it is a POST
     if (req.method === 'POST' && body) {
-      // Map spot string (e.g. "A2", "B5") and parkingId to numeric spotId
       let spotId = 1;
       const parkingIdStr = body.parkingId || 'prk-001';
       const numericParkingId = parseInt(parkingIdStr.replace('prk-', ''), 10) || 1;
 
       if (body.spot && typeof body.spot === 'string') {
-        const charCode = body.spot.charCodeAt(0) - 65; // 'A' -> 0, 'B' -> 1
+        const charCode = body.spot.charCodeAt(0) - 65;
         const num = parseInt(body.spot.substring(1), 10) || 1;
         spotId = (numericParkingId - 1) * 100 + (charCode * 10) + num;
       }
 
-      // Convert dates to LocalDateTime string (YYYY-MM-DDTHH:mm:ss)
-      const startTime = body.startDate ? new Date(body.startDate).toISOString().split('.')[0] : new Date().toISOString().split('.')[0];
-      const endTime = body.endDate ? new Date(body.endDate).toISOString().split('.')[0] : new Date().toISOString().split('.')[0];
+      const startTime = body.startDate
+        ? new Date(body.startDate).toISOString().split('.')[0]
+        : new Date().toISOString().split('.')[0];
+      const endTime = body.endDate
+        ? new Date(body.endDate).toISOString().split('.')[0]
+        : new Date().toISOString().split('.')[0];
 
       body = {
         vehiclePlate: body.code || 'UNKNOWN',
-        spotId: spotId,
-        startTime: startTime,
-        endTime: endTime
+        spotId,
+        startTime,
+        endTime,
       };
     }
 
-    let newReq = req.clone({
-      url: targetUrl,
-      body: body
-    });
-
-    return next(newReq).pipe(
-      map(event => {
-        if (event instanceof HttpResponse) {
-          return translateReservationsResponse(event);
-        }
-        return event;
-      })
-    );
+    return req.clone({ url: targetUrl, body });
   }
 
-  return next(req);
-};
+  return req;
+}
 
 // Helper function to translate backend parking response to frontend mock format
 function translateParkingResponse(event: HttpResponse<any>): HttpResponse<any> {
