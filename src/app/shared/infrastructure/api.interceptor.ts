@@ -8,7 +8,7 @@ const MOCK_FALLBACK_HEADER = 'X-Mock-Fallback';
 const BACKEND_RESOURCES = [
   'parkings', 'reservations', 'subscriptions',
   'receipts', 'clientPlans', 'blueprints', 'detectedSpots',
-  'clientReports',
+  'clientReports', 'employees', 'occupancyByHour', 'weeklyTrends',
 ];
 
 /*
@@ -50,6 +50,9 @@ const ID_PREFIX_MAP: Record<string, Record<string, string>> = {
     parkingId: 'prk',  // se compara contra parkings.id, que usa 'prk' -> mismo prefijo
     reservationId: '', // se compara contra reservations.id, que usa '' -> mismo (sin prefijo)
   },
+  employees:       { id: '', parkingId: 'prk' },
+  occupancyByHour: { id: '', parkingId: 'prk' },
+  weeklyTrends:    { id: '', parkingId: 'prk' },
 };
 
 const BACKEND_TIMEOUT_MS = 1500;
