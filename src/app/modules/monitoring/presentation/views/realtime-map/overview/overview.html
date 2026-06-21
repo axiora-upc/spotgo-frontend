@@ -195,7 +195,10 @@
       <section class="spot-modal" (click)="$event.stopPropagation()">
         <header class="spot-modal__header">
           <div>
-            <p class="spot-modal__eyebrow">{{ 'realtime-map.overview.spot-modal.spot' | translate }} {{ selected.spot.id }}</p>
+            <p class="spot-modal__eyebrow">
+              {{ 'realtime-map.overview.spot-modal.spot' | translate }} {{ selected.spot.id }}
+              @if (selected.spot.dbId) { · ID #{{ selected.spot.dbId }} }
+            </p>
             <h2 class="spot-modal__title">{{ 'realtime-map.overview.' + selected.spot.status | translate }}</h2>
           </div>
           <button class="spot-modal__close" type="button" (click)="closeSpotDetails()">
