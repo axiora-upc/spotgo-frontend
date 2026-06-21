@@ -30,7 +30,7 @@ export class SubscriptionAssembler
        *  treat resource.status as if it were
        *  of type SubscriptionStatus.
        */
-      status: resource.status as SubscriptionStatus,
+      status: resource.status.toLowerCase() as SubscriptionStatus,
       renewsOn: resource.renewsOn,
       pricePerMonth: resource.pricePerMonth,
       sessions: resource.sessions,
