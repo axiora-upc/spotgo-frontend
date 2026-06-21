@@ -25,7 +25,7 @@ export class ClientPlanAssembler
   toEntityFromResource(resource: ClientPlanResource): ClientPlan {
     return new ClientPlan({
       id: resource.id,
-      type: resource.type as PlanType,
+      type: resource.type.toLowerCase() as PlanType,
       name: resource.name,
       monthlyPrice: resource.monthlyPrice,
       description: resource.description,
