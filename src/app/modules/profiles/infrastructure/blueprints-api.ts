@@ -67,7 +67,7 @@ export class BlueprintsApi extends BaseApi {
                 blueprint.spots = spotResources
                   .sort((a, b) => a.localId - b.localId)
                   .map(sr => ({
-                    id:     sr.localId,
+                    id:     Number(sr.id),
                     row:    sr.row,
                     col:    sr.col,
                     x_pct: sr.x_pct,
@@ -87,8 +87,8 @@ export class BlueprintsApi extends BaseApi {
   patchBlueprintSpots(blueprintId: string, spots: DetectedSpot[]): Observable<unknown> {
     const patches = spots.map(s =>
       this.http
-        .patch(`${this.spotsUrl}/${blueprintId}__r${s.row}c${s.col}`, {
-          status: s.status ?? 'available',
+        .patch(`${this.spotsUrl}/${s.id}/status`, null, {
+          params: { status: s.status ?? 'available' },
         })
         .pipe(catchError(() => of(null)))
     );

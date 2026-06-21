@@ -16,10 +16,12 @@ export type ParkingSpotStatus = 'available' | 'occupied' | 'maintenance' | 'empt
 export class ParkingSpot {
   private _id: string;
   private _status: ParkingSpotStatus;
+  private _dbId?: number;
 
-  constructor(props: { id: string; status: ParkingSpotStatus }) {
+  constructor(props: { id: string; status: ParkingSpotStatus; dbId?: number }) {
     this._id = props.id;
     this._status = props.status;
+    this._dbId = props.dbId;
   }
 
   get id(): string {
@@ -36,6 +38,16 @@ export class ParkingSpot {
 
   set status(value: ParkingSpotStatus) {
     this._status = value;
+  }
+
+  // ID real del spot en la base de datos. Solo se usa para mostrarlo
+  // en el modal de detalle, no afecta el resto de la lógica.
+  get dbId(): number | undefined {
+    return this._dbId;
+  }
+
+  set dbId(value: number | undefined) {
+    this._dbId = value;
   }
 }
 

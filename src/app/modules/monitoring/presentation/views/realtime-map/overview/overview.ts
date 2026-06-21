@@ -272,7 +272,7 @@ export class Overview implements OnInit, OnDestroy {
     this.store.updateParkingAvailableSpaces(this.activeBlueprint.parkingId, availableCount);
     this.store.loadBlueprintSnapshot(updatedSpots, this.activeParkingName);
     this.selectedSpot.set({
-      spot: new ParkingSpot({ id: spotId, status }),
+      spot: new ParkingSpot({ id: spotId, status, dbId: selected.spot.dbId }),
       reservation: null,
     });
   }

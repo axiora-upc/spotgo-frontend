@@ -461,6 +461,7 @@ export class MonitoringStore {
         parkingSpots.push(new ParkingSpot({
           id:     `${rowLabel}${col + 1}`,
           status: detected ? (detected.status ?? 'available') : 'empty',
+          dbId:   detected?.id,
         }));
       }
 
