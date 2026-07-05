@@ -7,8 +7,91 @@
 
   "toolbar": {
     "search-placeholder": "Search for parking spots...",
-    "user-view": "User View",
-    "admin-view": "Admin View"
+    "change-password": "Change password",
+    "logout": "Log out"
+  },
+
+  "iam": {
+    "login": {
+      "welcome-back": "Welcome back",
+      "title": "Sign in to SpotGo",
+      "subtitle": "Choose your account type to continue.",
+      "driver": "Driver",
+      "driver-desc": "Find, reserve and pay for parking.",
+      "operator": "Operator",
+      "operator-desc": "Manage spaces, pricing and revenue.",
+      "email": "Email",
+      "password": "Password",
+      "show-password": "Show password",
+      "hide-password": "Hide password",
+      "forgot-password": "Forgot password?",
+      "sign-in-as": "Sign in as",
+      "or": "OR",
+      "continue-google": "Continue with Google",
+      "terms": "By signing in you agree to our",
+      "terms-link": "Terms",
+      "and": "and",
+      "privacy-link": "Privacy Policy",
+      "new-here": "New here?",
+      "create-account": "Create an account",
+      "for-drivers": "For Drivers",
+      "for-operators": "For Operators",
+      "hero-title-driver-1": "Park smarter.",
+      "hero-title-driver-2": "Skip the search.",
+      "hero-subtitle-driver": "Live availability, instant reservations and contactless payment — all from your SpotGo account.",
+      "hero-title-operator-1": "Manage smarter.",
+      "hero-title-operator-2": "Grow faster.",
+      "hero-subtitle-operator": "Live occupancy, dynamic pricing and revenue insights — all from your SpotGo account.",
+      "feature-driver-1": "Real-time availability across the city",
+      "feature-driver-2": "Reserve your spot before you arrive",
+      "feature-driver-3": "Digital receipts & trip history",
+      "feature-driver-4": "Save your favorite parking lots",
+      "feature-operator-1": "Live occupancy across every level",
+      "feature-operator-2": "Dynamic pricing & revenue reports",
+      "feature-operator-3": "Employee & shift management",
+      "feature-operator-4": "Instant maintenance alerts"
+    },
+    "register": {
+      "get-started": "Get started",
+      "title": "Create your SpotGo account",
+      "subtitle": "Choose your account type to continue.",
+      "first-name": "First name",
+      "last-name": "Last name",
+      "confirm-password": "Confirm password",
+      "create-account-as": "Create account as",
+      "already-have-account": "Already have an account?",
+      "sign-in": "Sign in"
+    },
+    "forgot-password": {
+      "title": "Reset your password",
+      "subtitle": "Enter your account email and choose a new password.",
+      "new-password": "New password",
+      "submit": "Reset password",
+      "success-title": "Password updated",
+      "success": "Your password has been changed. You can sign in with it now.",
+      "back-to-login": "Back to sign in"
+    },
+    "change-password": {
+      "title": "Change password",
+      "current-password": "Current password",
+      "new-password": "New password",
+      "submit": "Save new password",
+      "success": "Your password has been updated."
+    },
+    "errors": {
+      "invalid-credentials": "Invalid email or password.",
+      "required": "This field is required.",
+      "email-invalid": "Enter a valid email address.",
+      "email-taken": "This email is already registered.",
+      "email-not-found": "No account found with that email.",
+      "password-min": "Password must be at least 6 characters.",
+      "password-mismatch": "Passwords do not match.",
+      "name-min": "Must be at least 2 characters.",
+      "no-role": "This account has no role assigned.",
+      "current-password-invalid": "Your current password is incorrect.",
+      "google-unavailable": "Google sign-in is not available in this demo.",
+      "generic": "Something went wrong. Please try again."
+    }
   },
 
   "sidebar": {
