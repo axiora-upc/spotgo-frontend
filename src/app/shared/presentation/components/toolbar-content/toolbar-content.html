@@ -119,38 +119,43 @@
       <!--
         accountMenu is the dropdown that appears when clicking the account button.
 
-        It shows two options:
-        - User View: switches the sidebar to show user navigation items.
-        - Admin View: switches the sidebar to show admin navigation items.
-
-        Each option calls setMode() from toolbar-content.ts,
-        which updates the ViewModeService signal.
-
-        The sidebar reacts automatically to that signal change.
+        It used to let anyone manually switch between "User View" and
+        "Admin View". That toggle is gone: the sidebar now follows the
+        REAL role resolved at login/register (see AuthStore). This menu
+        just shows who is signed in and offers a way to log out.
       -->
       <mat-menu #accountMenu="matMenu">
 
-        <!--
-          User View option.
+        @if (currentUser(); as user) {
+          <div class="account-menu-header">
+            <span class="account-menu-name">{{ user.fullName }}</span>
+            <span class="account-menu-email">{{ user.email }}</span>
+          </div>
+        }
 
-          Clicking this calls setMode('user'), which switches
-          the sidebar back to the standard user navigation items.
+        <!--
+          Change password option.
+
+          Opens ChangePasswordDialog. Available to every authenticated
+          user regardless of role, since this menu lives in the shared
+          toolbar rather than in the admin-only Settings page.
         -->
-        <button mat-menu-item (click)="setMode('user')">
-          <mat-icon>person</mat-icon>
-          <span>{{ 'toolbar.user-view' | translate }}</span>
+        <button mat-menu-item (click)="openChangePassword()">
+          <mat-icon>lock_reset</mat-icon>
+          <span>{{ 'toolbar.change-password' | translate }}</span>
         </button>
 
         <!--
-          Admin View option.
+          Logout option.
 
-          Clicking this calls setMode('admin'), which switches
-          the sidebar to the admin navigation items:
-          Real-time Map, Analytics, and Settings.
+          Clicking this calls logout(), which clears the session
+          (AuthStore + the sessionStorage keys shared with
+          CurrentUserService/ViewModeService) and navigates back to
+          the login page.
         -->
-        <button mat-menu-item (click)="setMode('admin')">
-          <mat-icon>admin_panel_settings</mat-icon>
-          <span>{{ 'toolbar.admin-view' | translate }}</span>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>{{ 'toolbar.logout' | translate }}</span>
         </button>
 
       </mat-menu>
