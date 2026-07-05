@@ -1,0 +1,433 @@
+/*
+  Shared styles for the IAM auth pages (Login, Register).
+
+  Both pages use the same two-column layout (form on the left, marketing
+  panel on the right) and the same visual language (brand navy #151970,
+  light gray backgrounds), so the rules live here once and each page's
+  own .css file just @imports this file instead of duplicating it.
+*/
+
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+/* ── Top bar ─────────────────────────────────────────────────────────── */
+
+.auth-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 74px;
+  padding: 0 32px;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #ffffff;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-container {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-image {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
+.brand-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #151970;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.topbar-link {
+  font-size: 14px;
+  color: #5f6673;
+}
+
+.topbar-link a {
+  color: #151970;
+  font-weight: 600;
+  text-decoration: underline;
+  margin-left: 4px;
+}
+
+/* ── Two-column body ────────────────────────────────────────────────── */
+
+.auth-body {
+  display: flex;
+  min-height: calc(100vh - 74px);
+}
+
+.auth-form-panel {
+  flex: 1 1 50%;
+  display: flex;
+  justify-content: center;
+  padding: 56px 32px;
+  background-color: #f8fafc;
+}
+
+.auth-form-wrap {
+  width: 100%;
+  max-width: 460px;
+}
+
+.auth-hero-panel {
+  flex: 1 1 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 64px 72px;
+  background-color: #151970;
+  color: #ffffff;
+}
+
+/* ── Shared pill badge ──────────────────────────────────────────────── */
+
+.pill {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.pill-light {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+.pill-dark {
+  background-color: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+/* ── Form panel content ─────────────────────────────────────────────── */
+
+.auth-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 8px;
+}
+
+.auth-subtitle {
+  font-size: 15px;
+  color: #5f6673;
+  margin: 0 0 24px;
+}
+
+.account-type-options {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.account-type-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 14px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background-color: #ffffff;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+}
+
+.account-type-card.selected {
+  background-color: #f1f5f9;
+  border-color: #151970;
+  box-shadow: 0 0 0 1px #151970;
+}
+
+.account-type-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background-color: #eef2f7;
+  color: #151970;
+  margin-bottom: 4px;
+}
+
+.account-type-card.selected .account-type-icon {
+  background-color: #151970;
+  color: #ffffff;
+}
+
+.account-type-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.account-type-desc {
+  font-size: 12.5px;
+  color: #5f6673;
+}
+
+.field-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.field-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.field-row .field-label {
+  margin-bottom: 0;
+}
+
+.link-inline {
+  font-size: 13px;
+  color: #151970;
+  text-decoration: none;
+}
+
+.link-inline:hover {
+  text-decoration: underline;
+}
+
+.input-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background-color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.input-box mat-icon {
+  color: #9ca3af;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+/*
+  Eye button that toggles a password field between masked and plain text.
+  Sits inside the same .input-box as the lock icon and the input, on the
+  far right, so it lines up with both the login password field and
+  register's password/confirm-password fields without extra markup.
+*/
+.toggle-visibility {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.toggle-visibility:hover {
+  color: #5f6673;
+}
+
+.toggle-visibility mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+.input-box.invalid {
+  border-color: #dc2626;
+}
+
+.input-box input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  color: #111827;
+  background: transparent;
+  min-width: 0;
+}
+
+.field-error {
+  display: block;
+  font-size: 12.5px;
+  color: #dc2626;
+  margin: 0 0 12px;
+}
+
+.form-error {
+  font-size: 13.5px;
+  color: #dc2626;
+  background-color: #fee2e2;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+}
+
+.submit-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 16px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 10px;
+  background-color: #151970;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #10144f;
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: #9ca3af;
+  font-size: 12.5px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: #e5e7eb;
+}
+
+.google-button {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #111827;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.google-button:hover {
+  background-color: #f8fafc;
+}
+
+.google-note {
+  display: block;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.terms-note {
+  font-size: 12.5px;
+  color: #9ca3af;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.terms-note a {
+  color: #5f6673;
+  text-decoration: underline;
+}
+
+/* ── Hero panel content ─────────────────────────────────────────────── */
+
+.hero-title {
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 16px;
+}
+
+.hero-subtitle {
+  font-size: 15.5px;
+  color: rgba(255, 255, 255, 0.75);
+  max-width: 420px;
+  margin: 0 0 28px;
+}
+
+.hero-features {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hero-features li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+}
+
+.hero-features mat-icon {
+  color: #93c5fd;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .auth-body {
+    flex-direction: column;
+  }
+
+  .auth-hero-panel {
+    padding: 48px 32px;
+  }
+}
