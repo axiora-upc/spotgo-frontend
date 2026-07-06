@@ -2,7 +2,7 @@
   Assembler between ClientReport (domain) and ClientReportResource (API DTO).
 
   toResourceFromEntity is called by BaseApiEndpoint.create() when the
-  user submits a report. The id is sent as '' and json-server assigns
+  user submits a report. The id is sent as '' and backend assigns
   a real id, which is returned in the response and converted back via
   toEntityFromResource.
 
@@ -18,6 +18,7 @@ export class ClientReportAssembler
   toEntityFromResource(r: ClientReportResource): ClientReport {
     return new ClientReport(
       r.id,
+      r.code,
       r.clientId,
       r.parkingId,
       r.reservationId,
@@ -30,12 +31,13 @@ export class ClientReportAssembler
   toResourceFromEntity(e: ClientReport): ClientReportResource {
     /*
       When creating a new report (id === ''), we omit the id field entirely
-      so json-server auto-generates one. Sending id: '' would cause json-server
+      so backend auto-generates one. Sending id: '' would cause backend
       to store the record with an empty string as the id, which breaks
       subsequent lookups. The cast to ClientReportResource is safe because
-      json-server fills in the id on POST and returns the full record.
+      backend fills in the id on POST and returns the full record.
     */
     const base = {
+      code: e.code,
       clientId: e.clientId,
       parkingId: e.parkingId,
       reservationId: e.reservationId,

@@ -30,8 +30,8 @@ export class BlueprintsApi extends BaseApi {
         if (!blueprint.spots?.length) return of(created);
         const spotPosts = blueprint.spots.map((s, i) =>
           this.http.post<DetectedSpotResource>(this.spotsUrl, {
-            id:          `${created.id}__r${s.row}c${s.col}`,
-            localId:     i + 1,
+            id:          crypto.randomUUID(),
+            code:        i + 1,
             blueprintId: created.id,
             parkingId:   created.parkingId,
             row:         s.row,
@@ -65,9 +65,10 @@ export class BlueprintsApi extends BaseApi {
               map(spotResources => {
                 const blueprint = this.assembler.toEntityFromResource(bpResource);
                 blueprint.spots = spotResources
-                  .sort((a, b) => a.localId - b.localId)
+                  .sort((a, b) => a.code - b.code)
                   .map(sr => ({
-                    id:     Number(sr.id),
+                    id:     sr.id,
+                    code:   sr.code,
                     row:    sr.row,
                     col:    sr.col,
                     x_pct: sr.x_pct,

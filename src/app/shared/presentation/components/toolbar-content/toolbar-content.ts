@@ -149,7 +149,7 @@ export class ToolbarContent {
   */
   logout(): void {
     this.authStore.logout();
-    this.router.navigate(['/iam/login']);
+    this.router.navigate(['/sign-in']);
   }
 
   /*

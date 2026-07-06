@@ -25,6 +25,6 @@ export class RoleRedirect implements OnInit {
 
   ngOnInit(): void {
     const user = this.authStore.currentUser();
-    this.router.navigateByUrl(user ? defaultRouteForRole(user.role) : '/iam/login');
+    this.router.navigateByUrl(user ? defaultRouteForRole(user.role) : '/sign-in');
   }
 }

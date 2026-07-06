@@ -185,7 +185,7 @@ export class HistoryStore {
 
         /*
           We pass only parkingId + rounded average. HistoryApi sends PATCH
-          with { rating } so json-server merges it without touching any other
+          with { rating } so backend merges it without touching any other
           parking field (adminId, totalSpaces, totalFloors, etc.).
         */
         this.historyApi.updateParkingRating(parking.id, rounded).pipe(retry(1)).subscribe({
@@ -222,10 +222,11 @@ export class HistoryStore {
     type: ReportType,
     callbacks?: { onSuccess?: () => void; onError?: () => void }
   ): void {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString();
 
     const report = new ClientReport(
-      '',            // id assigned by json-server on POST
+      '',            // id assigned by backend on POST
+      '',            // code assigned by backend on POST
       this.currentUser.clientId,
       parkingId,
       reservationId,

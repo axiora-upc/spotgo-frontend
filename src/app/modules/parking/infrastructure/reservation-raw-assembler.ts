@@ -6,7 +6,7 @@
 
   toResourceFromEntity is called by BaseApiEndpoint.update() when the user
   rates a reservation. It sends the full reservation object back via PUT so
-  json-server replaces the record with all fields intact, including the
+  backend replaces the record with all fields intact, including the
   newly set rating.
 */
 import { BaseAssembler } from '../../../shared/infrastructure/base-assembler';

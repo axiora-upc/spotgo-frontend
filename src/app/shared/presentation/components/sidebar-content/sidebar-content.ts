@@ -26,14 +26,8 @@ import { MatIcon } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
 
 /*
-  ViewModeService is a shared service that holds the current view mode.
-
-  It has a signal called mode that can be either 'user' or 'admin'.
-
-  When the admin clicks the account button in the toolbar and selects
-  "Admin View", the mode changes to 'admin'.
-
-  When the user selects "User View", the mode changes back to 'user'.
+  ViewModeService is a shared service that reflects the authenticated
+  user's role in the sidebar (`user` or `admin`).
 */
 import { ViewModeService } from '../../services/view-mode.service';
 
@@ -51,8 +45,8 @@ import { ViewModeService } from '../../services/view-mode.service';
   - exact: false → the link stays active for any child route.
 
   Most options use exact: true. Real-time Map uses exact: false because
-  its URL becomes /monitoring/realtime-map/overview after the default
-  child redirect, so we still want the parent item highlighted.
+  its URL becomes /realtime-map/overview after the default child redirect,
+  so we still want the parent item highlighted.
 */
 interface SidebarOption {
   link: string;
@@ -117,7 +111,7 @@ export class SidebarContent {
     Each option has:
     - link: the route where the user will navigate.
       These routes correspond to the modules defined in app.routes.ts.
-      Each path follows the pattern: /{module-name}/{view-name}
+      Each link points directly to the flattened application route.
 
     - label: the translation key shown in the UI.
       These keys come from the i18n translation files (en.json, es.json).
@@ -130,45 +124,44 @@ export class SidebarContent {
       Dashboard: part of the monitoring module.
       Shows application overview and statistics.
     */
-    { link: '/monitoring/dashboard', label: 'sidebar.dashboard', icon: 'grid_view' },
+    { link: '/dashboard', label: 'sidebar.dashboard', icon: 'grid_view' },
 
     /*
       Reservations: part of the parking module.
       Allows users to view and manage parking reservations.
     */
-    { link: '/parking/reservations', label: 'sidebar.reservations', icon: 'event_available' },
+    { link: '/reservations', label: 'sidebar.reservations', icon: 'event_available' },
 
     /*
       Subscriptions: part of the payment module.
       Manages user subscription plans and memberships.
     */
-    { link: '/payment/subscriptions', label: 'sidebar.subscription', icon: 'workspace_premium' },
+    { link: '/subscriptions', label: 'sidebar.subscription', icon: 'workspace_premium' },
 
     /*
       Receipts: part of the payment module.
       Shows payment receipts and transaction history.
     */
-    { link: '/payment/receipts', label: 'sidebar.receipts', icon: 'receipt_long' },
+    { link: '/receipts', label: 'sidebar.receipts', icon: 'receipt_long' },
 
     /*
       Favorites: part of the profiles module.
       Shows saved favorite parking locations.
     */
-    { link: '/profiles/favorites', label: 'sidebar.favorites', icon: 'star_border' },
+    { link: '/favorites', label: 'sidebar.favorites', icon: 'star_border' },
 
     /*
       History: part of the parking module.
       Displays the user's past parking sessions and activity log.
     */
-    { link: '/parking/history', label: 'sidebar.history', icon: 'history' }
+    { link: '/history', label: 'sidebar.history', icon: 'history' }
   ]);
 
   /*
     adminOptions contains the sidebar navigation items shown
     when the app is in 'admin' mode.
 
-    These routes belong to the monitoring and profiles modules,
-    following the same /{module-name}/{view-name} pattern.
+    These routes point directly to the admin pages exposed at the root.
   */
   private adminOptions = signal<SidebarOption[]>([
     /*
@@ -177,22 +170,22 @@ export class SidebarContent {
 
       exact: false keeps the link highlighted while the user navigates
       between its child tabs (overview, reports, employees), since the
-      URL becomes /monitoring/realtime-map/overview after the default
+      URL becomes /realtime-map/overview after the default
       redirect.
     */
-    { link: '/monitoring/realtime-map', label: 'sidebar.realtime-map', icon: 'map', exact: false },
+    { link: '/realtime-map', label: 'sidebar.realtime-map', icon: 'map', exact: false },
 
     /*
       Analytics: part of the monitoring module.
       Shows charts and statistics for admin analysis.
     */
-    { link: '/monitoring/analytics', label: 'sidebar.analytics', icon: 'bar_chart' },
+    { link: '/analytics', label: 'sidebar.analytics', icon: 'bar_chart' },
 
     /*
       Settings: part of the profiles module.
       Allows the admin to configure application settings.
     */
-    { link: '/profiles/settings', label: 'sidebar.settings', icon: 'settings' }
+    { link: '/settings', label: 'sidebar.settings', icon: 'settings' }
   ]);
 
   /*

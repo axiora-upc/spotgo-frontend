@@ -1,0 +1,75 @@
+@import '../auth-shared.css';
+
+.legal-body {
+  display: flex;
+  justify-content: center;
+  min-height: calc(100vh - 74px);
+  padding: 56px 32px;
+  background-color: #f8fafc;
+}
+
+.legal-content {
+  width: 100%;
+  max-width: 720px;
+}
+
+.legal-icon {
+  display: block;
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  color: #9ca3af;
+  margin-bottom: 16px;
+}
+
+.legal-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 4px;
+}
+
+.legal-date {
+  font-size: 13px;
+  color: #9ca3af;
+  margin: 0 0 32px;
+}
+
+.legal-section {
+  margin-bottom: 28px;
+}
+
+.legal-section h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 8px;
+}
+
+.legal-section p {
+  font-size: 14px;
+  line-height: 1.65;
+  color: #374151;
+  margin: 0;
+}
+
+.legal-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #151970;
+  text-decoration: none;
+  margin-top: 16px;
+}
+
+.legal-back:hover {
+  text-decoration: underline;
+}
+
+.legal-back mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}

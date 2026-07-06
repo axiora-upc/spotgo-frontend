@@ -1,19 +1,8 @@
 /*
-  This file contains the internal routes of the profiles bounded context.
-
-  In app.routes.ts, the parent route is:
-  /profiles
-
-  Therefore, every route in this file starts after:
-  /profiles
+  Routes for profile-related pages exposed at the application root.
 */
 
-/*
-  Import Angular Router configuration.
-
-  Routes is the type that defines the routing structure
-  of one bounded context.
-*/
+/* Import Angular Router configuration. */
 import { Routes } from '@angular/router';
 
 /*
@@ -41,56 +30,8 @@ const favorites = () =>
 const settings = () =>
   import('./views/settings/settings.component').then((m) => m.SettingsComponent);
 
-/*
-  Define all profiles bounded context routes.
-
-  These are child routes of the 'profiles' path from app.routes.ts.
-
-  This means:
-  app.routes.ts gives the parent path: /profiles
-  this file gives the child paths: /favorites and /settings
-
-  Final routes:
-  /profiles/favorites
-  /profiles/settings
-*/
+/* Profiles routes mounted at the root level: `/favorites`, `/settings`. */
 export const PROFILES_ROUTES: Routes = [
-  /*
-    Default route for the profiles bounded context.
-
-    When the user navigates to:
-    /profiles
-
-    Angular redirects them to:
-    /profiles/favorites
-
-    pathMatch: 'full' ensures this redirect only happens
-    when the path is exactly /profiles.
-  */
-  { path: '', redirectTo: 'favorites', pathMatch: 'full' },
-
-  /*
-    Favorites view route.
-
-    When the user navigates to:
-    /profiles/favorites
-
-    Angular loads:
-    FavoritesComponent
-
-    loadComponent uses the favorites function above
-    to lazy load the component.
-  */
   { path: 'favorites', loadComponent: favorites },
-
-  /*
-    Settings view route. Admin-only view.
-
-    When the user navigates to:
-    /profiles/settings
-
-    Angular loads:
-    SettingsComponent
-  */
   { path: 'settings', loadComponent: settings },
 ];

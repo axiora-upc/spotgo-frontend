@@ -15,7 +15,7 @@ import { BaseResource, BaseResponse } from '../../../shared/infrastructure/base-
 
 /*
   Raw JSON shape of a receipt as it comes from the API.
-  Every field maps 1-to-1 to what json-server stores in db.json.
+  Every field maps 1-to-1 to what backend stores in db.json.
 */
 export interface ReceiptResource extends BaseResource {
   id: string;
@@ -33,7 +33,7 @@ export interface ReceiptResource extends BaseResource {
 
 /*
   Wrapper shape, kept for BaseApiEndpoint compatibility.
-  Not used as long as json-server returns a plain array.
+  Not used as long as backend returns a plain array.
 */
 export interface ReceiptResponse extends BaseResponse {
   receipts: ReceiptResource[];

@@ -198,11 +198,7 @@ export class MonitoringStore {
   }
 
   loadParkingSnapshot(): void {
-    this.monitoringApi.getParkingSnapshot().subscribe({
-      next: (snapshot) => this.parkingSnapshotSignal.set(snapshot),
-      error: (err) =>
-        this.errorSignal.set(this.formatError(err, 'Failed to load snapshot')),
-    });
+    this.parkingSnapshotSignal.set(this.parkingSnapshotSignal());
   }
 
   loadParkings(): void {
@@ -284,7 +280,7 @@ export class MonitoringStore {
     const pkgName = matchedPkg ? matchedPkg.name : 'SpotGo Parking';
     
     const finalReceipt = new Receipt({
-      id: '', // assigned by lowdb/json-server
+      id: '', // assigned by backend
       clientId: this.currentUser.clientId,
       invoiceNumber: invoiceId,
       locationName: pkgName,
@@ -399,18 +395,18 @@ export class MonitoringStore {
   refreshParkingSnapshot(
     callbacks?: { onSuccess?: () => void; onError?: () => void }
   ): void {
-    this.monitoringApi.touchParkingSnapshotLastUpdated().subscribe({
-      next: (snapshot) => {
-        this.parkingSnapshotSignal.set(snapshot);
-        callbacks?.onSuccess?.();
-      },
-      error: (err) => {
-        this.errorSignal.set(
-          this.formatError(err, 'Failed to refresh snapshot')
-        );
-        callbacks?.onError?.();
-      },
-    });
+    const snapshot = this.parkingSnapshotSignal();
+    if (!snapshot) {
+      callbacks?.onSuccess?.();
+      return;
+    }
+    snapshot.facility.lastUpdated = new Date().toLocaleTimeString('en-US', { hour12: false });
+    this.parkingSnapshotSignal.set(new ParkingSnapshot({
+      facility: snapshot.facility,
+      stats: snapshot.stats,
+      rows: snapshot.rows,
+    }));
+    callbacks?.onSuccess?.();
   }
 
   loadDashboardStats(): void {
@@ -461,7 +457,7 @@ export class MonitoringStore {
         parkingSpots.push(new ParkingSpot({
           id:     `${rowLabel}${col + 1}`,
           status: detected ? (detected.status ?? 'available') : 'empty',
-          dbId:   detected?.id,
+          dbId:   detected?.code,
         }));
       }
 

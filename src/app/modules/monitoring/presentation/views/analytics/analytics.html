@@ -3,9 +3,23 @@
     <mat-icon class="analytics__loading-icon">hourglass_empty</mat-icon>
     <p>{{ 'analytics.loading' | translate }}</p>
   </div>
-}
-
-@if (store.analytics(); as data) {
+} @else if (store.error(); as errorKey) {
+  <div class="analytics__error">
+    <mat-icon class="analytics__error-icon">error_outline</mat-icon>
+    <h2 class="analytics__error-title">{{ 'analytics.error.title' | translate }}</h2>
+    <p class="analytics__error-message">{{ errorKey }}</p>
+    <button class="analytics__error-retry" type="button" (click)="retry()">
+      <mat-icon>refresh</mat-icon>
+      {{ 'analytics.error.retry' | translate }}
+    </button>
+  </div>
+} @else if (!store.analytics()) {
+  <div class="analytics__empty">
+    <mat-icon class="analytics__empty-icon">analytics</mat-icon>
+    <h2 class="analytics__empty-title">{{ 'analytics.empty.title' | translate }}</h2>
+    <p class="analytics__empty-message">{{ 'analytics.empty.message' | translate }}</p>
+  </div>
+} @else if (store.analytics(); as data) {
   <div class="analytics__header">
     <div>
       <h1 class="analytics__title">{{ 'analytics.title' | translate }}</h1>

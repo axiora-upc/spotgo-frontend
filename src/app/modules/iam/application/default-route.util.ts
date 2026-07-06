@@ -11,5 +11,5 @@ import { Role } from '../domain/model/user.entity';
   hits "/") call this same helper, so the mapping only exists in one place.
 */
 export function defaultRouteForRole(role: Role): string {
-  return role === 'admin' ? '/monitoring/realtime-map' : '/monitoring/dashboard';
+  return role === 'admin' ? '/realtime-map/overview' : '/dashboard';
 }

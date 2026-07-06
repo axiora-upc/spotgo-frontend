@@ -6,8 +6,8 @@ import { RouterOutlet } from '@angular/router';
   (including login/register) got the toolbar + sidebar wrapped around it.
 
   Now Layout is rendered by the router itself (see app.routes.ts): it only
-  wraps the protected module routes, while /iam/login and /iam/register
-  render full-screen through this same <router-outlet/>.
+  wraps protected routes, while /sign-in and /sign-up render full-screen
+  through this same <router-outlet/>.
 */
 @Component({
   selector: 'app-root',

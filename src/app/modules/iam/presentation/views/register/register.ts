@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import {
   AbstractControl,
@@ -12,10 +12,7 @@ import { MatIcon } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AuthStore } from '../../../application/auth.store';
 import { defaultRouteForRole } from '../../../application/default-route.util';
-import { Role } from '../../../domain/model/user.entity';
 import { LanguageSwitcher } from '../../../../../shared/presentation/components/language-switcher/language-switcher';
-
-type AccountType = 'driver' | 'operator';
 
 @Component({
   selector: 'app-register',
@@ -26,8 +23,6 @@ type AccountType = 'driver' | 'operator';
 export class Register {
   private readonly authStore = inject(AuthStore);
   private readonly router = inject(Router);
-
-  protected readonly accountType = signal<AccountType>('driver');
 
   protected readonly loading = this.authStore.loading;
   protected readonly error = this.authStore.error;
@@ -71,25 +66,12 @@ export class Register {
     { validators: (group) => this.passwordsMatch(group) }
   );
 
-  protected selectAccountType(type: AccountType): void {
-    this.accountType.set(type);
-  }
-
-  protected readonly heroFeatures = computed(() =>
-    this.accountType() === 'driver'
-      ? [
-          'iam.login.feature-driver-1',
-          'iam.login.feature-driver-2',
-          'iam.login.feature-driver-3',
-          'iam.login.feature-driver-4',
-        ]
-      : [
-          'iam.login.feature-operator-1',
-          'iam.login.feature-operator-2',
-          'iam.login.feature-operator-3',
-          'iam.login.feature-operator-4',
-        ]
-  );
+  protected readonly heroFeatures = [
+    'iam.login.feature-driver-1',
+    'iam.login.feature-driver-2',
+    'iam.login.feature-driver-3',
+    'iam.login.feature-driver-4',
+  ];
 
   protected getError(field: 'firstName' | 'lastName' | 'email' | 'password' | 'confirmPassword'): string | null {
     const control = this.form.get(field);
@@ -117,17 +99,10 @@ export class Register {
     }
 
     const { firstName, lastName, email, password } = this.form.getRawValue();
-    const role: Role = this.accountType() === 'operator' ? 'admin' : 'client';
 
     this.authStore.register(
-      { firstName: firstName!, lastName: lastName!, email: email!, password: password!, role },
+      { firstName: firstName!, lastName: lastName!, email: email!, password: password!, role: 'client' },
       { onSuccess: (user) => this.router.navigateByUrl(defaultRouteForRole(user.role)) }
     );
-  }
-
-  protected googleMessage = signal<string | null>(null);
-
-  protected onGoogleSignUp(): void {
-    this.googleMessage.set('iam.errors.google-unavailable');
   }
 }

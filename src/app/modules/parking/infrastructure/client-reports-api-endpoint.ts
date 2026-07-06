@@ -4,7 +4,7 @@
   Inherits create() from BaseApiEndpoint:
     create(entity) → POST /clientReports → ClientReport
       (used when the client submits a report from a history card;
-       json-server assigns the id and returns the persisted record)
+       backend assigns the id and returns the persisted record)
 */
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';

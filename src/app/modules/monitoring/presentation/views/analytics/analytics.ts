@@ -62,6 +62,10 @@ export class Analytics implements OnInit {
 
   /* ─── Acciones de la UI ──────────────────────────────────────────────────── */
 
+  protected retry(): void {
+    this.store.loadAnalytics(this.currentUser.parkingId);
+  }
+
   protected selectPeriod(period: 'today' | 'last7' | 'custom'): void {
     this.selectedPeriod.set(period);
   }

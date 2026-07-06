@@ -17,6 +17,7 @@ import { ViewModeService } from '../../../shared/presentation/services/view-mode
   signed in, without those modules needing to know IAM exists.
 */
 const SESSION_KEY = 'spotgo:authUser';
+const TOKEN_KEY = 'spotgo:accessToken';
 const ADMIN_ID_KEY = 'spotgo:adminId';
 const CLIENT_ID_KEY = 'spotgo:clientId';
 const PARKING_ID_KEY = 'spotgo:parkingId';
@@ -65,8 +66,8 @@ export class AuthStore {
     this.errorSignal.set(null);
 
     this.iamApi.login(email, password).subscribe({
-      next: (user) => {
-        this.applySession(user);
+      next: ({ user, token }) => {
+        this.applySession(user, token);
         this.loadingSignal.set(false);
         callbacks?.onSuccess?.(user);
       },
@@ -87,8 +88,8 @@ export class AuthStore {
     this.errorSignal.set(null);
 
     this.iamApi.register(payload).subscribe({
-      next: (user) => {
-        this.applySession(user);
+      next: ({ user, token }) => {
+        this.applySession(user, token);
         this.loadingSignal.set(false);
         callbacks?.onSuccess?.(user);
       },
@@ -103,6 +104,7 @@ export class AuthStore {
 
   logout(): void {
     sessionStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(TOKEN_KEY);
     sessionStorage.removeItem(ADMIN_ID_KEY);
     sessionStorage.removeItem(CLIENT_ID_KEY);
     sessionStorage.removeItem(PARKING_ID_KEY);
@@ -154,7 +156,11 @@ export class AuthStore {
     wires up CurrentUserService's keys, and sets the sidebar's view mode
     (admin/user) based on the real role instead of a manual toolbar toggle.
   */
-  private applySession(user: User): void {
+  private applySession(user: User, token: string): void {
+    sessionStorage.removeItem(ADMIN_ID_KEY);
+    sessionStorage.removeItem(CLIENT_ID_KEY);
+    sessionStorage.removeItem(PARKING_ID_KEY);
+
     const stored: StoredUser = {
       id: user.id,
       firstName: user.firstName,
@@ -167,6 +173,7 @@ export class AuthStore {
       role: user.role,
     };
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(stored));
+    sessionStorage.setItem(TOKEN_KEY, token);
 
     if (user.role === 'admin') {
       sessionStorage.setItem(ADMIN_ID_KEY, user.id);

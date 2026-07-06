@@ -87,6 +87,7 @@
 .auth-form-wrap {
   width: 100%;
   max-width: 460px;
+  align-content: center;
 }
 
 .auth-hero-panel {
@@ -310,7 +311,7 @@
   justify-content: center;
   gap: 8px;
   padding: 13px 16px;
-  margin-top: 8px;
+  margin-top: 16px;
   border: none;
   border-radius: 10px;
   background-color: #151970;

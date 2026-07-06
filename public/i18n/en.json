@@ -15,7 +15,7 @@
     "login": {
       "welcome-back": "Welcome back",
       "title": "Sign in to SpotGo",
-      "subtitle": "Choose your account type to continue.",
+      "subtitle": "Enter your credentials to continue.",
       "driver": "Driver",
       "driver-desc": "Find, reserve and pay for parking.",
       "operator": "Operator",
@@ -25,6 +25,7 @@
       "show-password": "Show password",
       "hide-password": "Hide password",
       "forgot-password": "Forgot password?",
+      "sign-in": "Sign in",
       "sign-in-as": "Sign in as",
       "or": "OR",
       "continue-google": "Continue with Google",
@@ -54,10 +55,11 @@
     "register": {
       "get-started": "Get started",
       "title": "Create your SpotGo account",
-      "subtitle": "Choose your account type to continue.",
+      "subtitle": "Fill in your details below to continue.",
       "first-name": "First name",
       "last-name": "Last name",
       "confirm-password": "Confirm password",
+      "create-account": "Create account",
       "create-account-as": "Create account as",
       "already-have-account": "Already have an account?",
       "sign-in": "Sign in"
@@ -91,6 +93,52 @@
       "current-password-invalid": "Your current password is incorrect.",
       "google-unavailable": "Google sign-in is not available in this demo.",
       "generic": "Something went wrong. Please try again."
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "last-updated": "Last updated: July 5, 2026",
+      "acceptance": "Acceptance of Terms",
+      "acceptance-text": "By accessing or using SpotGo, you agree to be bound by these Terms of Service. If you do not agree, do not use the service.",
+      "accounts": "User Accounts",
+      "accounts-text": "You are responsible for maintaining the confidentiality of your account credentials. You must notify us immediately of any unauthorized use.",
+      "usage": "Acceptable Use",
+      "usage-text": "You agree not to misuse the service, interfere with its operations, or attempt to access it using unauthorized methods.",
+      "parking": "Parking Reservations",
+      "parking-text": "Reservations are subject to availability. SpotGo does not guarantee the availability of parking spots. Fees are non-refundable unless stated otherwise.",
+      "privacy": "Privacy",
+      "privacy-text": "Your use of the service is also governed by our Privacy Policy, which describes how we collect and use your data.",
+      "termination": "Termination",
+      "termination-text": "We may suspend or terminate your access to the service at any time for conduct that violates these terms.",
+      "disclaimer": "Disclaimer",
+      "disclaimer-text": "The service is provided \"as is\" without warranties of any kind. SpotGo is not liable for any damages arising from your use of the service.",
+      "changes": "Changes to Terms",
+      "changes-text": "We reserve the right to modify these terms at any time. Continued use of the service constitutes acceptance of the updated terms.",
+      "contact": "Contact",
+      "contact-text": "Questions about these Terms? Contact us at support@spotgo.com."
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "last-updated": "Last updated: July 5, 2026",
+      "introduction": "Introduction",
+      "introduction-text": "This Privacy Policy describes how SpotGo collects, uses, and protects your personal information when you use our service.",
+      "collection": "Information We Collect",
+      "collection-text": "We collect information you provide directly, such as your name, email, phone number, and payment method. We also collect usage data including parking history and device information.",
+      "usage": "How We Use Your Information",
+      "usage-text": "We use your information to provide and improve the service, process reservations and payments, send notifications, and ensure security.",
+      "sharing": "Information Sharing",
+      "sharing-text": "We do not sell your personal information. We may share data with service providers who assist in operating the platform, as required by law.",
+      "security": "Data Security",
+      "security-text": "We implement industry-standard security measures to protect your data. However, no method of transmission over the Internet is 100% secure.",
+      "retention": "Data Retention",
+      "retention-text": "We retain your information for as long as your account is active or as needed to provide the service. You may request deletion at any time.",
+      "rights": "Your Rights",
+      "rights-text": "You have the right to access, correct, or delete your personal data. Contact us to exercise these rights.",
+      "cookies": "Cookies",
+      "cookies-text": "We use cookies and similar technologies to maintain your session and improve your experience.",
+      "changes": "Changes to This Policy",
+      "changes-text": "We may update this Privacy Policy from time to time. We will notify you of any material changes.",
+      "contact": "Contact",
+      "contact-text": "Questions about this Privacy Policy? Contact us at privacy@spotgo.com."
     }
   },
 
@@ -171,7 +219,7 @@
   "realtime-map": {
     "tabs": {
       "overview": "Overview",
-      "reports": "Report",
+      "reports": "Reports",
       "employees": "Employees"
     },
     "overview": {
@@ -542,6 +590,14 @@
     "loading": "Loading analytics data...",
     "title": "Analytics Dashboard",
     "subtitle": "Real-time insights into parking occupancy, revenue, and system health.",
+    "error": {
+      "title": "Failed to load analytics",
+      "retry": "Try again"
+    },
+    "empty": {
+      "title": "No analytics data",
+      "message": "There is no analytics data available for this parking yet."
+    },
     "period": {
       "today": "Today",
       "last7": "Last 7 Days",
@@ -619,4 +675,3 @@
     "extend-confirm": "Confirm Extension"
   }
 }
-

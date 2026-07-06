@@ -1,0 +1,74 @@
+<header class="auth-topbar">
+  <div class="brand">
+    <div class="logo-container">
+      <img src="./assets/spotgo-logo.png" alt="SpotGo logo" class="logo-image" />
+    </div>
+    <span class="brand-name">SpotGo</span>
+  </div>
+
+  <div class="topbar-actions">
+    <app-language-switcher></app-language-switcher>
+
+    <span class="topbar-link">
+      <a routerLink="/sign-in">{{ 'iam.forgot-password.back-to-login' | translate }}</a>
+    </span>
+  </div>
+</header>
+
+<div class="legal-body">
+  <div class="legal-content">
+    <mat-icon class="legal-icon">description</mat-icon>
+    <h1 class="legal-title">{{ 'iam.terms.title' | translate }}</h1>
+    <p class="legal-date">{{ 'iam.terms.last-updated' | translate }}</p>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.terms.acceptance' | translate }}</h2>
+      <p>{{ 'iam.terms.acceptance-text' | translate }}</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.terms.accounts' | translate }}</h2>
+      <p>{{ 'iam.terms.accounts-text' | translate }}</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.terms.usage' | translate }}</h2>
+      <p>{{ 'iam.terms.usage-text' | translate }}</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.terms.parking' | translate }}</h2>
+      <p>{{ 'iam.terms.parking-text' | translate }}</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.terms.privacy' | translate }}</h2>
+      <p>{{ 'iam.terms.privacy-text' | translate }}</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.terms.termination' | translate }}</h2>
+      <p>{{ 'iam.terms.termination-text' | translate }}</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.terms.disclaimer' | translate }}</h2>
+      <p>{{ 'iam.terms.disclaimer-text' | translate }}</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.terms.changes' | translate }}</h2>
+      <p>{{ 'iam.terms.changes-text' | translate }}</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.terms.contact' | translate }}</h2>
+      <p>{{ 'iam.terms.contact-text' | translate }}</p>
+    </section>
+
+    <a class="legal-back" routerLink="/sign-in">
+      <mat-icon>arrow_back</mat-icon>
+      {{ 'iam.forgot-password.back-to-login' | translate }}
+    </a>
+  </div>
+</div>

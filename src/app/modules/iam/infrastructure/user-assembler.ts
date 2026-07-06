@@ -6,11 +6,7 @@ import { UserResource, UserResponse } from './user-response';
   UserAssembler translates between the raw UserResource (from /users) and
   the User domain entity.
 
-  It does not know the user's role — /users has no role column, roles live
-  in the /userRoles join table. That is why role defaults to 'client' here
-  and is overwritten by IamApi once it resolves the real role. Keeping the
-  default explicit (instead of leaving it undefined) keeps User's
-  constructor honest about always requiring a role.
+  /users now returns the effective role directly from the backend.
 */
 export class UserAssembler implements BaseAssembler<User, UserResource, UserResponse> {
   toEntityFromResource(resource: UserResource): User {
@@ -23,7 +19,7 @@ export class UserAssembler implements BaseAssembler<User, UserResource, UserResp
       city:        resource.city,
       parkingName: resource.parkingName,
       parkingId:   resource.parkingId,
-      role:        'client',
+      role:        resource.role,
     });
   }
 
@@ -35,6 +31,7 @@ export class UserAssembler implements BaseAssembler<User, UserResource, UserResp
       email:       entity.email,
       phone:       entity.phone,
       city:        entity.city,
+      role:        entity.role,
       parkingName: entity.parkingName,
       parkingId:   entity.parkingId,
     };

@@ -4,7 +4,7 @@
   ParkingForHistoryResource declares all parking fields that HistoryStore
   needs to (a) build the join and (b) update the parking's rating via PUT.
   The PUT operation requires the full document — partial fields would
-  delete the rest in json-server.
+  delete the rest in backend.
 
   ParkingForHistoryResponse is unused (plain array) but required by
   the BaseApiEndpoint generic contract.

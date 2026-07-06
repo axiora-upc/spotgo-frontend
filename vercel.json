@@ -2,21 +2,12 @@
   "version": 2,
   "builds": [
     {
-      "src": "index.js",
-      "use": "@vercel/node",
-      "config": { "includeFiles": ["server/db.json"] }
-    },
-    {
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": { "distDir": "dist/spotgo-frontend/browser", "buildCommand": "npm run build" }
     }
   ],
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/index.js"
-    },
     {
       "handle": "filesystem"
     },

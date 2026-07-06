@@ -6,13 +6,11 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "server": "npx json-server server/db.json"
+    "test": "ng test"
   },
   "private": true,
   "packageManager": "npm@11.12.1",
   "dependencies": {
-    "json-server": "^0.17.4",
     "@angular/animations": "^21.2.13",
     "@angular/cdk": "^21.2.10",
     "@angular/common": "^21.2.13",

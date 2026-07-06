@@ -9,6 +9,8 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../../../environments/environment';
 
 import { ClientReport } from '../../../../../parking/domain/model/client-report.entity';
 import { ReservationRaw } from '../../../../../parking/domain/model/reservation-raw.entity';
@@ -18,6 +20,7 @@ import { CurrentUserService } from '../../../../../../shared/services/current-us
 interface AdminReportView {
   id: string | number;
   clientId: string;
+  clientName: string;
   code: string;
   date: string;
   icon: string;
@@ -31,6 +34,12 @@ interface AdminReportView {
   type: string;
 }
 
+interface UserLookupResource {
+  id: string;
+  firstName: string;
+  lastName: string;
+}
+
 @Component({
   selector: 'app-realtime-map-reports',
   imports: [MatIcon, TranslatePipe],
@@ -40,6 +49,7 @@ interface AdminReportView {
 export class Reports implements OnInit {
   private readonly historyApi = inject(HistoryApi);
   private readonly currentUser = inject(CurrentUserService);
+  private readonly http = inject(HttpClient);
 
   readonly reports = signal<AdminReportView[]>([]);
   readonly currentPage = signal(1);
@@ -76,13 +86,15 @@ export class Reports implements OnInit {
     forkJoin({
       reports: this.historyApi.getClientReports(),
       reservations: this.historyApi.getReservations(),
+      users: this.http.get<UserLookupResource[]>(`${environment.apiUrl}/users`),
     }).subscribe({
-      next: ({ reports, reservations }) => {
+      next: ({ reports, reservations, users }) => {
         const reservationMap = new Map(reservations.map((reservation) => [reservation.id, reservation]));
+        const userMap = new Map(users.map((user) => [user.id, `${user.firstName} ${user.lastName}`.trim()]));
 
         const filtered = reports
           .filter((report) => report.parkingId === this.currentUser.parkingId)
-          .map((report) => this.toViewModel(report, reservationMap.get(report.reservationId)))
+          .map((report) => this.toViewModel(report, reservationMap.get(report.reservationId), userMap.get(report.clientId) ?? report.clientId))
           .sort((a, b) => this.compareReports(a, b));
 
         this.reports.set(filtered);
@@ -91,14 +103,15 @@ export class Reports implements OnInit {
     });
   }
 
-  private toViewModel(report: ClientReport, reservation?: ReservationRaw): AdminReportView {
+  private toViewModel(report: ClientReport, reservation: ReservationRaw | undefined, clientName: string): AdminReportView {
     const resolved = report.status === 'resolved';
 
     return {
       id: report.id,
       clientId: report.clientId,
-      code: `RPT-${report.id}`,
-      date: report.date,
+      clientName,
+      code: report.code,
+      date: this.formatDate(report.date),
       icon: resolved ? 'check_circle' : 'error',
       reservationCode: reservation?.code ?? report.reservationId,
       resolved,
@@ -108,7 +121,7 @@ export class Reports implements OnInit {
       spot: reservation?.spot ?? '-',
       status: report.status,
       statusKey: `realtime-map.reports.status.${report.status}`,
-      time: reservation ? this.formatTime(reservation.startDate) : '-',
+      time: this.formatTime(report.date),
       type: report.type,
     };
   }
@@ -151,6 +164,10 @@ export class Reports implements OnInit {
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
     return `${hours}:${minutes}`;
+  }
+
+  private formatDate(iso: string): string {
+    return iso.split('T')[0];
   }
 
   private compareReports(a: AdminReportView, b: AdminReportView): number {

@@ -20,7 +20,7 @@ export interface BlueprintInput {
 
 /*
   BlueprintStorageService gestiona los croquis del admin autenticado
-  a través de la API (server/db.json, colección "blueprints").
+  a través de la API (backend API, colección "blueprints").
 
   providedIn: 'root' significa que Angular crea una única instancia de este
   servicio para toda la aplicación (singleton).

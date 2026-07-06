@@ -5,9 +5,9 @@
   When the user clicks "Report" on a history card and confirms:
     1. HistoryStore creates a ClientReport
     2. HistoryApi sends it via POST /clientReports
-    3. json-server assigns the final id and persists the record
+    3. backend assigns the final id and persists the record
 
-  The initial id is an empty string '' — json-server overwrites it with
+  The initial id is an empty string '' — backend overwrites it with
   a real id on creation. This is the same pattern used for any POST
   where the server assigns the id.
 
@@ -21,11 +21,12 @@ export type ReportType = 'safety-concern' | 'maintenance-issue' | 'billing-dispu
 export class ClientReport implements BaseEntity {
   constructor(
     public readonly id: string,             // '' on creation, assigned by server
+    public readonly code: string,
     public readonly clientId: string,
     public readonly parkingId: string,
     public readonly reservationId: string,
     public readonly type: ReportType,
-    public readonly date: string,           // ISO date string (YYYY-MM-DD)
+    public readonly date: string,           // ISO datetime string
     public readonly status: string,         // always 'submitted' on creation
   ) {}
 }

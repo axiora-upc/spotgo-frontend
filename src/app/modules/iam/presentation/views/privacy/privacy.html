@@ -1,0 +1,79 @@
+<header class="auth-topbar">
+  <div class="brand">
+    <div class="logo-container">
+      <img src="./assets/spotgo-logo.png" alt="SpotGo logo" class="logo-image" />
+    </div>
+    <span class="brand-name">SpotGo</span>
+  </div>
+
+  <div class="topbar-actions">
+    <app-language-switcher></app-language-switcher>
+
+    <span class="topbar-link">
+      <a routerLink="/sign-in">{{ 'iam.forgot-password.back-to-login' | translate }}</a>
+    </span>
+  </div>
+</header>
+
+<div class="legal-body">
+  <div class="legal-content">
+    <mat-icon class="legal-icon">privacy_tip</mat-icon>
+    <h1 class="legal-title">{{ 'iam.privacy.title' | translate }}</h1>
+    <p class="legal-date">{{ 'iam.privacy.last-updated' | translate }}</p>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.privacy.introduction' | translate }}</h2>
+      <p>{{ 'iam.privacy.introduction-text' | translate }}</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.privacy.collection' | translate }}</h2>
+      <p>{{ 'iam.privacy.collection-text' | translate }}</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.privacy.usage' | translate }}</h2>
+      <p>{{ 'iam.privacy.usage-text' | translate }}</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.privacy.sharing' | translate }}</h2>
+      <p>{{ 'iam.privacy.sharing-text' | translate }}</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.privacy.security' | translate }}</h2>
+      <p>{{ 'iam.privacy.security-text' | translate }}</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.privacy.retention' | translate }}</h2>
+      <p>{{ 'iam.privacy.retention-text' | translate }}</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.privacy.rights' | translate }}</h2>
+      <p>{{ 'iam.privacy.rights-text' | translate }}</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.privacy.cookies' | translate }}</h2>
+      <p>{{ 'iam.privacy.cookies-text' | translate }}</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.privacy.changes' | translate }}</h2>
+      <p>{{ 'iam.privacy.changes-text' | translate }}</p>
+    </section>
+
+    <section class="legal-section">
+      <h2>{{ 'iam.privacy.contact' | translate }}</h2>
+      <p>{{ 'iam.privacy.contact-text' | translate }}</p>
+    </section>
+
+    <a class="legal-back" routerLink="/sign-in">
+      <mat-icon>arrow_back</mat-icon>
+      {{ 'iam.forgot-password.back-to-login' | translate }}
+    </a>
+  </div>
+</div>

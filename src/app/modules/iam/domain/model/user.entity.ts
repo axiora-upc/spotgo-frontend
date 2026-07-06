@@ -6,9 +6,7 @@ import { BaseEntity } from '../../../../shared/domain/model/base-entity';
   - 'admin'  -> Operator account. Manages a parking lot (pricing, spaces, revenue).
   - 'client' -> Driver account. Finds, reserves and pays for parking spots.
 
-  These values must match the "name" field of the /roles resource in the mock
-  backend (server/db.json), since IamApi resolves the role by name after
-  reading the /userRoles join table.
+  These values must match the role values returned by the backend.
 */
 export type Role = 'admin' | 'client';
 

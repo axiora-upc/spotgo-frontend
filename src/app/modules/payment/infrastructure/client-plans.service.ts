@@ -1,6 +1,6 @@
 /*
   PlanesClienteService is the service responsible for fetching subscription
-  plan data from the fake API (json-server).
+  plan data from the fake API (backend).
 
   It lives in infrastructure/ because infrastructure is the layer that
   talks to the outside world: APIs, databases, external services.

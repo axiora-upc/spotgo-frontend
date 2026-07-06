@@ -10,7 +10,7 @@ export interface BlueprintResource extends BaseResource {
 
 export interface DetectedSpotResource extends BaseResource {
   id:          string;
-  localId:     number;
+  code:        number;
   blueprintId: string;
   parkingId:   string;
   row:         number;

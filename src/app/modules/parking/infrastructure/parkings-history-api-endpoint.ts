@@ -7,7 +7,7 @@
 
   Adds a custom patchRating() method that uses PATCH instead of PUT:
     PATCH /parkings/:id { rating: N }
-      PATCH sends only the changed field, so json-server merges it with
+      PATCH sends only the changed field, so backend merges it with
       the existing document. This preserves all other parking fields
       (adminId, totalSpaces, totalFloors, etc.) that ParkingForHistory
       does not carry.
@@ -36,7 +36,7 @@ export class ParkingsHistoryApiEndpoint extends BaseApiEndpoint<
 
   /*
     Sends PATCH /parkings/:id with only { rating } in the body.
-    json-server merges this with the existing document, so every
+    backend merges this with the existing document, so every
     other field (adminId, totalSpaces, city, etc.) is left untouched.
 
     http, endpointUrl, assembler and handleError are all protected

@@ -130,7 +130,7 @@ export class ReservationsComponent implements OnInit, OnDestroy {
   }
 
   protected navigateToParking(): void {
-    this.router.navigate(['/monitoring/dashboard']);
+    this.router.navigate(['/dashboard']);
   }
 
   protected cancelReservation(reservation: ReservationViewModel): void {

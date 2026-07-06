@@ -1,15 +1,9 @@
 /*
-  Every bounded context has its own routes file.
-
-  This file works as an internal map for the views
-  that belong to the monitoring bounded context.
+  Routes for monitoring-related pages exposed at the application root.
 */
 
 /*
   Import Angular Router configuration.
-
-  Routes is the type that defines the routing structure
-  of one bounded context.
 */
 import { Routes } from '@angular/router';
 
@@ -69,55 +63,17 @@ const analytics = () =>
   import('./views/analytics/analytics').then((m) => m.Analytics);
 
 /*
-  Define all monitoring bounded context routes.
-
-  These are child routes of the 'monitoring' path from app.routes.ts.
-
-  This means:
-  app.routes.ts gives the parent path: /monitoring
-  this file gives the child paths: /dashboard, /realtime-map, /analytics
-
-  Final routes:
-  /monitoring/dashboard
-  /monitoring/realtime-map
-  /monitoring/realtime-map/overview
-  /monitoring/realtime-map/reports
-  /monitoring/realtime-map/employees
+  Monitoring routes mounted at the root level:
+  `/dashboard`, `/realtime-map/...`, `/analytics`.
 */
 export const MONITORING_ROUTES: Routes = [
-  /*
-    Default route for the monitoring bounded context.
-
-    When the user navigates to:
-    /monitoring
-
-    Angular redirects them to:
-    /monitoring/dashboard
-
-    pathMatch: 'full' ensures this redirect only happens
-    when the path is exactly /monitoring.
-  */
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-
-  /*
-    Dashboard route inside the monitoring bounded context.
-
-    When the user navigates to:
-    /monitoring/dashboard
-
-    Angular loads:
-    DashboardComponent
-
-    loadComponent uses the dashboard function above
-    to lazy load the component.
-  */
   { path: 'dashboard', loadComponent: dashboard },
 
   /*
     Real-time Map route. Admin-only view.
 
     When the user navigates to:
-    /monitoring/realtime-map
+    /realtime-map
 
     Angular loads RealtimeMapComponent, which acts as a shell with
     its own router-outlet and three child tabs (Overview, Reports,

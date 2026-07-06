@@ -6,7 +6,7 @@
   resource <-> entity translation. We only need to wire the URL and
   the assembler in the constructor.
 
-  Note about ids: json-server 1.0 ignores the id field in the request
+  Note about ids: backend 1.0 ignores the id field in the request
   body during POST and generates its own (a nanoid). The id we
   generate client-side in EmployeeForm is therefore overwritten by the
   server response. The Store reads the canonical record returned by

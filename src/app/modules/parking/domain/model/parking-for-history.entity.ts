@@ -4,7 +4,7 @@
 
   It carries all parking fields (not just name) because when a client
   rates a reservation, HistoryStore must update the parking's average
-  rating via PUT /parkings/:id. Since json-server replaces the whole
+  rating via PUT /parkings/:id. Since backend replaces the whole
   document on PUT, the entity must include every field that should be
   preserved — sending only { id, rating } would delete address, price, etc.
 

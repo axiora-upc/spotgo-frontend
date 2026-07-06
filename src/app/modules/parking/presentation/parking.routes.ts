@@ -1,19 +1,8 @@
 /*
-  This file contains the internal routes of the parking bounded context.
-
-  In app.routes.ts, the parent route is:
-  /parking
-
-  Therefore, every route in this file starts after:
-  /parking
+  Routes for reservation/history pages exposed at the application root.
 */
 
-/*
-  Import Angular Router configuration.
-
-  Routes is the type that defines the routing structure
-  of one bounded context.
-*/
+/* Import Angular Router configuration. */
 import { Routes } from '@angular/router';
 
 /*
@@ -49,59 +38,9 @@ const reservations = () =>
 */
 const history = () => import('./views/history/history.component').then((m) => m.HistoryComponent);
 
-/*
-  Define all parking bounded context routes.
-
-  These are child routes of the 'parking' path from app.routes.ts.
-
-  This means:
-  app.routes.ts gives the parent path: /parking
-  this file gives the child paths: /reservations and /history
-
-  Final routes:
-  /parking/reservations
-  /parking/history
-*/
+/* Parking routes mounted at the root level: `/reservations`, `/history`. */
 export const PARKING_ROUTES: Routes = [
-  /*
-    Default route for the parking bounded context.
-
-    When the user navigates to:
-    /parking
-
-    Angular redirects them to:
-    /parking/reservations
-
-    pathMatch: 'full' ensures this redirect only happens
-    when the path is exactly /parking.
-  */
-  { path: '', redirectTo: 'reservations', pathMatch: 'full' },
-
-  /*
-    Reservations view route.
-
-    When the user navigates to:
-    /parking/reservations
-
-    Angular loads:
-    ReservationsComponent
-
-    loadComponent uses the reservations function above
-    to lazy load the component.
-  */
   { path: 'reservations', loadComponent: reservations },
 
-  /*
-    History view route.
-
-    When the user navigates to:
-    /parking/history
-
-    Angular loads:
-    HistoryComponent
-
-    loadComponent uses the history function above
-    to lazy load the component.
-  */
   { path: 'history', loadComponent: history },
 ];

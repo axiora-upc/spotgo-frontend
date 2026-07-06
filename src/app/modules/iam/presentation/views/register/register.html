@@ -11,7 +11,7 @@
 
     <span class="topbar-link">
       {{ 'iam.register.already-have-account' | translate }}
-      <a routerLink="/iam/login">{{ 'iam.register.sign-in' | translate }}</a>
+      <a routerLink="/sign-in">{{ 'iam.register.sign-in' | translate }}</a>
     </span>
   </div>
 </header>
@@ -26,28 +26,6 @@
       <h1 class="auth-title">{{ 'iam.register.title' | translate }}</h1>
       <p class="auth-subtitle">{{ 'iam.register.subtitle' | translate }}</p>
 
-      <div class="account-type-options">
-        <button
-          type="button"
-          class="account-type-card"
-          [class.selected]="accountType() === 'driver'"
-          (click)="selectAccountType('driver')">
-          <span class="account-type-icon"><mat-icon>directions_car</mat-icon></span>
-          <span class="account-type-title">{{ 'iam.login.driver' | translate }}</span>
-          <span class="account-type-desc">{{ 'iam.login.driver-desc' | translate }}</span>
-        </button>
-
-        <button
-          type="button"
-          class="account-type-card"
-          [class.selected]="accountType() === 'operator'"
-          (click)="selectAccountType('operator')">
-          <span class="account-type-icon"><mat-icon>apartment</mat-icon></span>
-          <span class="account-type-title">{{ 'iam.login.operator' | translate }}</span>
-          <span class="account-type-desc">{{ 'iam.login.operator-desc' | translate }}</span>
-        </button>
-      </div>
-
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
         <div class="field-grid-2">
@@ -55,7 +33,7 @@
             <label class="field-label" for="register-first-name">{{ 'iam.register.first-name' | translate }}</label>
             <div class="input-box" [class.invalid]="getError('firstName')">
               <mat-icon>person_outline</mat-icon>
-              <input id="register-first-name" type="text" formControlName="firstName" autocomplete="given-name" />
+              <input id="register-first-name" type="text" formControlName="firstName" placeholder="John" autocomplete="given-name" />
             </div>
             @if (getError('firstName'); as errorKey) {
               <span class="field-error">{{ errorKey | translate }}</span>
@@ -66,7 +44,7 @@
             <label class="field-label" for="register-last-name">{{ 'iam.register.last-name' | translate }}</label>
             <div class="input-box" [class.invalid]="getError('lastName')">
               <mat-icon>person_outline</mat-icon>
-              <input id="register-last-name" type="text" formControlName="lastName" autocomplete="family-name" />
+              <input id="register-last-name" type="text" formControlName="lastName" placeholder="Doe" autocomplete="family-name" />
             </div>
             @if (getError('lastName'); as errorKey) {
               <span class="field-error">{{ errorKey | translate }}</span>
@@ -135,47 +113,28 @@
         }
 
         <button type="submit" class="submit-button" [disabled]="loading()">
-          <span>
-            {{ 'iam.register.create-account-as' | translate }}
-            {{ (accountType() === 'driver' ? ('iam.login.driver' | translate) : ('iam.login.operator' | translate)) }}
-          </span>
+          <span>{{ 'iam.register.create-account' | translate }}</span>
           <mat-icon>arrow_forward</mat-icon>
         </button>
       </form>
 
-      <div class="divider"><span>{{ 'iam.login.or' | translate }}</span></div>
-
-      <button type="button" class="google-button" (click)="onGoogleSignUp()">
-        {{ 'iam.login.continue-google' | translate }}
-      </button>
-      @if (googleMessage(); as messageKey) {
-        <span class="field-error google-note">{{ messageKey | translate }}</span>
-      }
-
       <p class="terms-note">
         {{ 'iam.login.terms' | translate }}
-        <a href="javascript:void(0)">{{ 'iam.login.terms-link' | translate }}</a>
+        <a routerLink="/terms">{{ 'iam.login.terms-link' | translate }}</a>
         {{ 'iam.login.and' | translate }}
-        <a href="javascript:void(0)">{{ 'iam.login.privacy-link' | translate }}</a>.
+        <a routerLink="/privacy-policy">{{ 'iam.login.privacy-link' | translate }}</a>.
       </p>
     </div>
   </section>
 
   <section class="auth-hero-panel">
-    <span class="pill pill-dark">
-      {{ (accountType() === 'driver' ? ('iam.login.for-drivers' | translate) : ('iam.login.for-operators' | translate)) }}
-    </span>
+    <span class="pill pill-dark">{{ 'iam.login.for-drivers' | translate }}</span>
 
-    @if (accountType() === 'driver') {
-      <h2 class="hero-title">{{ 'iam.login.hero-title-driver-1' | translate }}<br />{{ 'iam.login.hero-title-driver-2' | translate }}</h2>
-      <p class="hero-subtitle">{{ 'iam.login.hero-subtitle-driver' | translate }}</p>
-    } @else {
-      <h2 class="hero-title">{{ 'iam.login.hero-title-operator-1' | translate }}<br />{{ 'iam.login.hero-title-operator-2' | translate }}</h2>
-      <p class="hero-subtitle">{{ 'iam.login.hero-subtitle-operator' | translate }}</p>
-    }
+    <h2 class="hero-title">{{ 'iam.login.hero-title-driver-1' | translate }}<br />{{ 'iam.login.hero-title-driver-2' | translate }}</h2>
+    <p class="hero-subtitle">{{ 'iam.login.hero-subtitle-driver' | translate }}</p>
 
     <ul class="hero-features">
-      @for (feature of heroFeatures(); track feature) {
+      @for (feature of heroFeatures; track feature) {
         <li><mat-icon>check_circle</mat-icon><span>{{ feature | translate }}</span></li>
       }
     </ul>
