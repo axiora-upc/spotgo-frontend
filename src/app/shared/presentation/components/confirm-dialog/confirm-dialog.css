@@ -5,7 +5,7 @@
   font-size: 18px;
   font-weight: 700;
   color: #0c1838;
-  margin: 0;
+  margin-top: 8px;
 }
 
 .confirm-dialog__icon {
@@ -33,5 +33,5 @@
 }
 
 .confirm-dialog__actions {
-  padding: 12px 0 0 !important;
+  padding: 12px !important;
 }

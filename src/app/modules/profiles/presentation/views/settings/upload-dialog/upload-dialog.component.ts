@@ -921,7 +921,8 @@ export class UploadDialogComponent {
         const s = sorted[i];
 
         result.push({
-          id:    id++,
+          id:    crypto.randomUUID(),
+          code:  id++,
           row:   rowIdx,
           col,
           /*

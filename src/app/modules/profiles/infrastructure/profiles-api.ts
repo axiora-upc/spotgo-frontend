@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BaseApi } from '../../../shared/infrastructure/base-api';
 import { AdminApiEndpoint } from './admin-api-endpoint';
 import { Admin } from '../domain/model/admin.entity';
 
@@ -12,11 +11,10 @@ import { Admin } from '../domain/model/admin.entity';
   The Store (and only the Store) talks to this class.
 */
 @Injectable({ providedIn: 'root' })
-export class ProfilesApi extends BaseApi {
+export class ProfilesApi {
   private readonly adminEndpoint: AdminApiEndpoint;
 
   constructor(http: HttpClient) {
-    super();
     this.adminEndpoint = new AdminApiEndpoint(http);
   }
 

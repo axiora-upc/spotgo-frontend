@@ -28,10 +28,6 @@
                 "glob": "**/*",
                 "input": "src/app/assets",
                 "output": "assets"
-              },
-              {
-                "glob": "**/*",
-                "input": "server"
               }
             ],
             "styles": ["src/material-theme.scss"]
@@ -41,7 +37,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
+                  "maximumWarning": "700kB",
                   "maximumError": "1MB"
                 },
                 {

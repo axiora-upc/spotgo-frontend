@@ -117,19 +117,29 @@ export abstract class BaseApiEndpoint< TEntity extends BaseEntity,
 
   First, it converts the domain entity into a resource using the assembler,
   because the API expects to receive a resource.
-  Then, it sends an HTTP PUT request to the endpoint URL with the specified ID,
-  sending the resource as the request body.
+  Then, it sends an HTTP PATCH request to the endpoint URL with the specified
+  ID, sending the resource as the request body.
   If the request is successful, the API returns the updated resource.
   Then, map converts that updated resource back into a domain entity.
 
   If there is an error during the request,
   catchError catches the error and uses handleError
   to return an Observable with a descriptive error message.
+
+  NOTE: this used to send a PUT request, which is a full replace of the
+  resource. That silently deleted any field the current TResource does not
+  model. This bit us for real: AdminResource (profiles module) has no
+  "password" field, so saving a change in Settings for a user who had
+  registered through IAM overwrote their /users row and wiped their
+  password, permanently locking them out (the account still existed and
+  the email was right, but the password field was gone). PATCH only
+  merges the fields we actually send, so unrelated fields owned by other
+  bounded contexts sharing the same resource are preserved.
   */
 
   update(entity: TEntity, id: string | number): Observable<TEntity> {
     const resource =  this.assembler.toResourceFromEntity(entity);
-    return this.http.put<TResource>(`${this.endpointUrl}/${id}`, resource).pipe(
+    return this.http.patch<TResource>(`${this.endpointUrl}/${id}`, resource).pipe(
       map(updated => this.assembler.toEntityFromResource(updated)),
       catchError(this.handleError('Failed to update entity'))
     );
@@ -195,7 +205,6 @@ export abstract class BaseApiEndpoint< TEntity extends BaseEntity,
   getAll(): Observable<TEntity[]> {
     return this.http.get<TResponse | TResource[]>(this.endpointUrl).pipe(
       map(response => {
-        console.log(response);
         if (Array.isArray(response)) {
           return response.map(resource => this.assembler.toEntityFromResource(resource));
         }

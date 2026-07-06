@@ -16,9 +16,8 @@
   - Mirrors the LearningStore pattern used by the professor's example.
 */
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { forkJoin, retry } from 'rxjs';
-import { environment } from '../../../../environments/environment';
+import { formatError } from '../../../shared/utils/format-error';
 import { Employee } from '../domain/model/employee.entity';
 import {
   Facility,
@@ -33,13 +32,6 @@ import { MonitoringApi, ParkingResource } from '../infrastructure/monitoring-api
 import { Reservation, ReservationStatus } from '../domain/model/reservation.entity';
 import { ParkingAnalytics } from '../domain/model/analytics.entity';
 
-export interface DashboardStats {
-  availableNearby: number;
-  activeReservations: number;
-  savedLocations: number;
-  avgSavings: number;
-}
-
 import { HistoryApi } from '../../parking/infrastructure/history-api';
 import { PaymentApi } from '../../payment/infrastructure/payment-api';
 import { PaymentStore } from '../../payment/application/payment.store';
@@ -49,7 +41,6 @@ import { CurrentUserService } from '../../../shared/services/current-user.servic
 
 @Injectable({ providedIn: 'root' })
 export class MonitoringStore {
-  private readonly http           = inject(HttpClient);
   private readonly monitoringApi  = inject(MonitoringApi);
   private readonly historyApi     = inject(HistoryApi);
   private readonly paymentApi     = inject(PaymentApi);
@@ -69,14 +60,6 @@ export class MonitoringStore {
 
   private readonly errorSignal = signal<string | null>(null);
   readonly error = this.errorSignal.asReadonly();
-
-  private readonly dashboardStatsSignal = signal<DashboardStats>({
-    availableNearby: 0,
-    activeReservations: 0,
-    savedLocations: 0,
-    avgSavings: 0,
-  });
-  readonly dashboardStats = this.dashboardStatsSignal.asReadonly();
 
   private readonly parkingsSignal = signal<ParkingResource[]>([]);
   readonly parkings = this.parkingsSignal.asReadonly();
@@ -116,7 +99,7 @@ export class MonitoringStore {
       },
       error: (err) => {
         this.employeesLoadedSignal.set(true);
-        this.errorSignal.set(this.formatError(err, 'Failed to load employees'));
+        this.errorSignal.set(formatError(err, 'Failed to load employees'));
         this.loadingSignal.set(false);
       },
     });
@@ -146,7 +129,7 @@ export class MonitoringStore {
           callbacks?.onSuccess?.();
         },
         error: (err) => {
-          this.errorSignal.set(this.formatError(err, 'Failed to add employee'));
+          this.errorSignal.set(formatError(err, 'Failed to add employee'));
           callbacks?.onError?.();
         },
       });
@@ -170,7 +153,7 @@ export class MonitoringStore {
           callbacks?.onSuccess?.();
         },
         error: (err) => {
-          this.errorSignal.set(this.formatError(err, 'Failed to update employee'));
+          this.errorSignal.set(formatError(err, 'Failed to update employee'));
           callbacks?.onError?.();
         },
       });
@@ -191,25 +174,17 @@ export class MonitoringStore {
           callbacks?.onSuccess?.();
         },
         error: (err) => {
-          this.errorSignal.set(this.formatError(err, 'Failed to delete employee'));
+          this.errorSignal.set(formatError(err, 'Failed to delete employee'));
           callbacks?.onError?.();
         },
       });
-  }
-
-  loadParkingSnapshot(): void {
-    this.monitoringApi.getParkingSnapshot().subscribe({
-      next: (snapshot) => this.parkingSnapshotSignal.set(snapshot),
-      error: (err) =>
-        this.errorSignal.set(this.formatError(err, 'Failed to load snapshot')),
-    });
   }
 
   loadParkings(): void {
     forkJoin({
       parkings:      this.monitoringApi.getParkings(),
       reservations:  this.historyApi.getReservations(),
-      detectedSpots: this.http.get<{ parkingId: string; status?: string }[]>(`${environment.apiUrl}/detectedSpots`),
+      detectedSpots: this.monitoringApi.getDetectedSpots(),
     }).subscribe({
       next: ({ parkings, reservations, detectedSpots }) => {
         const now = Date.now();
@@ -240,7 +215,7 @@ export class MonitoringStore {
         this.parkingsSignal.set(reconciled);
       },
       error: (err) =>
-        this.errorSignal.set(this.formatError(err, 'Failed to load parkings')),
+        this.errorSignal.set(formatError(err, 'Failed to load parkings')),
     });
   }
 
@@ -250,12 +225,6 @@ export class MonitoringStore {
 
   completeReservation(reservation: Reservation): void {
     this.userReservationsSignal.update(current => [...current, reservation]);
-    
-    // Update in-memory stats for immediate session reactivity
-    this.dashboardStatsSignal.update(stats => ({
-      ...stats,
-      activeReservations: this.userReservationsSignal().filter(r => r.status === 'completed').length
-    }));
 
     // Compute absolute times for SQL/JSON server persistence
     const [year, month, day] = reservation.date.split('-').map(Number);
@@ -284,7 +253,7 @@ export class MonitoringStore {
     const pkgName = matchedPkg ? matchedPkg.name : 'SpotGo Parking';
     
     const finalReceipt = new Receipt({
-      id: '', // assigned by lowdb/json-server
+      id: '', // assigned by backend
       clientId: this.currentUser.clientId,
       invoiceNumber: invoiceId,
       locationName: pkgName,
@@ -302,7 +271,6 @@ export class MonitoringStore {
     // page could run before the POST finishes, leaving the list empty.
     this.historyApi.createReservation(rawRes).subscribe({
       next: () => this.loadUserReservations(),
-      error: (e) => console.error('Failed to save reservation:', e),
     });
     this.paymentApi.addReceipt(finalReceipt).subscribe();
   }
@@ -335,10 +303,7 @@ export class MonitoringStore {
 
     this.historyApi.setReservationStatus(reservation.id, 'cancelled').subscribe({
       next: () => callbacks?.onSuccess?.(),
-      error: (e) => {
-        console.error('Failed to cancel reservation:', e);
-        callbacks?.onError?.();
-      },
+      error: () => callbacks?.onError?.(),
     });
   }
 
@@ -355,9 +320,6 @@ export class MonitoringStore {
           
         this.userReservationsSignal.set(mapped);
       },
-      error: (err) => {
-        console.error('Failed to load user reservations:', err);
-      }
     });
   }
 
@@ -399,27 +361,18 @@ export class MonitoringStore {
   refreshParkingSnapshot(
     callbacks?: { onSuccess?: () => void; onError?: () => void }
   ): void {
-    this.monitoringApi.touchParkingSnapshotLastUpdated().subscribe({
-      next: (snapshot) => {
-        this.parkingSnapshotSignal.set(snapshot);
-        callbacks?.onSuccess?.();
-      },
-      error: (err) => {
-        this.errorSignal.set(
-          this.formatError(err, 'Failed to refresh snapshot')
-        );
-        callbacks?.onError?.();
-      },
-    });
-  }
-
-  loadDashboardStats(): void {
-    this.dashboardStatsSignal.set({
-      availableNearby: 12,
-      activeReservations: 3,
-      savedLocations: 5,
-      avgSavings: 15.50,
-    });
+    const snapshot = this.parkingSnapshotSignal();
+    if (!snapshot) {
+      callbacks?.onSuccess?.();
+      return;
+    }
+    snapshot.facility.lastUpdated = new Date().toLocaleTimeString('en-US', { hour12: false });
+    this.parkingSnapshotSignal.set(new ParkingSnapshot({
+      facility: snapshot.facility,
+      stats: snapshot.stats,
+      rows: snapshot.rows,
+    }));
+    callbacks?.onSuccess?.();
   }
 
   clearParkingSnapshot(): void {
@@ -461,7 +414,7 @@ export class MonitoringStore {
         parkingSpots.push(new ParkingSpot({
           id:     `${rowLabel}${col + 1}`,
           status: detected ? (detected.status ?? 'available') : 'empty',
-          dbId:   detected?.id,
+          dbId:   detected?.code,
         }));
       }
 
@@ -573,15 +526,6 @@ export class MonitoringStore {
     }));
   }
 
-  private formatError(err: any, fallback: string): string {
-    if (err instanceof Error) {
-      return err.message.includes('Resource not found')
-        ? `${fallback}: not found`
-        : err.message;
-    }
-    return fallback;
-  }
-
   /* ─── Analytics ──────────────────────────────────────────────────────────── */
 
   /*
@@ -609,7 +553,7 @@ export class MonitoringStore {
         this.analyticsLoadingSignal.set(false);
       },
       error: (err) => {
-        this.errorSignal.set(this.formatError(err, 'Failed to load analytics'));
+        this.errorSignal.set(formatError(err, 'Failed to load analytics'));
         this.analyticsLoadingSignal.set(false);
       },
     });

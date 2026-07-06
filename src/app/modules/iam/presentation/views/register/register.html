@@ -1,0 +1,142 @@
+<header class="auth-topbar">
+  <div class="brand">
+    <div class="logo-container">
+      <img src="./assets/spotgo-logo.png" alt="SpotGo logo" class="logo-image" />
+    </div>
+    <span class="brand-name">SpotGo</span>
+  </div>
+
+  <div class="topbar-actions">
+    <app-language-switcher></app-language-switcher>
+
+    <span class="topbar-link">
+      {{ 'iam.register.already-have-account' | translate }}
+      <a routerLink="/sign-in">{{ 'iam.register.sign-in' | translate }}</a>
+    </span>
+  </div>
+</header>
+
+<div class="auth-body">
+
+  <section class="auth-form-panel">
+    <div class="auth-form-wrap">
+
+      <span class="pill pill-light">{{ 'iam.register.get-started' | translate }}</span>
+
+      <h1 class="auth-title">{{ 'iam.register.title' | translate }}</h1>
+      <p class="auth-subtitle">{{ 'iam.register.subtitle' | translate }}</p>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+        <div class="field-grid-2">
+          <div>
+            <label class="field-label" for="register-first-name">{{ 'iam.register.first-name' | translate }}</label>
+            <div class="input-box" [class.invalid]="getError('firstName')">
+              <mat-icon>person_outline</mat-icon>
+              <input id="register-first-name" type="text" formControlName="firstName" placeholder="John" autocomplete="given-name" />
+            </div>
+            @if (getError('firstName'); as errorKey) {
+              <span class="field-error">{{ errorKey | translate }}</span>
+            }
+          </div>
+
+          <div>
+            <label class="field-label" for="register-last-name">{{ 'iam.register.last-name' | translate }}</label>
+            <div class="input-box" [class.invalid]="getError('lastName')">
+              <mat-icon>person_outline</mat-icon>
+              <input id="register-last-name" type="text" formControlName="lastName" placeholder="Doe" autocomplete="family-name" />
+            </div>
+            @if (getError('lastName'); as errorKey) {
+              <span class="field-error">{{ errorKey | translate }}</span>
+            }
+          </div>
+        </div>
+
+        <label class="field-label" for="register-email">{{ 'iam.login.email' | translate }}</label>
+        <div class="input-box" [class.invalid]="getError('email')">
+          <mat-icon>mail_outline</mat-icon>
+          <input
+            id="register-email"
+            type="email"
+            formControlName="email"
+            placeholder="you@example.com"
+            autocomplete="email" />
+        </div>
+        @if (getError('email'); as errorKey) {
+          <span class="field-error">{{ errorKey | translate }}</span>
+        }
+
+        <label class="field-label" for="register-password">{{ 'iam.login.password' | translate }}</label>
+        <div class="input-box" [class.invalid]="getError('password')">
+          <mat-icon>lock_outline</mat-icon>
+          <input
+            id="register-password"
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="••••••••"
+            autocomplete="new-password" />
+          <button
+            type="button"
+            class="toggle-visibility"
+            (click)="toggleShowPassword()"
+            [attr.aria-label]="showPassword() ? ('iam.login.hide-password' | translate) : ('iam.login.show-password' | translate)">
+            <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+        @if (getError('password'); as errorKey) {
+          <span class="field-error">{{ errorKey | translate }}</span>
+        }
+
+        <label class="field-label" for="register-confirm-password">{{ 'iam.register.confirm-password' | translate }}</label>
+        <div class="input-box" [class.invalid]="getError('confirmPassword')">
+          <mat-icon>lock_outline</mat-icon>
+          <input
+            id="register-confirm-password"
+            [type]="showConfirmPassword() ? 'text' : 'password'"
+            formControlName="confirmPassword"
+            placeholder="••••••••"
+            autocomplete="new-password" />
+          <button
+            type="button"
+            class="toggle-visibility"
+            (click)="toggleShowConfirmPassword()"
+            [attr.aria-label]="showConfirmPassword() ? ('iam.login.hide-password' | translate) : ('iam.login.show-password' | translate)">
+            <mat-icon>{{ showConfirmPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+        @if (getError('confirmPassword'); as errorKey) {
+          <span class="field-error">{{ errorKey | translate }}</span>
+        }
+
+        @if (error(); as errorKey) {
+          <div class="form-error">{{ errorKey | translate }}</div>
+        }
+
+        <button type="submit" class="submit-button" [disabled]="loading()">
+          <span>{{ 'iam.register.create-account' | translate }}</span>
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </form>
+
+      <p class="terms-note">
+        {{ 'iam.login.terms' | translate }}
+        <a routerLink="/terms">{{ 'iam.login.terms-link' | translate }}</a>
+        {{ 'iam.login.and' | translate }}
+        <a routerLink="/privacy-policy">{{ 'iam.login.privacy-link' | translate }}</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="auth-hero-panel">
+    <span class="pill pill-dark">{{ 'iam.login.for-drivers' | translate }}</span>
+
+    <h2 class="hero-title">{{ 'iam.login.hero-title-driver-1' | translate }}<br />{{ 'iam.login.hero-title-driver-2' | translate }}</h2>
+    <p class="hero-subtitle">{{ 'iam.login.hero-subtitle-driver' | translate }}</p>
+
+    <ul class="hero-features">
+      @for (feature of heroFeatures; track feature) {
+        <li><mat-icon>check_circle</mat-icon><span>{{ feature | translate }}</span></li>
+      }
+    </ul>
+  </section>
+</div>

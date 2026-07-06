@@ -5,8 +5,7 @@
 import { Component, inject } from '@angular/core';
 
 /*
-  Router is used to navigate programmatically when the user
-  switches between view modes.
+  Router is used to navigate programmatically after logging out.
 */
 import { Router } from '@angular/router';
 
@@ -39,6 +38,12 @@ import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 
 /*
+  MatDialog opens the ChangePasswordDialog when the user picks
+  "Change password" from the account menu.
+*/
+import { MatDialog } from '@angular/material/dialog';
+
+/*
   LanguageSwitcher is the component used to change the application language.
 */
 import { LanguageSwitcher } from '../language-switcher/language-switcher';
@@ -49,12 +54,22 @@ import { LanguageSwitcher } from '../language-switcher/language-switcher';
 import { TranslatePipe } from '@ngx-translate/core';
 
 /*
-  ViewModeService is a shared service that tracks whether the app is
-  showing the 'user' view or the 'admin' view in the sidebar.
+  AuthStore holds the authenticated user (see modules/iam/application/auth.store.ts).
 
-  ViewMode is the type that represents the two possible values: 'user' | 'admin'.
+  The account button used to open a menu that let anyone manually switch
+  between "User View" and "Admin View" — that toggle has been removed.
+  The sidebar now reflects the REAL role of whoever is logged in (resolved
+  at login/register time), so the account menu's only job here is to show
+  who is signed in and offer a way to log out.
 */
-import { ViewModeService, ViewMode } from '../../services/view-mode.service';
+import { AuthStore } from '../../../../modules/iam/application/auth.store';
+
+/*
+  ChangePasswordDialog is opened from the account menu below. It works
+  the same way regardless of role (admin or client), since the toolbar
+  itself is shared across the whole authenticated app.
+*/
+import { ChangePasswordDialog } from '../../../../modules/iam/presentation/views/change-password-dialog/change-password-dialog';
 
 @Component({
   /*
@@ -104,45 +119,46 @@ import { ViewModeService, ViewMode } from '../../services/view-mode.service';
 export class ToolbarContent {
 
   /*
-    inject(ViewModeService) gives this component access to the
-    shared service that controls the current view mode.
-
-    When the user clicks the account button and selects a view,
-    setMode() updates the signal in ViewModeService.
-
-    The sidebar reacts to this change automatically.
+    inject(AuthStore) gives this component access to the authenticated
+    user's signal and the logout() action.
   */
-  private viewMode = inject(ViewModeService);
+  private authStore = inject(AuthStore);
 
   /*
-    Router allows navigating programmatically to a route.
-
-    When the user switches view modes, the app navigates automatically
-    to the default page for that mode instead of staying on the current page.
+    Router allows navigating programmatically to the login page
+    once the session has been cleared.
   */
   private router = inject(Router);
 
   /*
-    Default routes for each view mode.
-
-    - user  → /monitoring/dashboard  (standard user landing page)
-    - admin → /monitoring/realtime-map (admin landing page)
+    dialog opens ChangePasswordDialog when the user picks "Change
+    password" from the account menu.
   */
-  private defaultRoutes: Record<ViewMode, string> = {
-    user: '/monitoring/dashboard',
-    admin: '/monitoring/realtime-map',
-  };
+  private dialog = inject(MatDialog);
 
   /*
-    setMode is called when the user clicks one of the menu options
-    inside the account dropdown.
-
-    It updates the view mode signal so the sidebar switches its items,
-    then navigates to the default route for the chosen mode.
+    currentUser is read directly in the template to show the signed-in
+    person's name and email inside the account menu.
   */
-  setMode(mode: ViewMode): void {
-    this.viewMode.setMode(mode);
-    this.router.navigate([this.defaultRoutes[mode]]);
+  currentUser = this.authStore.currentUser;
+
+  /*
+    logout clears the session (AuthStore + the sessionStorage keys shared
+    with CurrentUserService/ViewModeService) and sends the user back to
+    the login page.
+  */
+  logout(): void {
+    this.authStore.logout();
+    this.router.navigate(['/sign-in']);
+  }
+
+  /*
+    openChangePassword opens ChangePasswordDialog as a Material dialog.
+    No data needs to be passed in — the dialog reads the current user
+    directly from AuthStore itself.
+  */
+  openChangePassword(): void {
+    this.dialog.open(ChangePasswordDialog, { width: '420px' });
   }
 
 }

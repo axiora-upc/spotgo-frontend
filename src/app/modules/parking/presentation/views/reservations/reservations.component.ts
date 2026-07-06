@@ -39,7 +39,7 @@ export class ReservationsComponent implements OnInit, OnDestroy {
   private readonly router        = inject(Router);
   private readonly blueprintsApi = inject(BlueprintsApi);
 
-  private timerIntervalId: any;
+  private timerIntervalId: ReturnType<typeof setInterval> | undefined;
   protected currentTime = signal<number>(Date.now());
 
   protected readonly reservations = computed<ReservationViewModel[]>(() => {
@@ -130,7 +130,7 @@ export class ReservationsComponent implements OnInit, OnDestroy {
   }
 
   protected navigateToParking(): void {
-    this.router.navigate(['/monitoring/dashboard']);
+    this.router.navigate(['/dashboard']);
   }
 
   protected cancelReservation(reservation: ReservationViewModel): void {

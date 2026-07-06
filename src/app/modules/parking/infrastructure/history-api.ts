@@ -20,7 +20,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BaseApi } from '../../../shared/infrastructure/base-api';
 import { ReservationRaw } from '../domain/model/reservation-raw.entity';
 import { ParkingForHistory } from '../domain/model/parking-for-history.entity';
 import { ClientReport } from '../domain/model/client-report.entity';
@@ -29,13 +28,12 @@ import { ParkingsHistoryApiEndpoint } from './parkings-history-api-endpoint';
 import { ClientReportsApiEndpoint } from './client-reports-api-endpoint';
 
 @Injectable({ providedIn: 'root' })
-export class HistoryApi extends BaseApi {
+export class HistoryApi {
   private readonly reservationsEndpoint: ReservationsApiEndpoint;
   private readonly parkingsEndpoint: ParkingsHistoryApiEndpoint;
   private readonly reportsEndpoint: ClientReportsApiEndpoint;
 
   constructor(http: HttpClient) {
-    super();
     this.reservationsEndpoint = new ReservationsApiEndpoint(http);
     this.parkingsEndpoint     = new ParkingsHistoryApiEndpoint(http);
     this.reportsEndpoint      = new ClientReportsApiEndpoint(http);
@@ -59,7 +57,7 @@ export class HistoryApi extends BaseApi {
 
   /*
     Persists the updated reservation (with the new rating) via PUT.
-    The full entity is sent so json-server does not lose any fields.
+    The full entity is sent so backend does not lose any fields.
   */
   rateReservation(reservation: ReservationRaw): Observable<ReservationRaw> {
     return this.reservationsEndpoint.update(reservation, reservation.id);
@@ -74,7 +72,7 @@ export class HistoryApi extends BaseApi {
 
   /*
     Persists only the updated rating to the parking via PATCH.
-    PATCH sends { rating } and json-server merges it with the existing
+    PATCH sends { rating } and backend merges it with the existing
     document, leaving all other fields (adminId, totalSpaces, etc.) intact.
     This replaces the previous PUT approach which was deleting those fields.
   */
@@ -107,7 +105,7 @@ export class HistoryApi extends BaseApi {
 
   /*
     Creates a new client report via POST /clientReports.
-    json-server assigns the id and returns the saved record.
+    backend assigns the id and returns the saved record.
   */
   submitReport(report: ClientReport): Observable<ClientReport> {
     return this.reportsEndpoint.create(report);

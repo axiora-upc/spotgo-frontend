@@ -20,6 +20,7 @@
 */
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { forkJoin, retry } from 'rxjs';
+import { formatError } from '../../../shared/utils/format-error';
 import { ParkingHistory } from '../domain/model/parking-history.entity';
 import { ParkingForHistory } from '../domain/model/parking-for-history.entity';
 import { ReservationRaw } from '../domain/model/reservation-raw.entity';
@@ -121,7 +122,7 @@ export class HistoryStore {
         this.loadingSignal.set(false);
       },
       error: (err) => {
-        this.errorSignal.set(this.formatError(err, 'Failed to load history'));
+        this.errorSignal.set(formatError(err, 'Failed to load history'));
         this.loadingSignal.set(false);
       },
     });
@@ -185,7 +186,7 @@ export class HistoryStore {
 
         /*
           We pass only parkingId + rounded average. HistoryApi sends PATCH
-          with { rating } so json-server merges it without touching any other
+          with { rating } so backend merges it without touching any other
           parking field (adminId, totalSpaces, totalFloors, etc.).
         */
         this.historyApi.updateParkingRating(parking.id, rounded).pipe(retry(1)).subscribe({
@@ -196,13 +197,13 @@ export class HistoryStore {
             callbacks?.onSuccess?.();
           },
           error: (err) => {
-            this.errorSignal.set(this.formatError(err, 'Failed to update parking rating'));
+            this.errorSignal.set(formatError(err, 'Failed to update parking rating'));
             callbacks?.onError?.();
           },
         });
       },
       error: (err) => {
-        this.errorSignal.set(this.formatError(err, 'Failed to rate reservation'));
+        this.errorSignal.set(formatError(err, 'Failed to rate reservation'));
         callbacks?.onError?.();
       },
     });
@@ -222,10 +223,11 @@ export class HistoryStore {
     type: ReportType,
     callbacks?: { onSuccess?: () => void; onError?: () => void }
   ): void {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString();
 
     const report = new ClientReport(
-      '',            // id assigned by json-server on POST
+      '',            // id assigned by backend on POST
+      '',            // code assigned by backend on POST
       this.currentUser.clientId,
       parkingId,
       reservationId,
@@ -237,14 +239,10 @@ export class HistoryStore {
     this.historyApi.submitReport(report).subscribe({
       next: () => callbacks?.onSuccess?.(),
       error: (err) => {
-        this.errorSignal.set(this.formatError(err, 'Failed to submit report'));
+        this.errorSignal.set(formatError(err, 'Failed to submit report'));
         callbacks?.onError?.();
       },
     });
   }
 
-  private formatError(err: unknown, fallback: string): string {
-    if (err instanceof Error) return err.message;
-    return fallback;
-  }
 }

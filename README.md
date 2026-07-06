@@ -1,6 +1,6 @@
 # SpotGo Frontend
 
-Frontend de SpotGo, hecho en Angular. Permite monitorear parqueos en tiempo real, gestionar reservas, pagos y perfiles.
+Frontend de SpotGo en Angular. Consume directamente el backend Spring Boot con JWT y usa rutas planas para clientes, admins y auth.
 
 ## Stack
 
@@ -8,7 +8,6 @@ Frontend de SpotGo, hecho en Angular. Permite monitorear parqueos en tiempo real
 - Angular Material
 - RxJS
 - ngx-translate (ES/EN)
-- json-server (mock/respaldo de API)
 
 ## Estructura
 
@@ -24,31 +23,47 @@ src/app/
 
 Cada módulo se carga con lazy loading desde `app.routes.ts`.
 
-## Backends
+## Auth Y API
 
-La app habla con dos backends:
+- La app consume un solo backend: `spotgo-backend`.
+- El login usa `email + password`.
+- El token JWT se guarda en `sessionStorage` como `spotgo:accessToken`.
+- El interceptor agrega `Authorization: Bearer <token>` a las requests.
+- `backend` ya no forma parte del flujo.
 
-- **Backend real** (Spring Boot + PostgreSQL, desplegado en Railway) — fuente de verdad.
-- **json-server** (`server/db.json`) — respaldo para cuando el backend real no responde, y para desarrollo sin tener el backend corriendo.
+## Rutas Principales
 
-El interceptor en `src/app/shared/infrastructure/api.interceptor.ts` decide a cuál de los dos mandar cada request. Si el backend real no responde en 1.5s, usa el respaldo.
+- Auth público:
+  - `/sign-in`
+  - `/sign-up`
+  - `/forgot-password`
+- Client:
+  - `/dashboard`
+  - `/reservations`
+  - `/subscriptions`
+  - `/receipts`
+  - `/favorites`
+  - `/history`
+- Admin:
+  - `/realtime-map/overview`
+  - `/realtime-map/reports`
+  - `/realtime-map/employees`
+  - `/analytics`
+  - `/settings`
 
 ## Correr el proyecto
 
 ```bash
 npm install
-ng start
+npm run build
+ng serve
 ```
 
-Para correr el mock de API:
+En desarrollo, `src/environments/environment.development.ts` apunta a `http://localhost:8080/api/v1`.
 
-```bash
-npm run server      # json-server en server/db.json
-```
-
-`src/environments/environment.development.ts` apunta a `localhost:8080` (backend real) y `localhost:3000` (json-server) en desarrollo.
+Para probar login seed, usa una cuenta del `db.json` del backend con password `Password123!`.
 
 
 ## Deploy
 
-Desplegado en Vercel (`vercel.json`). El build de Angular se sirve como sitio estático, y `index.js` corre como función serverless para el respaldo de json-server bajo `/api`.
+Desplegado en Vercel (`vercel.json`). El frontend se sirve como sitio estático y depende del backend desplegado para los datos y la autenticación.

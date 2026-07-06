@@ -11,12 +11,8 @@
   It only reads signals and calls store methods.
 */
 import { Injectable, inject, signal, computed } from '@angular/core';
-
-/*
-  retry retries a failed HTTP call once before showing the error.
-  Used only on write operations like PUT.
-*/
 import { retry } from 'rxjs';
+import { formatError } from '../../../shared/utils/format-error';
 
 import { Subscription } from '../domain/model/subscription.entity';
 import { ClientPlan } from '../domain/model/client-plan.entity';
@@ -105,7 +101,7 @@ export class PaymentStore {
         this.loadingSignal.set(false);
       },
       error: (err) => {
-        this.errorSignal.set(this.formatError(err, 'Failed to load subscription'));
+        this.errorSignal.set(formatError(err, 'Failed to load subscription'));
         this.loadingSignal.set(false);
       },
     });
@@ -130,7 +126,7 @@ export class PaymentStore {
     this.paymentApi.getClientPlans().subscribe({
       next: (plans) => this.plansSignal.set(plans),
       error: (err) =>
-        this.errorSignal.set(this.formatError(err, 'Failed to load plans')),
+        this.errorSignal.set(formatError(err, 'Failed to load plans')),
     });
   }
 
@@ -167,7 +163,7 @@ export class PaymentStore {
           callbacks?.onSuccess?.();
         },
         error: (err) => {
-          this.errorSignal.set(this.formatError(err, 'Failed to update subscription'));
+          this.errorSignal.set(formatError(err, 'Failed to update subscription'));
           callbacks?.onError?.();
         },
       });
@@ -222,7 +218,7 @@ export class PaymentStore {
           callbacks?.onSuccess?.();
         },
         error: (err) => {
-          this.errorSignal.set(this.formatError(err, 'Failed to switch plan'));
+          this.errorSignal.set(formatError(err, 'Failed to switch plan'));
           callbacks?.onError?.();
         },
       });
@@ -252,17 +248,12 @@ export class PaymentStore {
           callbacks?.onSuccess?.();
         },
         error: (err) => {
-          this.errorSignal.set(this.formatError(err, 'Failed to update payment method'));
+          this.errorSignal.set(formatError(err, 'Failed to update payment method'));
           callbacks?.onError?.();
         },
       });
   }
 
-  /*
-    Converts an HTTP error into a readable string for the error signal.
-    If the error is a known Error object, uses its message.
-    Otherwise uses the fallback string provided by the caller.
-  */
   /*
     Called by ReceiptsComponent on init, passing the logged-in client id.
 
@@ -288,7 +279,7 @@ export class PaymentStore {
         this.loadingSignal.set(false);
       },
       error: (err) => {
-        this.errorSignal.set(this.formatError(err, 'Failed to load receipts'));
+        this.errorSignal.set(formatError(err, 'Failed to load receipts'));
         this.loadingSignal.set(false);
       },
     });
@@ -320,14 +311,5 @@ export class PaymentStore {
         this.subscriptionSignal.set(sub);
       }
     });
-  }
-
-  private formatError(err: unknown, fallback: string): string {
-    if (err instanceof Error) {
-      return err.message.includes('Resource not found')
-        ? `${fallback}: not found`
-        : err.message;
-    }
-    return fallback;
   }
 }

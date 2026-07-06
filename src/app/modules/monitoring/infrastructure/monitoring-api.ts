@@ -9,29 +9,29 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BaseApi } from '../../../shared/infrastructure/base-api';
+import { environment } from '../../../../environments/environment';
 import { EmployeesApiEndpoint } from './employees-api-endpoint';
-import { ParkingSnapshotApiEndpoint } from './parking-snapshot-api-endpoint';
 import { ParkingsApiEndpoint } from './parkings-api-endpoint';
 import type { ParkingResource } from './parkings-api-endpoint';
 import { AnalyticsApiEndpoint } from './analytics-api-endpoint';
 import { Employee } from '../domain/model/employee.entity';
-import { ParkingSnapshot } from '../domain/model/parking-spot.entity';
 import { ParkingAnalytics } from '../domain/model/analytics.entity';
 
 export type { ParkingResource };
 
+export interface DetectedSpotSummary {
+  parkingId: string;
+  status?: string;
+}
+
 @Injectable({ providedIn: 'root' })
-export class MonitoringApi extends BaseApi {
+export class MonitoringApi {
   private readonly employeesEndpoint: EmployeesApiEndpoint;
-  private readonly parkingSnapshotEndpoint: ParkingSnapshotApiEndpoint;
   private readonly parkingsEndpoint: ParkingsApiEndpoint;
   private readonly analyticsEndpoint: AnalyticsApiEndpoint;
 
-  constructor(http: HttpClient) {
-    super();
+  constructor(private readonly http: HttpClient) {
     this.employeesEndpoint = new EmployeesApiEndpoint(http);
-    this.parkingSnapshotEndpoint = new ParkingSnapshotApiEndpoint(http);
     this.parkingsEndpoint = new ParkingsApiEndpoint(http);
     this.analyticsEndpoint = new AnalyticsApiEndpoint(http);
   }
@@ -52,19 +52,15 @@ export class MonitoringApi extends BaseApi {
     return this.employeesEndpoint.delete(id);
   }
 
-  getParkingSnapshot(): Observable<ParkingSnapshot> {
-    return this.parkingSnapshotEndpoint.get();
-  }
-
-  touchParkingSnapshotLastUpdated(): Observable<ParkingSnapshot> {
-    return this.parkingSnapshotEndpoint.touchLastUpdated();
-  }
-
   getParkings(): Observable<ParkingResource[]> {
     return this.parkingsEndpoint.getAll();
   }
 
   getAnalytics(parkingId: string): Observable<ParkingAnalytics> {
     return this.analyticsEndpoint.getByParkingId(parkingId);
+  }
+
+  getDetectedSpots(): Observable<DetectedSpotSummary[]> {
+    return this.http.get<DetectedSpotSummary[]>(`${environment.apiUrl}/detectedSpots`);
   }
 }

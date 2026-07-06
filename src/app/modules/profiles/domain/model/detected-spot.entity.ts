@@ -14,7 +14,8 @@
   filas (ParkingRow) y construir el ParkingSnapshot que muestra Overview.
 */
 export interface DetectedSpot {
-  id:      number;   // identificador único autoincremental (1, 2, 3...)
+  id:      string;   // UUID persistido en backend
+  code?:   number;   // codigo visible del spot en frontend
   row:     number;   // fila en la que fue detectado (0, 1, 2...)
   col:     number;   // columna dentro de la fila (0, 1, 2...)
   x_pct:  number;   // posición X como % del ancho total de la imagen

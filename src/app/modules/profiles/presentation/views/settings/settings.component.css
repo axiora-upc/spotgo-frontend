@@ -9,6 +9,7 @@
   background-color: #f4f6fb;
   box-sizing: border-box;
   overflow-y: auto;
+  border-radius: 16px;
 }
 
 /* ─── Encabezado ─────────────────────────────────────────────────────────── */
@@ -193,7 +194,7 @@
 .btn-upload-blueprint {
   background-color: #151970 !important;
   color: #ffffff !important;
-  border-radius: 12px !important;
+  border-radius: 24px !important;
   padding: 0 28px !important;
   height: 48px;
   font-size: 15px !important;
@@ -203,7 +204,7 @@
 .btn-delete-blueprint {
   background-color: #c0392b !important;
   color: #ffffff !important;
-  border-radius: 12px !important;
+  border-radius: 24px !important;
   padding: 0 28px !important;
   height: 48px;
   font-size: 15px !important;

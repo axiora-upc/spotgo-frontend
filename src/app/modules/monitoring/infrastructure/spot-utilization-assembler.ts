@@ -42,7 +42,7 @@ export class SpotUtilizationAssembler
 
   /*
     La colección /parkingSpots se filtra por parkingId en la URL
-    (?parkingId=prk-001), así que json-server devuelve un array directo.
+    (?parkingId=prk-001), así que backend devuelve un array directo.
   */
   toEntitiesFromResponse(_response: SpotUtilizationResponse): SpotUtilization[] {
     return [];

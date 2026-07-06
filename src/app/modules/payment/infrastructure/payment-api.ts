@@ -25,12 +25,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 /*
-  BaseApi is an empty abstract class — it exists only to follow
-  the same pattern used in MonitoringApi and other modules.
-*/
-import { BaseApi } from '../../../shared/infrastructure/base-api';
-
-/*
   Each endpoint handles HTTP calls for one resource.
   They do NOT have @Injectable, so Angular cannot inject them directly.
   PaymentApi creates them manually with 'new' and passes them HttpClient.
@@ -43,7 +37,7 @@ import { ClientPlan } from '../domain/model/client-plan.entity';
 import { Receipt } from '../domain/model/receipt.entity';
 
 @Injectable({ providedIn: 'root' })
-export class PaymentApi extends BaseApi {
+export class PaymentApi {
 
   /*
     PaymentApi holds each endpoint as a private field.
@@ -56,11 +50,8 @@ export class PaymentApi extends BaseApi {
   /*
     Angular calls this constructor automatically and passes HttpClient.
     We then pass that HttpClient to each endpoint so they can make HTTP calls.
-
-    super() is required because PaymentApi extends BaseApi.
   */
   constructor(http: HttpClient) {
-    super();
     this.subscriptionsEndpoint = new SubscriptionsApiEndpoint(http);
     this.clientPlansEndpoint = new ClientPlansApiEndpoint(http);
     this.receiptsEndpoint = new ReceiptsApiEndpoint(http);

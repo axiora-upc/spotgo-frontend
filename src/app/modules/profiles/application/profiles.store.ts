@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { retry } from 'rxjs';
+import { formatError } from '../../../shared/utils/format-error';
 import { Admin } from '../domain/model/admin.entity';
 import { ProfilesApi } from '../infrastructure/profiles-api';
 
@@ -39,7 +40,7 @@ export class ProfilesStore {
         this.loadingSignal.set(false);
       },
       error: (err) => {
-        this.errorSignal.set(this.formatError(err, 'Failed to load admin'));
+        this.errorSignal.set(formatError(err, 'Failed to load admin'));
         this.loadingSignal.set(false);
       },
     });
@@ -63,18 +64,10 @@ export class ProfilesStore {
           callbacks?.onSuccess?.();
         },
         error: (err) => {
-          this.errorSignal.set(this.formatError(err, 'Failed to update admin'));
+          this.errorSignal.set(formatError(err, 'Failed to update admin'));
           callbacks?.onError?.();
         },
       });
   }
 
-  private formatError(err: unknown, fallback: string): string {
-    if (err instanceof Error) {
-      return err.message.includes('Resource not found')
-        ? `${fallback}: not found`
-        : err.message;
-    }
-    return fallback;
-  }
 }

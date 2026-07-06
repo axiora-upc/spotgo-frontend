@@ -7,7 +7,7 @@ import { DetectedSpot } from './detected-spot.entity';
 
   adminId asocia el croquis con el admin propietario, de forma que cada
   centro de estacionamiento ve únicamente sus propios croquis guardados
-  en la base de datos (server/db.json), y no los de otros admins.
+  en la base de datos (backend API), y no los de otros admins.
 
   parkingId identifica el estacionamiento al que pertenece el croquis.
   Al guardarlo, el servicio usa ese id para actualizar totalSpaces,

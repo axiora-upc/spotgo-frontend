@@ -6,7 +6,7 @@
 
   toResourceFromEntity is called by BaseApiEndpoint.update() when HistoryStore
   persists the recalculated average rating back to /parkings/:id.
-  All fields must be included to prevent json-server from deleting them on PUT.
+  All fields must be included to prevent backend from deleting them on PUT.
 */
 import { BaseAssembler } from '../../../shared/infrastructure/base-assembler';
 import { ParkingForHistory } from '../domain/model/parking-for-history.entity';

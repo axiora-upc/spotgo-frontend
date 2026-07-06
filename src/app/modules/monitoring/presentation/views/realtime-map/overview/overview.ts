@@ -23,6 +23,7 @@ interface ClientResource {
   lastName: string;
   email: string;
   phone?: string;
+  role: 'admin' | 'client';
 }
 
 
@@ -117,15 +118,11 @@ export class Overview implements OnInit, OnDestroy {
     forkJoin({
       reservations: this.historyApi.getReservations(),
       allUsers:     this.http.get<ClientResource[]>(`${environment.apiUrl}/users`),
-      userRoles:    this.http.get<{ userId: string; roleId: string }[]>(`${environment.apiUrl}/userRoles`),
       vehicles:     this.http.get<VehicleResource[]>(`${environment.apiUrl}/vehicles`),
     }).subscribe({
-      next: ({ reservations, allUsers, userRoles, vehicles }) => {
+      next: ({ reservations, allUsers, vehicles }) => {
         const now = Date.now();
-        const clientIds = new Set(
-          userRoles.filter(ur => ur.roleId === 'rol-002').map(ur => ur.userId)
-        );
-        this.clients  = allUsers.filter(u => clientIds.has(u.id));
+        this.clients  = allUsers.filter(u => u.role === 'client');
         this.vehicles = vehicles;
 
         // Ingresos del parking: suma de baseAmount (precio completo sin descuento)

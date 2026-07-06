@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { BaseApi } from '../../../shared/infrastructure/base-api';
 import { Blueprint } from '../domain/model/blueprint.entity';
 import { BlueprintsApiEndpoint } from './blueprints-api-endpoint';
 import { BlueprintAssembler } from './blueprint-assembler';
@@ -10,13 +9,12 @@ import { BlueprintResource, DetectedSpotResource } from './blueprint-response';
 import { DetectedSpot } from '../domain/model/detected-spot.entity';
 
 @Injectable({ providedIn: 'root' })
-export class BlueprintsApi extends BaseApi {
+export class BlueprintsApi {
   private readonly blueprintsEndpoint: BlueprintsApiEndpoint;
   private readonly assembler = new BlueprintAssembler();
   private readonly spotsUrl = `${environment.apiUrl}/detectedSpots`;
 
   constructor(private readonly http: HttpClient) {
-    super();
     this.blueprintsEndpoint = new BlueprintsApiEndpoint(http);
   }
 
@@ -30,8 +28,8 @@ export class BlueprintsApi extends BaseApi {
         if (!blueprint.spots?.length) return of(created);
         const spotPosts = blueprint.spots.map((s, i) =>
           this.http.post<DetectedSpotResource>(this.spotsUrl, {
-            id:          `${created.id}__r${s.row}c${s.col}`,
-            localId:     i + 1,
+            id:          crypto.randomUUID(),
+            code:        i + 1,
             blueprintId: created.id,
             parkingId:   created.parkingId,
             row:         s.row,
@@ -65,9 +63,10 @@ export class BlueprintsApi extends BaseApi {
               map(spotResources => {
                 const blueprint = this.assembler.toEntityFromResource(bpResource);
                 blueprint.spots = spotResources
-                  .sort((a, b) => a.localId - b.localId)
+                  .sort((a, b) => a.code - b.code)
                   .map(sr => ({
-                    id:     Number(sr.id),
+                    id:     sr.id,
+                    code:   sr.code,
                     row:    sr.row,
                     col:    sr.col,
                     x_pct: sr.x_pct,
