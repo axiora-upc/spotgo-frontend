@@ -4,6 +4,7 @@
 
 /* Import Angular Router configuration. */
 import { Routes } from '@angular/router';
+import { roleGuard } from '../../iam/presentation/guards/role.guard';
 
 /*
   This function loads the ReservationsComponent.
@@ -40,7 +41,7 @@ const history = () => import('./views/history/history.component').then((m) => m.
 
 /* Parking routes mounted at the root level: `/reservations`, `/history`. */
 export const PARKING_ROUTES: Routes = [
-  { path: 'reservations', loadComponent: reservations },
+  { path: 'reservations', loadComponent: reservations, canActivate: [roleGuard], data: { roles: ['client'] } },
 
-  { path: 'history', loadComponent: history },
+  { path: 'history', loadComponent: history, canActivate: [roleGuard], data: { roles: ['client'] } },
 ];

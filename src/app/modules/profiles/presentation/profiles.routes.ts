@@ -4,6 +4,7 @@
 
 /* Import Angular Router configuration. */
 import { Routes } from '@angular/router';
+import { roleGuard } from '../../iam/presentation/guards/role.guard';
 
 /*
   This function loads the FavoritesComponent asynchronously.
@@ -32,6 +33,6 @@ const settings = () =>
 
 /* Profiles routes mounted at the root level: `/favorites`, `/settings`. */
 export const PROFILES_ROUTES: Routes = [
-  { path: 'favorites', loadComponent: favorites },
-  { path: 'settings', loadComponent: settings },
+  { path: 'favorites', loadComponent: favorites, canActivate: [roleGuard], data: { roles: ['client'] } },
+  { path: 'settings', loadComponent: settings, canActivate: [roleGuard], data: { roles: ['admin'] } },
 ];

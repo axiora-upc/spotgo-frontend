@@ -4,6 +4,7 @@
 
 /* Import Angular Router configuration. */
 import { Routes } from '@angular/router';
+import { roleGuard } from '../../iam/presentation/guards/role.guard';
 
 /*
   This function loads the SubscriptionsComponent asynchronously.
@@ -41,6 +42,6 @@ const receipts = () =>
 
 /* Payment routes mounted at the root level: `/subscriptions`, `/receipts`. */
 export const PAYMENT_ROUTES: Routes = [
-  { path: 'subscriptions', loadComponent: subscriptions },
-  { path: 'receipts', loadComponent: receipts },
+  { path: 'subscriptions', loadComponent: subscriptions, canActivate: [roleGuard], data: { roles: ['client'] } },
+  { path: 'receipts', loadComponent: receipts, canActivate: [roleGuard], data: { roles: ['client'] } },
 ];

@@ -6,6 +6,7 @@
   Import Angular Router configuration.
 */
 import { Routes } from '@angular/router';
+import { roleGuard } from '../../iam/presentation/guards/role.guard';
 
 /*
   This function loads the DashboardComponent asynchronously.
@@ -67,7 +68,7 @@ const analytics = () =>
   `/dashboard`, `/realtime-map/...`, `/analytics`.
 */
 export const MONITORING_ROUTES: Routes = [
-  { path: 'dashboard', loadComponent: dashboard },
+  { path: 'dashboard', loadComponent: dashboard, canActivate: [roleGuard], data: { roles: ['client'] } },
 
   /*
     Real-time Map route. Admin-only view.
@@ -85,6 +86,8 @@ export const MONITORING_ROUTES: Routes = [
   {
     path: 'realtime-map',
     loadComponent: realtimeMap,
+    canActivate: [roleGuard],
+    data: { roles: ['admin'] },
     children: [
       { path: '', redirectTo: 'overview', pathMatch: 'full' },
       { path: 'overview', loadComponent: realtimeMapOverview },
@@ -95,5 +98,7 @@ export const MONITORING_ROUTES: Routes = [
   {
     path: 'analytics',
     loadComponent: analytics,
+    canActivate: [roleGuard],
+    data: { roles: ['admin'] },
   },
 ];
