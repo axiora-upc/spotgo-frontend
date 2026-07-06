@@ -9,6 +9,7 @@
 */
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { BaseApiEndpoint } from '../../../shared/infrastructure/base-api-endpoint';
 import { ReservationRaw } from '../domain/model/reservation-raw.entity';
@@ -26,6 +27,9 @@ export class ReservationsApiEndpoint extends BaseApiEndpoint<
   }
 
   patchStatus(id: string, status: string): Observable<ReservationRaw> {
-    return this.http.patch<ReservationRaw>(`${this.endpointUrl}/${id}`, { status });
+    return this.http.patch<ReservationRawResource>(`${this.endpointUrl}/${id}`, { status }).pipe(
+      map(resource => this.assembler.toEntityFromResource(resource)),
+      catchError(this.handleError('Failed to update reservation status'))
+    );
   }
 }

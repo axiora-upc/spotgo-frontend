@@ -22,6 +22,7 @@
 */
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { forkJoin } from 'rxjs';
+import { formatError } from '../../../shared/utils/format-error';
 import { Favorite } from '../domain/model/favorite.entity';
 import { FavoriteRaw } from '../domain/model/favorite-raw.entity';
 import { FavoritesApi } from '../infrastructure/favorites-api';
@@ -114,7 +115,7 @@ export class FavoritesStore {
         this.loadingSignal.set(false);
       },
       error: (err) => {
-        this.errorSignal.set(this.formatError(err, 'Failed to load favorites'));
+        this.errorSignal.set(formatError(err, 'Failed to load favorites'));
         this.loadingSignal.set(false);
       },
     });
@@ -147,7 +148,7 @@ export class FavoritesStore {
         callbacks?.onSuccess?.();
       },
       error: (err) => {
-        this.errorSignal.set(this.formatError(err, 'Failed to remove favorite'));
+        this.errorSignal.set(formatError(err, 'Failed to remove favorite'));
         callbacks?.onError?.();
       },
     });
@@ -157,12 +158,8 @@ export class FavoritesStore {
     const raw = new FavoriteRaw('', clientId, parkingId, distanceMi, new Date().toISOString());
     this.favoritesApi.addFavorite(raw).subscribe({
       next: () => this.loadFavoritesByClientId(clientId),
-      error: (err) => this.errorSignal.set(this.formatError(err, 'Failed to add favorite')),
+      error: (err) => this.errorSignal.set(formatError(err, 'Failed to add favorite')),
     });
   }
 
-  private formatError(err: unknown, fallback: string): string {
-    if (err instanceof Error) return err.message;
-    return fallback;
-  }
 }

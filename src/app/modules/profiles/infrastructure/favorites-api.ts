@@ -20,19 +20,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BaseApi } from '../../../shared/infrastructure/base-api';
 import { FavoriteRaw } from '../domain/model/favorite-raw.entity';
 import { ParkingForFavorites } from '../domain/model/parking-for-favorites.entity';
 import { FavoritesApiEndpoint } from './favorites-api-endpoint';
 import { ParkingsApiEndpoint } from './parkings-api-endpoint';
 
 @Injectable({ providedIn: 'root' })
-export class FavoritesApi extends BaseApi {
+export class FavoritesApi {
   private readonly favoritesEndpoint: FavoritesApiEndpoint;
   private readonly parkingsEndpoint: ParkingsApiEndpoint;
 
   constructor(http: HttpClient) {
-    super();
     this.favoritesEndpoint = new FavoritesApiEndpoint(http);
     this.parkingsEndpoint  = new ParkingsApiEndpoint(http);
   }

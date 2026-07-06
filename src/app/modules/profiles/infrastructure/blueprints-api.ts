@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { BaseApi } from '../../../shared/infrastructure/base-api';
 import { Blueprint } from '../domain/model/blueprint.entity';
 import { BlueprintsApiEndpoint } from './blueprints-api-endpoint';
 import { BlueprintAssembler } from './blueprint-assembler';
@@ -10,13 +9,12 @@ import { BlueprintResource, DetectedSpotResource } from './blueprint-response';
 import { DetectedSpot } from '../domain/model/detected-spot.entity';
 
 @Injectable({ providedIn: 'root' })
-export class BlueprintsApi extends BaseApi {
+export class BlueprintsApi {
   private readonly blueprintsEndpoint: BlueprintsApiEndpoint;
   private readonly assembler = new BlueprintAssembler();
   private readonly spotsUrl = `${environment.apiUrl}/detectedSpots`;
 
   constructor(private readonly http: HttpClient) {
-    super();
     this.blueprintsEndpoint = new BlueprintsApiEndpoint(http);
   }
 

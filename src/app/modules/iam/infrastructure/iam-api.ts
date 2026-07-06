@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
-import { BaseApi } from '../../../shared/infrastructure/base-api';
 import { AuthenticatedUserResource, UserResource } from './user-response';
 import { User, Role } from '../domain/model/user.entity';
 
@@ -21,10 +20,8 @@ interface AuthResult {
 }
 
 @Injectable({ providedIn: 'root' })
-export class IamApi extends BaseApi {
-  constructor(private readonly http: HttpClient) {
-    super();
-  }
+export class IamApi {
+  constructor(private readonly http: HttpClient) {}
 
   login(email: string, password: string): Observable<AuthResult> {
     return this.http
@@ -88,8 +85,9 @@ export class IamApi extends BaseApi {
     return email.trim().toLowerCase();
   }
 
-  private toError(err: any, fallback: string): Error {
-    const message = err?.error?.details ?? err?.error?.message ?? err?.message ?? fallback;
+  private toError(err: unknown, fallback: string): Error {
+    const httpErr = err as { error?: { details?: string; message?: string }; message?: string } | undefined;
+    const message = httpErr?.error?.details ?? httpErr?.error?.message ?? httpErr?.message ?? fallback;
     return new Error(message);
   }
 }

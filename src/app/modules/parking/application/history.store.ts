@@ -20,6 +20,7 @@
 */
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { forkJoin, retry } from 'rxjs';
+import { formatError } from '../../../shared/utils/format-error';
 import { ParkingHistory } from '../domain/model/parking-history.entity';
 import { ParkingForHistory } from '../domain/model/parking-for-history.entity';
 import { ReservationRaw } from '../domain/model/reservation-raw.entity';
@@ -121,7 +122,7 @@ export class HistoryStore {
         this.loadingSignal.set(false);
       },
       error: (err) => {
-        this.errorSignal.set(this.formatError(err, 'Failed to load history'));
+        this.errorSignal.set(formatError(err, 'Failed to load history'));
         this.loadingSignal.set(false);
       },
     });
@@ -196,13 +197,13 @@ export class HistoryStore {
             callbacks?.onSuccess?.();
           },
           error: (err) => {
-            this.errorSignal.set(this.formatError(err, 'Failed to update parking rating'));
+            this.errorSignal.set(formatError(err, 'Failed to update parking rating'));
             callbacks?.onError?.();
           },
         });
       },
       error: (err) => {
-        this.errorSignal.set(this.formatError(err, 'Failed to rate reservation'));
+        this.errorSignal.set(formatError(err, 'Failed to rate reservation'));
         callbacks?.onError?.();
       },
     });
@@ -238,14 +239,10 @@ export class HistoryStore {
     this.historyApi.submitReport(report).subscribe({
       next: () => callbacks?.onSuccess?.(),
       error: (err) => {
-        this.errorSignal.set(this.formatError(err, 'Failed to submit report'));
+        this.errorSignal.set(formatError(err, 'Failed to submit report'));
         callbacks?.onError?.();
       },
     });
   }
 
-  private formatError(err: unknown, fallback: string): string {
-    if (err instanceof Error) return err.message;
-    return fallback;
-  }
 }

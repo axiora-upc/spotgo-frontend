@@ -20,7 +20,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BaseApi } from '../../../shared/infrastructure/base-api';
 import { ReservationRaw } from '../domain/model/reservation-raw.entity';
 import { ParkingForHistory } from '../domain/model/parking-for-history.entity';
 import { ClientReport } from '../domain/model/client-report.entity';
@@ -29,13 +28,12 @@ import { ParkingsHistoryApiEndpoint } from './parkings-history-api-endpoint';
 import { ClientReportsApiEndpoint } from './client-reports-api-endpoint';
 
 @Injectable({ providedIn: 'root' })
-export class HistoryApi extends BaseApi {
+export class HistoryApi {
   private readonly reservationsEndpoint: ReservationsApiEndpoint;
   private readonly parkingsEndpoint: ParkingsHistoryApiEndpoint;
   private readonly reportsEndpoint: ClientReportsApiEndpoint;
 
   constructor(http: HttpClient) {
-    super();
     this.reservationsEndpoint = new ReservationsApiEndpoint(http);
     this.parkingsEndpoint     = new ParkingsHistoryApiEndpoint(http);
     this.reportsEndpoint      = new ClientReportsApiEndpoint(http);

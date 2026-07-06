@@ -9,7 +9,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BaseApi } from '../../../shared/infrastructure/base-api';
+import { environment } from '../../../../environments/environment';
 import { EmployeesApiEndpoint } from './employees-api-endpoint';
 import { ParkingsApiEndpoint } from './parkings-api-endpoint';
 import type { ParkingResource } from './parkings-api-endpoint';
@@ -19,14 +19,18 @@ import { ParkingAnalytics } from '../domain/model/analytics.entity';
 
 export type { ParkingResource };
 
+export interface DetectedSpotSummary {
+  parkingId: string;
+  status?: string;
+}
+
 @Injectable({ providedIn: 'root' })
-export class MonitoringApi extends BaseApi {
+export class MonitoringApi {
   private readonly employeesEndpoint: EmployeesApiEndpoint;
   private readonly parkingsEndpoint: ParkingsApiEndpoint;
   private readonly analyticsEndpoint: AnalyticsApiEndpoint;
 
-  constructor(http: HttpClient) {
-    super();
+  constructor(private readonly http: HttpClient) {
     this.employeesEndpoint = new EmployeesApiEndpoint(http);
     this.parkingsEndpoint = new ParkingsApiEndpoint(http);
     this.analyticsEndpoint = new AnalyticsApiEndpoint(http);
@@ -54,5 +58,9 @@ export class MonitoringApi extends BaseApi {
 
   getAnalytics(parkingId: string): Observable<ParkingAnalytics> {
     return this.analyticsEndpoint.getByParkingId(parkingId);
+  }
+
+  getDetectedSpots(): Observable<DetectedSpotSummary[]> {
+    return this.http.get<DetectedSpotSummary[]>(`${environment.apiUrl}/detectedSpots`);
   }
 }
