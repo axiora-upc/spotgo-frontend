@@ -26,6 +26,23 @@ export class ReservationsApiEndpoint extends BaseApiEndpoint<
     super(http, `${environment.apiUrl}/reservations`, new ReservationRawAssembler());
   }
 
+  patchRating(id: string, rating: number): Observable<ReservationRaw> {
+    return this.http.patch<ReservationRawResource>(`${this.endpointUrl}/${id}`, { rating }).pipe(
+      map(resource => this.assembler.toEntityFromResource(resource)),
+      catchError(this.handleError('Failed to update reservation rating'))
+    );
+  }
+
+  patchDetails(
+    id: string,
+    details: { endDate: string; amount: number; baseAmount?: number; status?: string }
+  ): Observable<ReservationRaw> {
+    return this.http.patch<ReservationRawResource>(`${this.endpointUrl}/${id}`, details).pipe(
+      map(resource => this.assembler.toEntityFromResource(resource)),
+      catchError(this.handleError('Failed to update reservation details'))
+    );
+  }
+
   patchStatus(id: string, status: string): Observable<ReservationRaw> {
     return this.http.patch<ReservationRawResource>(`${this.endpointUrl}/${id}`, { status }).pipe(
       map(resource => this.assembler.toEntityFromResource(resource)),

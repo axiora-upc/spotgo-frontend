@@ -19,7 +19,7 @@
 
   name="language" gives a name to this group of related buttons.
 -->
-<mat-button-toggle-group class="language-toggle" [value]="currentLanguage" appearance="standard" aria-label="Preferred Language" name="language">
+<mat-button-toggle-group class="language-toggle" [value]="currentLanguage" appearance="standard" [attr.aria-label]="'shared.language-switcher-aria' | translate" name="language">
 
   <!--
     @for repeats the HTML inside it for each value in the languages array.

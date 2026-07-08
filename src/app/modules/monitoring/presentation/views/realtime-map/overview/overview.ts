@@ -111,6 +111,7 @@ export class Overview implements OnInit, OnDestroy {
 
         this.loadSnapshotWithCleanup(bp.id, bp.spots, this.activeParkingName, parkingId);
       },
+      error: () => this.store.clearParkingSnapshot(),
     });
   }
 
@@ -152,47 +153,11 @@ export class Overview implements OnInit, OnDestroy {
           })
         );
 
-        // Reservas activas que aún NO han vencido → esos spots siguen legítimamente ocupados
+        // Reservas activas que aún NO han vencido; backend reconciles expiry and spot release.
         this.activeReservations = reservations.filter(
           r => r.parkingId === parkingId && r.status === 'active' && new Date(r.endDate).getTime() > now
         );
-        const validActiveSpots = new Set(
-          this.activeReservations.map(r => r.spot)
-        );
-
-        // Reservas activas vencidas → marcar como 'completed'
-        const expiredActive = reservations.filter(
-          r => r.parkingId === parkingId && r.status === 'active' && new Date(r.endDate).getTime() <= now
-        );
-
-        // Spots ocupados sin reserva activa vigente (expirados u huérfanos sin reserva)
-        const spotIdsToFree = new Set<string>();
-        spots.forEach(s => {
-          if ((s.status ?? 'available') !== 'occupied') return;
-          const sId = `${String.fromCharCode(65 + s.row)}${s.col + 1}`;
-          if (!validActiveSpots.has(sId)) spotIdsToFree.add(sId);
-        });
-
-        if (spotIdsToFree.size === 0 && expiredActive.length === 0) {
-          this.store.loadBlueprintSnapshot(spots, name, revenue, computedPeakHours);
-          return;
-        }
-
-        const fixedSpots = spots.map(s => {
-          const sId = `${String.fromCharCode(65 + s.row)}${s.col + 1}`;
-          return spotIdsToFree.has(sId) ? { ...s, status: 'available' as const } : s;
-        });
-
-        this.blueprintsApi.patchBlueprintSpots(blueprintId, fixedSpots).subscribe();
-
-        const avail = fixedSpots.filter(s => (s.status ?? 'available') === 'available').length;
-        this.blueprintsApi.updateParkingStats(parkingId, {
-          totalSpaces: fixedSpots.length, availableSpaces: avail, totalFloors: 1,
-        }).subscribe();
-
-        expiredActive.forEach(r => this.historyApi.setReservationStatus(r.id, 'completed').subscribe());
-
-        this.store.loadBlueprintSnapshot(fixedSpots, name, revenue, computedPeakHours);
+        this.store.loadBlueprintSnapshot(spots, name, revenue, computedPeakHours);
       },
       error: () => this.store.loadBlueprintSnapshot(spots, name),
     });
@@ -258,14 +223,20 @@ export class Overview implements OnInit, OnDestroy {
     });
 
     this.activeBlueprint.spots = updatedSpots;
-    this.blueprintsApi.patchBlueprintSpots(this.activeBlueprint.id, updatedSpots).subscribe();
+    this.blueprintsApi.patchBlueprintSpots(this.activeBlueprint.id, updatedSpots).subscribe({
+      next: () => {},
+      error: (err) => console.error('Failed to patch blueprint spots', err),
+    });
 
     const availableCount = updatedSpots.filter(s => (s.status ?? 'available') === 'available').length;
     this.blueprintsApi.updateParkingStats(this.activeBlueprint.parkingId, {
       totalSpaces: updatedSpots.length,
       availableSpaces: availableCount,
       totalFloors: 1,
-    }).subscribe();
+    }).subscribe({
+      next: () => {},
+      error: (err) => console.error('Failed to update parking stats', err),
+    });
     this.store.updateParkingAvailableSpaces(this.activeBlueprint.parkingId, availableCount);
     this.store.loadBlueprintSnapshot(updatedSpots, this.activeParkingName);
     this.selectedSpot.set({

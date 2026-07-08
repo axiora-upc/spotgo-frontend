@@ -101,7 +101,7 @@ export class Register {
     const { firstName, lastName, email, password } = this.form.getRawValue();
 
     this.authStore.register(
-      { firstName: firstName!, lastName: lastName!, email: email!, password: password!, role: 'client' },
+      { firstName: firstName!, lastName: lastName!, email: email!, password: password! },
       { onSuccess: (user) => this.router.navigateByUrl(defaultRouteForRole(user.role)) }
     );
   }

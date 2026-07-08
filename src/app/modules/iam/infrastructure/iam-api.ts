@@ -11,7 +11,13 @@ export interface RegisterPayload {
   lastName: string;
   email: string;
   password: string;
-  role: Role;
+  role?: Role;
+}
+
+export interface PasswordResetConfirmPayload {
+  email: string;
+  code: string;
+  newPassword: string;
 }
 
 interface AuthResult {
@@ -37,6 +43,8 @@ export class IamApi {
 
   register(payload: RegisterPayload): Observable<AuthResult> {
     return this.http
+      // Backend sign-up always creates a client account; keep role optional
+      // in the frontend contract so existing callers remain compatible.
       .post<AuthenticatedUserResource>(`${environment.apiUrl}/authentication/sign-up`, {
         firstName: payload.firstName.trim(),
         lastName: payload.lastName.trim(),
@@ -58,13 +66,22 @@ export class IamApi {
       .pipe(catchError((err) => throwError(() => this.toError(err, 'iam.errors.current-password-invalid'))));
   }
 
-  resetPassword(email: string, newPassword: string): Observable<void> {
+  requestPasswordReset(email: string): Observable<void> {
     return this.http
-      .post<void>(`${environment.apiUrl}/authentication/reset-password`, {
+      .post<void>(`${environment.apiUrl}/authentication/password-reset/request`, {
         email: this.normalizeEmail(email),
-        newPassword,
       })
-      .pipe(catchError((err) => throwError(() => this.toError(err, 'iam.errors.email-not-found'))));
+      .pipe(catchError((err) => throwError(() => this.toError(err, 'iam.errors.generic'))));
+  }
+
+  confirmPasswordReset(payload: PasswordResetConfirmPayload): Observable<void> {
+    return this.http
+      .post<void>(`${environment.apiUrl}/authentication/password-reset/confirm`, {
+        email: this.normalizeEmail(payload.email),
+        code: payload.code.trim(),
+        newPassword: payload.newPassword,
+      })
+      .pipe(catchError((err) => throwError(() => this.toError(err, 'iam.errors.password-reset-invalid'))));
   }
 
   private toUser(resource: UserResource): User {

@@ -7,7 +7,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 import { MonitoringStore } from '../../../../monitoring/application/monitoring.store';
 import { Reservation } from '../../../../monitoring/domain/model/reservation.entity';
-import { BlueprintsApi } from '../../../../profiles/infrastructure/blueprints-api';
 import { ExtendReservationDialog, ExtendReservationData } from './components/extend-reservation-dialog/extend-reservation-dialog';
 
 interface ReservationViewModel extends Reservation {
@@ -37,7 +36,6 @@ export class ReservationsComponent implements OnInit, OnDestroy {
   private readonly store         = inject(MonitoringStore);
   private readonly dialog        = inject(MatDialog);
   private readonly router        = inject(Router);
-  private readonly blueprintsApi = inject(BlueprintsApi);
 
   private timerIntervalId: ReturnType<typeof setInterval> | undefined;
   protected currentTime = signal<number>(Date.now());
@@ -123,6 +121,7 @@ export class ReservationsComponent implements OnInit, OnDestroy {
             ...found,
             duration:    found.duration + addedHours,
             totalAmount: found.totalAmount + (addedHours * rate),
+            baseAmount:  (found.baseAmount ?? found.totalAmount) + (addedHours * rate),
           });
         }
       }
@@ -138,20 +137,7 @@ export class ReservationsComponent implements OnInit, OnDestroy {
 
     this.store.cancelReservation(reservation, {
       onSuccess: () => {
-        this.blueprintsApi.getBlueprintByParkingId(reservation.parkingId).subscribe(bp => {
-          if (!bp) return;
-          const releasedSpots = bp.spots.map(s => {
-            const sId = `${String.fromCharCode(65 + s.row)}${s.col + 1}`;
-            return sId === reservation.spotId ? { ...s, status: 'available' as const } : s;
-          });
-          const avail = releasedSpots.filter(s => (s.status ?? 'available') === 'available').length;
-          this.blueprintsApi.patchBlueprintSpots(bp.id, releasedSpots).subscribe();
-          this.blueprintsApi.updateParkingStats(reservation.parkingId, {
-            totalSpaces: bp.spots.length, availableSpaces: avail, totalFloors: 1,
-          }).subscribe();
-          this.store.markSpotAvailable(reservation.spotId);
-          this.store.updateParkingAvailableSpaces(reservation.parkingId, avail);
-        });
+        this.store.loadParkings();
       },
     });
   }

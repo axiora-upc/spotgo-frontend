@@ -8,7 +8,7 @@
     nav represents the navigation area of the sidebar.
     Inside it, we show all the sidebar options.
   -->
-  <nav class="sidebar-menu">
+  <nav class="sidebar-menu" [attr.aria-label]="'shared.sidebar-aria' | translate">
 
     <!--
       @for repeats one <a> element for each option

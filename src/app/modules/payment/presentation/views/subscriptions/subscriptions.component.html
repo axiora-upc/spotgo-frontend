@@ -126,10 +126,8 @@
           >
             @if (isCurrentPlan(plan.id)) {
               {{ 'subscription.plans.current' | translate }}
-            } @else if (plan.type === 'free') {
-              {{ 'subscription.plans.switch' | translate }}
             } @else {
-              {{ 'subscription.plans.upgrade' | translate }}
+              {{ 'subscription.plans.switch' | translate }}
             }
           </button>
 
@@ -204,12 +202,15 @@
       <p class="modal__body">
         {{ 'subscription.modal.plan.confirm-prefix' | translate }}<strong>{{ ('subscription.plans.' + plan.type + '.name') | translate }}</strong>{{ 'subscription.modal.plan.confirm-suffix' | translate }}
       </p>
+      @if (store.error(); as err) {
+        <p class="modal__error" style="color: #ef4444; font-size: 0.875rem; margin-bottom: 0.75rem;">{{ err }}</p>
+      }
       <div class="modal__actions">
         <button class="modal__btn modal__btn--cancel" type="button" (click)="onCancelSwitch()">
           {{ 'subscription.modal.cancel' | translate }}
         </button>
-        <button class="modal__btn modal__btn--confirm" type="button" (click)="onConfirmSwitch()">
-          {{ 'subscription.modal.confirm' | translate }}
+        <button class="modal__btn modal__btn--confirm" type="button" (click)="onConfirmSwitch()" [disabled]="store.loading()">
+          {{ store.loading() ? ('subscription.modal.switching' | translate) : ('subscription.modal.confirm' | translate) }}
         </button>
       </div>
     </div>

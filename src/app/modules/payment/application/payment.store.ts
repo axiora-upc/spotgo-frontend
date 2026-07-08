@@ -23,6 +23,7 @@ import { Receipt } from '../domain/model/receipt.entity';
   The store asks Angular for it with inject() — no 'new' needed.
 */
 import { PaymentApi } from '../infrastructure/payment-api';
+import { CurrentUserService } from '../../../shared/services/current-user.service';
 
 /*
   @Injectable allows Angular to create and manage this class.
@@ -37,6 +38,7 @@ export class PaymentStore {
     The store is the only class that talks to PaymentApi.
   */
   private readonly paymentApi = inject(PaymentApi);
+  private readonly currentUserService = inject(CurrentUserService);
 
   /*
     Signals are the in-memory state of the page.
@@ -82,19 +84,22 @@ export class PaymentStore {
       5. store finds the one matching clientId and saves it in the signal
       6. view reads the signal and updates automatically
   */
-  loadSubscriptionByClientId(clientId: string): void {
+  loadSubscriptionByClientId(_clientId: string): void {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
     this.paymentApi.getSubscriptions().subscribe({
       next: (subscriptions) => {
-        const found = subscriptions.find((s) => s.clientId === clientId) ?? null;
+        const found = subscriptions[0] ?? null;
         if (found) {
           const currentMonth = this.currentYearMonth();
           if (found.savingsMonth !== currentMonth) {
             found.savedThisMonth = 0;
             found.savingsMonth   = currentMonth;
-            this.paymentApi.patchSubscriptionSaved(found.id, 0, currentMonth).subscribe();
+            this.paymentApi.patchSubscriptionSaved(found.id, 0, currentMonth).subscribe({
+              next: () => {},
+              error: (err) => console.error('Failed to reset monthly savings', err),
+            });
           }
         }
         this.subscriptionSignal.set(found);
@@ -152,10 +157,11 @@ export class PaymentStore {
 
     if (!current) return;
 
-    current.autoRenewal = !current.autoRenewal;
+    const updatedSubscription = this.cloneSubscription(current);
+    updatedSubscription.autoRenewal = !current.autoRenewal;
 
     this.paymentApi
-      .updateSubscription(current)
+      .updateSubscription(updatedSubscription)
       .pipe(retry(1))
       .subscribe({
         next: (updated) => {
@@ -184,44 +190,81 @@ export class PaymentStore {
     newPlanId: string,
     callbacks?: { onSuccess?: () => void; onError?: () => void }
   ): void {
-    const current = this.subscriptionSignal();
-    if (!current) return;
-
-    current.planId = newPlanId;
-
-    /*
-      Update pricePerMonth to match the new plan's price so the
-      subscription card reflects the correct amount after switching.
-    */
     const newPlan = this.plansSignal().find(p => p.id === newPlanId);
-    if (newPlan) current.pricePerMonth = newPlan.monthlyPrice;
-
     const today = new Date();
-    current.memberSince = today.toISOString().split('T')[0];
+    const todayStr = today.toISOString().split('T')[0];
 
+    let renewsOn = todayStr;
     if (newPlan?.type === 'annual') {
-      today.setFullYear(today.getFullYear() + 1);
-      current.renewsOn = today.toISOString().split('T')[0];
+      const d = new Date(today);
+      d.setFullYear(d.getFullYear() + 1);
+      renewsOn = d.toISOString().split('T')[0];
     } else if (newPlan?.type === 'monthly') {
-      today.setMonth(today.getMonth() + 1);
-      current.renewsOn = today.toISOString().split('T')[0];
-    } else if (newPlan?.type === 'free') {
-      current.renewsOn = '';
+      const d = new Date(today);
+      d.setMonth(d.getMonth() + 1);
+      renewsOn = d.toISOString().split('T')[0];
     }
 
-    this.paymentApi
-      .updateSubscription(current)
-      .pipe(retry(1))
-      .subscribe({
-        next: (updated) => {
-          this.subscriptionSignal.set(updated);
-          callbacks?.onSuccess?.();
-        },
-        error: (err) => {
-          this.errorSignal.set(formatError(err, 'Failed to switch plan'));
-          callbacks?.onError?.();
-        },
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+
+    const current = this.subscriptionSignal();
+
+    if (current) {
+      const updatedSubscription = this.cloneSubscription(current);
+      updatedSubscription.planId = newPlanId;
+      if (newPlan) updatedSubscription.pricePerMonth = newPlan.monthlyPrice;
+      updatedSubscription.memberSince = todayStr;
+      updatedSubscription.renewsOn = renewsOn;
+
+      this.paymentApi
+        .updateSubscription(updatedSubscription)
+        .pipe(retry(1))
+        .subscribe({
+          next: (updated) => {
+            this.subscriptionSignal.set(updated);
+            this.loadingSignal.set(false);
+            callbacks?.onSuccess?.();
+          },
+          error: (err) => {
+            this.errorSignal.set(formatError(err, 'Failed to switch plan'));
+            this.loadingSignal.set(false);
+            callbacks?.onError?.();
+          },
+        });
+    } else {
+      const newSub = new Subscription({
+        id: '',
+        clientId: this.currentUserService.clientId,
+        planId: newPlanId,
+        status: 'active',
+        renewsOn,
+        pricePerMonth: newPlan?.monthlyPrice ?? 0,
+        sessions: 0,
+        savedThisMonth: 0,
+        savingsMonth: '',
+        memberSince: todayStr,
+        autoRenewal: true,
+        paymentMethodLastFour: '0000',
+        paymentMethodExpiry: '00/00',
       });
+
+      this.paymentApi
+        .createSubscription(newSub)
+        .pipe(retry(1))
+        .subscribe({
+          next: (created) => {
+            this.subscriptionSignal.set(created);
+            this.loadingSignal.set(false);
+            callbacks?.onSuccess?.();
+          },
+          error: (err) => {
+            this.errorSignal.set(formatError(err, 'Failed to create subscription'));
+            this.loadingSignal.set(false);
+            callbacks?.onError?.();
+          },
+        });
+    }
   }
 
   /*
@@ -236,11 +279,12 @@ export class PaymentStore {
     const current = this.subscriptionSignal();
     if (!current) return;
 
-    current.paymentMethodLastFour = lastFour;
-    current.paymentMethodExpiry = expiry;
+    const updatedSubscription = this.cloneSubscription(current);
+    updatedSubscription.paymentMethodLastFour = lastFour;
+    updatedSubscription.paymentMethodExpiry = expiry;
 
     this.paymentApi
-      .updateSubscription(current)
+      .updateSubscription(updatedSubscription)
       .pipe(retry(1))
       .subscribe({
         next: (updated) => {
@@ -266,14 +310,13 @@ export class PaymentStore {
       6. store sorts them by date descending (newest first)
       7. view reads the signal and updates automatically
   */
-  loadReceiptsByClientId(clientId: string): void {
+  loadReceiptsByClientId(_clientId: string): void {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
     this.paymentApi.getReceipts().subscribe({
       next: (receipts) => {
         const filtered = receipts
-          .filter((r) => r.clientId === clientId)
           .sort((a, b) => b.date.localeCompare(a.date));   // newest first
         this.receiptsSignal.set(filtered);
         this.loadingSignal.set(false);
@@ -292,10 +335,14 @@ export class PaymentStore {
     const month = this.currentYearMonth();
     this.paymentApi.patchSubscriptionSaved(sub.id, newSaved, month).subscribe({
       next: () => {
-        sub.savedThisMonth = newSaved;
-        sub.savingsMonth   = month;
-        this.subscriptionSignal.set(sub);
-      }
+        const updatedSubscription = this.cloneSubscription(sub);
+        updatedSubscription.savedThisMonth = newSaved;
+        updatedSubscription.savingsMonth = month;
+        this.subscriptionSignal.set(updatedSubscription);
+      },
+      error: (err) => {
+        this.errorSignal.set(formatError(err, 'Failed to update subscription savings'));
+      },
     });
   }
 
@@ -306,10 +353,32 @@ export class PaymentStore {
     const month = this.currentYearMonth();
     this.paymentApi.patchSubscriptionSaved(sub.id, newSaved, month).subscribe({
       next: () => {
-        sub.savedThisMonth = newSaved;
-        sub.savingsMonth   = month;
-        this.subscriptionSignal.set(sub);
-      }
+        const updatedSubscription = this.cloneSubscription(sub);
+        updatedSubscription.savedThisMonth = newSaved;
+        updatedSubscription.savingsMonth = month;
+        this.subscriptionSignal.set(updatedSubscription);
+      },
+      error: (err) => {
+        this.errorSignal.set(formatError(err, 'Failed to update subscription savings'));
+      },
+    });
+  }
+
+  private cloneSubscription(subscription: Subscription): Subscription {
+    return new Subscription({
+      id: subscription.id,
+      clientId: subscription.clientId,
+      planId: subscription.planId,
+      status: subscription.status,
+      renewsOn: subscription.renewsOn,
+      pricePerMonth: subscription.pricePerMonth,
+      sessions: subscription.sessions,
+      savedThisMonth: subscription.savedThisMonth,
+      savingsMonth: subscription.savingsMonth,
+      memberSince: subscription.memberSince,
+      autoRenewal: subscription.autoRenewal,
+      paymentMethodLastFour: subscription.paymentMethodLastFour,
+      paymentMethodExpiry: subscription.paymentMethodExpiry,
     });
   }
 }

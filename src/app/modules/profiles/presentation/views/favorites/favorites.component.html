@@ -41,11 +41,11 @@
         </div>
 
         <div class="fav-card__actions">
-          <button class="btn-navigate" type="button">
+          <button class="btn-navigate" type="button" (click)="onNavigate()">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             {{ 'favorites.btn-navigate' | translate }}
           </button>
-          <button class="btn-reserve" type="button">
+          <button class="btn-reserve" type="button" (click)="onReserve(fav)">
             {{ 'favorites.btn-reserve' | translate }}
           </button>
           <button class="btn-delete" type="button" (click)="onRemove(fav.id)" [attr.aria-label]="'favorites.btn-delete' | translate">

@@ -8,7 +8,9 @@
   "toolbar": {
     "search-placeholder": "Search for parking spots...",
     "change-password": "Change password",
-    "logout": "Log out"
+    "logout": "Log out",
+    "notifications": "Notifications",
+    "account": "Account"
   },
 
   "iam": {
@@ -50,7 +52,8 @@
       "feature-operator-1": "Live occupancy across every level",
       "feature-operator-2": "Dynamic pricing & revenue reports",
       "feature-operator-3": "Employee & shift management",
-      "feature-operator-4": "Instant maintenance alerts"
+      "feature-operator-4": "Instant maintenance alerts",
+      "email-placeholder": "you@example.com"
     },
     "register": {
       "get-started": "Get started",
@@ -62,12 +65,18 @@
       "create-account": "Create account",
       "create-account-as": "Create account as",
       "already-have-account": "Already have an account?",
-      "sign-in": "Sign in"
+      "sign-in": "Sign in",
+      "first-name-placeholder": "John",
+      "last-name-placeholder": "Doe"
     },
     "forgot-password": {
       "title": "Reset your password",
-      "subtitle": "Enter your account email and choose a new password.",
+      "subtitle-request": "Enter your account email to receive a verification code.",
+      "subtitle-confirm": "Check your email and enter the code to set a new password.",
+      "code": "Verification code",
+      "code-placeholder": "123456",
       "new-password": "New password",
+      "send-code": "Send code",
       "submit": "Reset password",
       "success-title": "Password updated",
       "success": "Your password has been changed. You can sign in with it now.",
@@ -86,11 +95,13 @@
       "email-invalid": "Enter a valid email address.",
       "email-taken": "This email is already registered.",
       "email-not-found": "No account found with that email.",
+      "code-invalid": "Enter a valid 6-digit code.",
       "password-min": "Password must be at least 6 characters.",
       "password-mismatch": "Passwords do not match.",
       "name-min": "Must be at least 2 characters.",
       "no-role": "This account has no role assigned.",
       "current-password-invalid": "Your current password is incorrect.",
+      "password-reset-invalid": "The code is invalid or has expired.",
       "google-unavailable": "Google sign-in is not available in this demo.",
       "generic": "Something went wrong. Please try again."
     },
@@ -205,7 +216,12 @@
       "at": "at",
       "is-reserved": "is reserved",
       "booking-id": "Booking ID",
-      "done": "Done"
+      "done": "Done",
+      "per-hour": "/hr",
+      "miles-away": "mi away",
+      "open-air": "Open Air",
+      "saved": "Saved",
+      "save": "Save"
     },
     "map": {
       "legend": {
@@ -436,6 +452,7 @@
       "cancel": "Cancel",
       "save": "Save",
       "confirm": "Confirm",
+      "switching": "Switching...",
       "payment": {
         "title": "Update payment method",
         "card-number": "Card number",
@@ -560,7 +577,9 @@
       "verified": "Verified",
       "business-name": "Business Name",
       "phone": "Phone",
-      "district": "District"
+      "district": "District",
+      "first-name-placeholder": "First name",
+      "last-name-placeholder": "Last name"
     },
     "blueprint": {
       "upload": "Upload Blueprint",
@@ -582,7 +601,9 @@
       "delete-dialog-subtitle": "Select the blueprint you want to delete. This action cannot be undone.",
       "select-label": "Blueprint",
       "select-placeholder": "Select a blueprint",
-      "delete-btn": "Delete"
+      "delete-btn": "Delete",
+      "alt": "Blueprint",
+      "preview-alt": "Preview"
     }
   },
 
@@ -652,7 +673,10 @@
     },
     "snackbar": {
       "close": "Close"
-    }
+    },
+    "close-dialog": "Close dialog",
+    "language-switcher-aria": "Preferred Language",
+    "sidebar-aria": "Main navigation"
   },
 
   "reservations": {
@@ -672,6 +696,7 @@
     "extend-hours": "Additional Hours",
     "extend-rate": "Hourly Rate",
     "extend-total": "Additional Total",
-    "extend-confirm": "Confirm Extension"
+    "extend-confirm": "Confirm Extension",
+    "empty": "No active or upcoming reservations found."
   }
 }

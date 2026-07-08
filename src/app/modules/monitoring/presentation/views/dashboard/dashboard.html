@@ -1,4 +1,10 @@
 <div class="dashboard">
+  @if (store.loading()) {
+    <div class="dashboard__loading">
+      <mat-icon>hourglass_empty</mat-icon>
+      <p>{{ 'dashboard.loading' | translate }}</p>
+    </div>
+  } @else {
   <header class="dashboard__hero">
     <div class="dashboard__stats">
       <div class="dashboard__stat-card">
@@ -57,7 +63,11 @@
         <div 
           class="parking-bubble" 
           [class]="getBubbleClass(parking.availableSpaces)"
+          role="button"
+          tabindex="0"
           (click)="openParkingDetails(parking)"
+          (keydown.enter)="openParkingDetails(parking)"
+          (keydown.space)="openParkingDetails(parking)"
           [style.left.%]="parking.mapX"
           [style.top.%]="parking.mapY"
         >
@@ -84,4 +94,5 @@
       </div>
     </div>
   </section>
+  }
 </div>

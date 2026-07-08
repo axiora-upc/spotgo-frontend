@@ -5,6 +5,12 @@
   </p>
 </header>
 
+@if (loading()) {
+  <div class="reports__loading">
+    <mat-icon>hourglass_empty</mat-icon>
+    <p>{{ 'realtime-map.reports.loading' | translate }}</p>
+  </div>
+} @else {
 <ul class="reports__list">
   @for (report of pagedReports(); track report.id) {
     <li class="reports__card" [class.reports__card--resolved]="report.resolved">
@@ -92,4 +98,5 @@
       </button>
     </div>
   </div>
+}
 }

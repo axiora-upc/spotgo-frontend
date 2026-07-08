@@ -4,7 +4,12 @@
   request is in flight `store.parkingSnapshot()` returns null and the
   template renders nothing.
 -->
-@if (store.parkingSnapshot(); as snapshot) {
+@if (store.loading()) {
+  <div class="overview__loading">
+    <mat-icon class="overview__loading-icon">hourglass_empty</mat-icon>
+    <p>{{ 'realtime-map.overview.loading' | translate }}</p>
+  </div>
+} @else if (store.parkingSnapshot(); as snapshot) {
 
   <header class="overview__header">
     <div>
@@ -112,17 +117,16 @@
                 [ngClass]="'overview__spot--' + spot.status"
                 [style.grid-column]="spotGridCol(spot.id)"
                 [attr.title]="spot.id"
-                (click)="openSpotDetails(spot)"></span>
+                role="button"
+                tabindex="0"
+                (click)="openSpotDetails(spot)"
+                (keydown.enter)="openSpotDetails(spot)"
+                (keydown.space)="openSpotDetails(spot)"></span>
             }
           </div>
 
         }
 
-        <div class="overview__map-zoom">
-          <button type="button" aria-label="Zoom in"><mat-icon>zoom_in</mat-icon></button>
-          <button type="button" aria-label="Zoom out"><mat-icon>zoom_out</mat-icon></button>
-          <button type="button" aria-label="Recenter"><mat-icon>my_location</mat-icon></button>
-        </div>
       </div>
 
       <footer class="overview__map-footer">
@@ -192,16 +196,16 @@
 
   @if (selectedSpot(); as selected) {
     <div class="spot-modal__backdrop" (click)="closeSpotDetails()">
-      <section class="spot-modal" (click)="$event.stopPropagation()">
+      <section class="spot-modal" role="dialog" aria-modal="true" aria-labelledby="spot-modal-title" (click)="$event.stopPropagation()">
         <header class="spot-modal__header">
           <div>
             <p class="spot-modal__eyebrow">
               {{ 'realtime-map.overview.spot-modal.spot' | translate }} {{ selected.spot.id }}
               @if (selected.spot.dbId) { · ID #{{ selected.spot.dbId }} }
             </p>
-            <h2 class="spot-modal__title">{{ 'realtime-map.overview.' + selected.spot.status | translate }}</h2>
+            <h2 id="spot-modal-title" class="spot-modal__title">{{ 'realtime-map.overview.' + selected.spot.status | translate }}</h2>
           </div>
-          <button class="spot-modal__close" type="button" (click)="closeSpotDetails()">
+          <button class="spot-modal__close" type="button" (click)="closeSpotDetails()" [attr.aria-label]="'shared.close-dialog' | translate">
             <mat-icon>close</mat-icon>
           </button>
         </header>

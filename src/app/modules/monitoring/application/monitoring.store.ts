@@ -16,7 +16,8 @@
   - Mirrors the LearningStore pattern used by the professor's example.
 */
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { forkJoin, retry } from 'rxjs';
+import { forkJoin, of, retry } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { formatError } from '../../../shared/utils/format-error';
 import { Employee } from '../domain/model/employee.entity';
 import {
@@ -181,10 +182,13 @@ export class MonitoringStore {
   }
 
   loadParkings(): void {
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+
     forkJoin({
       parkings:      this.monitoringApi.getParkings(),
-      reservations:  this.historyApi.getReservations(),
-      detectedSpots: this.monitoringApi.getDetectedSpots(),
+      reservations:  this.historyApi.getReservations().pipe(catchError(() => of([]))),
+      detectedSpots: this.monitoringApi.getDetectedSpots().pipe(catchError(() => of([]))),
     }).subscribe({
       next: ({ parkings, reservations, detectedSpots }) => {
         const now = Date.now();
@@ -198,7 +202,9 @@ export class MonitoringStore {
         const reconciled = parkings.map(p => {
           const occupied = reservations.filter(
             r => r.parkingId === p.id &&
-                 r.status === 'active' &&
+                 new Date(r.startDate).getTime() <= now &&
+                 r.status !== 'cancelled' &&
+                 r.status !== 'completed' &&
                  new Date(r.endDate).getTime() > now
           ).length;
           const maintenance = maintenanceByParking.get(p.id) ?? 0;
@@ -213,9 +219,12 @@ export class MonitoringStore {
           return { ...p, availableSpaces: Math.max(0, p.totalSpaces - occupied - maintenance), rating };
         });
         this.parkingsSignal.set(reconciled);
+        this.loadingSignal.set(false);
       },
-      error: (err) =>
-        this.errorSignal.set(formatError(err, 'Failed to load parkings')),
+      error: (err) => {
+        this.errorSignal.set(formatError(err, 'Failed to load parkings'));
+        this.loadingSignal.set(false);
+      },
     });
   }
 
@@ -223,9 +232,10 @@ export class MonitoringStore {
     this.selectedParkingSignal.set(parking);
   }
 
-  completeReservation(reservation: Reservation): void {
-    this.userReservationsSignal.update(current => [...current, reservation]);
-
+  completeReservation(
+    reservation: Reservation,
+    callbacks?: { onSuccess?: (createdReservation: Reservation) => void; onError?: () => void }
+  ): void {
     // Compute absolute times for SQL/JSON server persistence
     const [year, month, day] = reservation.date.split('-').map(Number);
     const [hour, min] = reservation.startTime.split(':').map(Number);
@@ -241,7 +251,7 @@ export class MonitoringStore {
       reservation.spotId,
       startObj.toISOString(),
       endObj.toISOString(),
-      'active',
+      reservation.status,
       reservation.totalAmount,
       reservation.baseAmount ?? reservation.totalAmount,
       null // unrated
@@ -251,6 +261,10 @@ export class MonitoringStore {
     const invoiceId = `INV-${new Date().toISOString().split('T')[0].replace(/-/g, '')}-${reservation.code}`;
     const matchedPkg = this.parkingsSignal().find(p => p.id === reservation.parkingId);
     const pkgName = matchedPkg ? matchedPkg.name : 'SpotGo Parking';
+    const savings = Math.max(
+      0,
+      Math.round(((reservation.baseAmount ?? reservation.totalAmount) - reservation.totalAmount) * 100) / 100
+    );
     
     const finalReceipt = new Receipt({
       id: '', // assigned by backend
@@ -266,19 +280,51 @@ export class MonitoringStore {
       status: 'paid'
     });
 
-    // 3. Persist reservation and reload the list so My Reservations shows it immediately.
-    // Without the reload, there's a race: loadUserReservations() in the reservations
-    // page could run before the POST finishes, leaving the list empty.
     this.historyApi.createReservation(rawRes).subscribe({
-      next: () => this.loadUserReservations(),
+      next: (createdRaw) => {
+        const createdReservation = this.mapRawToReservation(createdRaw);
+        this.userReservationsSignal.update(current => [...current, createdReservation]);
+
+        if (savings > 0) {
+          this.paymentStore.addToSavedThisMonth(savings);
+        }
+
+        this.paymentApi.addReceipt(finalReceipt).subscribe({
+          next: () => {},
+          error: (err) => console.error('Failed to add receipt', err),
+        });
+
+        callbacks?.onSuccess?.(createdReservation);
+      },
+      error: (err) => {
+        this.errorSignal.set(formatError(err, 'Failed to create reservation'));
+        callbacks?.onError?.();
+      },
     });
-    this.paymentApi.addReceipt(finalReceipt).subscribe();
   }
 
   updateReservation(reservation: Reservation): void {
-    this.userReservationsSignal.update(current =>
-      current.map(r => r.id === reservation.id ? reservation : r)
-    );
+    const startDateTime = this.buildReservationStartDateTime(reservation);
+    const endDateTime = new Date(startDateTime.getTime() + reservation.duration * 60 * 60 * 1000);
+    const endDate = this.toApiDateTime(endDateTime);
+    const baseAmount = reservation.baseAmount ?? reservation.totalAmount;
+
+    this.historyApi.extendReservation(reservation.id, {
+      endDate,
+      amount: reservation.totalAmount,
+      baseAmount,
+      status: reservation.status,
+    }).subscribe({
+      next: (updatedRaw) => {
+        const updatedReservation = this.mapRawToReservation(updatedRaw);
+        this.userReservationsSignal.update(current =>
+          current.map(r => r.id === updatedReservation.id ? updatedReservation : r)
+        );
+      },
+      error: (err) => {
+        this.errorSignal.set(formatError(err, 'Failed to update reservation'));
+      },
+    });
   }
 
   // Elimina la reserva de la base de datos (hard DELETE) y la quita del signal.
@@ -287,22 +333,25 @@ export class MonitoringStore {
     reservation: Reservation,
     callbacks?: { onSuccess?: () => void; onError?: () => void }
   ): void {
-    this.userReservationsSignal.update(current =>
-      current.filter(r => r.id !== reservation.id)
-    );
-
-    // Delete the associated receipt so it doesn't appear in Receipts / Avg. Savings
-    this.paymentApi.deleteReceiptByCode(reservation.code).subscribe();
-
-    // Reverse savings: savings = discountedAmount * discountPct / (100 - discountPct)
-    const discountPct = this.paymentStore.currentDiscount();
-    if (discountPct > 0) {
-      const savings = Math.round(reservation.totalAmount * discountPct / (100 - discountPct) * 100) / 100;
-      this.paymentStore.subtractFromSavedThisMonth(savings);
-    }
-
     this.historyApi.setReservationStatus(reservation.id, 'cancelled').subscribe({
-      next: () => callbacks?.onSuccess?.(),
+      next: () => {
+        this.userReservationsSignal.update(current =>
+          current.filter(r => r.id !== reservation.id)
+        );
+
+        this.paymentApi.deleteReceiptByCode(reservation.code).subscribe({
+          next: () => {},
+          error: (err) => console.error('Failed to delete receipt', err),
+        });
+
+        const discountPct = this.paymentStore.currentDiscount();
+        if (discountPct > 0) {
+          const savings = Math.round(reservation.totalAmount * discountPct / (100 - discountPct) * 100) / 100;
+          this.paymentStore.subtractFromSavedThisMonth(savings);
+        }
+
+        callbacks?.onSuccess?.();
+      },
       error: () => callbacks?.onError?.(),
     });
   }
@@ -315,7 +364,7 @@ export class MonitoringStore {
         // Filter by client, ignore past reservations, map to domain structure
         const mapped = rawReservations
           .filter(r => r.clientId === this.currentUser.clientId)
-          .filter(r => r.status === 'active' && new Date(r.endDate).getTime() > now)
+          .filter(r => r.status !== 'cancelled' && r.status !== 'completed' && new Date(r.endDate).getTime() > now)
           .map(r => this.mapRawToReservation(r));
           
         this.userReservationsSignal.set(mapped);
@@ -347,8 +396,19 @@ export class MonitoringStore {
       startTime: timeStr,
       duration: duration,
       totalAmount: raw.amount,
+      baseAmount: raw.baseAmount,
       status: raw.status as ReservationStatus,
     };
+  }
+
+  private buildReservationStartDateTime(reservation: Reservation): Date {
+    const [year, month, day] = reservation.date.split('-').map(Number);
+    const [hours, minutes] = reservation.startTime.split(':').map(Number);
+    return new Date(year, month - 1, day, hours, minutes);
+  }
+
+  private toApiDateTime(date: Date): string {
+    return date.toISOString();
   }
 
   /*

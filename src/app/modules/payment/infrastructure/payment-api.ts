@@ -62,6 +62,10 @@ export class PaymentApi {
     They have domain-friendly names and delegate to the correct endpoint.
   */
 
+  createSubscription(subscription: Subscription): Observable<Subscription> {
+    return this.subscriptionsEndpoint.create(subscription);
+  }
+
   getSubscriptions(): Observable<Subscription[]> {
     return this.subscriptionsEndpoint.getAll();
   }

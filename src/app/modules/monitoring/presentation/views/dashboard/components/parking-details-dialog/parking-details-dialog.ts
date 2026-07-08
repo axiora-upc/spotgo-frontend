@@ -14,7 +14,6 @@ import { Reservation } from '../../../../../domain/model/reservation.entity';
 import { BlueprintsApi } from '../../../../../../../modules/profiles/infrastructure/blueprints-api';
 import { MonitoringStore } from '../../../../../application/monitoring.store';
 import { DetectedSpot } from '../../../../../../../modules/profiles/domain/model/detected-spot.entity';
-import { HistoryApi } from '../../../../../../../modules/parking/infrastructure/history-api';
 import { FavoritesStore } from '../../../../../../../modules/profiles/application/favorites.store';
 import { CurrentUserService } from '../../../../../../../shared/services/current-user.service';
 import { PaymentStore } from '../../../../../../../modules/payment/application/payment.store';
@@ -49,7 +48,6 @@ const GRID_COLS = 8;
 export class ParkingDetailsDialog implements OnInit {
   private readonly api            = inject(BlueprintsApi);
   private readonly store          = inject(MonitoringStore);
-  private readonly historyApi     = inject(HistoryApi);
   private readonly paymentStore   = inject(PaymentStore);
   protected readonly favStore     = inject(FavoritesStore);
   private readonly currentUser    = inject(CurrentUserService);
@@ -165,11 +163,10 @@ export class ParkingDetailsDialog implements OnInit {
     const duration = this.totalDurationHours;
     const originalAmount = this.totalAmount;
     const amount  = this.discountedAmount;
-    const savings = Math.round((originalAmount - amount) * 100) / 100;
 
     this.bookingCode.set(code);
 
-    // 1. Guardar la reserva en la BD INMEDIATAMENTE (no esperar al "Done")
+    // Persist the reservation first so local state reflects the backend result.
     const reservation: Reservation = {
       id:          crypto.randomUUID(),
       code,
@@ -180,60 +177,14 @@ export class ParkingDetailsDialog implements OnInit {
       duration,
       totalAmount: amount,
       baseAmount:  originalAmount,
-      status:      'completed',
+      status:      'active',
     };
-    this.store.completeReservation(reservation);
-
-    if (savings > 0) {
-      this.paymentStore.addToSavedThisMonth(savings);
-    }
-
-    // 2. Marcar el spot como ocupado en el blueprint
-    if (spotId && this.blueprintId) {
-      const updatedSpots = this.blueprintSpots.map(s => {
-        const sId = `${String.fromCharCode(65 + s.row)}${s.col + 1}`;
-        return sId === spotId ? { ...s, status: 'occupied' as const } : s;
-      });
-
-      this.api.patchBlueprintSpots(this.blueprintId, updatedSpots).subscribe();
-      this.store.markSpotOccupied(spotId);
-
-      const availableCount = updatedSpots.filter(s => (s.status ?? 'available') === 'available').length;
-      this.api.updateParkingStats(this.parking.id, {
-        totalSpaces:     this.blueprintSpots.length,
-        availableSpaces: availableCount,
-        totalFloors:     1,
-      }).subscribe();
-      // Update in-memory signal so the dashboard bubble reflects the new count immediately
-      this.store.updateParkingAvailableSpaces(this.parking.id, availableCount);
-
-      // 3. Auto-liberar el spot y cerrar la reserva cuando expire
-      const capturedSpotId       = spotId;
-      const capturedParkingId    = this.parking.id;
-      const capturedReservationId = reservation.id;
-      const durationMs = duration * 60 * 60 * 1000;
-
-      setTimeout(() => {
-        this.historyApi.setReservationStatus(capturedReservationId, 'completed').subscribe();
-        this.api.getBlueprintByParkingId(capturedParkingId).subscribe(bp => {
-          if (!bp) return;
-          const releasedSpots = bp.spots.map(s => {
-            const sId = `${String.fromCharCode(65 + s.row)}${s.col + 1}`;
-            return sId === capturedSpotId ? { ...s, status: 'available' as const } : s;
-          });
-          this.api.patchBlueprintSpots(bp.id, releasedSpots).subscribe();
-          this.store.markSpotAvailable(capturedSpotId);
-          const avail = releasedSpots.filter(s => (s.status ?? 'available') === 'available').length;
-          this.api.updateParkingStats(capturedParkingId, {
-            totalSpaces:     bp.spots.length,
-            availableSpaces: avail,
-            totalFloors:     1,
-          }).subscribe();
-        });
-      }, durationMs);
-    }
-
-    this.step.set('success');
+    this.store.completeReservation(reservation, {
+      onSuccess: () => {
+        this.store.loadParkings();
+        this.step.set('success');
+      },
+    });
   }
 
   protected selectSpot(spot: Spot): void {
@@ -277,6 +228,23 @@ export class ParkingDetailsDialog implements OnInit {
 
   protected close(): void {
     this.dialogRef.close();
+  }
+
+  protected get occupiedSpaces(): number {
+    if (this.parking.totalSpaces > 0) {
+      return Math.max(0, this.parking.totalSpaces - this.parking.availableSpaces);
+    }
+    return this.blueprintSpots.filter(s => (s.status ?? 'available') === 'occupied').length;
+  }
+
+  protected get effectiveTotalSpaces(): number {
+    if (this.parking.totalSpaces > 0) return this.parking.totalSpaces;
+    if (this.blueprintSpots.length > 0) return this.blueprintSpots.length;
+    return this.parking.availableSpaces;
+  }
+
+  protected get occupancyPercent(): number {
+    return this.effectiveTotalSpaces > 0 ? this.occupiedSpaces / this.effectiveTotalSpaces * 100 : 0;
   }
 
   protected goBack(): void {

@@ -19,6 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
   for example: EN | ES.
 */
 import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle';
+import { TranslatePipe } from '@ngx-translate/core';
 
 /*
   A component in Angular is a class that controls
@@ -47,7 +48,8 @@ import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-
   */
   imports: [
     MatButtonToggleGroup,
-    MatButtonToggle
+    MatButtonToggle,
+    TranslatePipe
   ],
 
   /*
