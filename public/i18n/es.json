@@ -166,6 +166,7 @@
   },
 
   "dashboard": {
+    "loading": "Cargando...",
     "stats": {
       "spotsAvailableNearby": "Spots Cercanos",
       "activeReservations": "Reservas Activas",
@@ -622,7 +623,10 @@
     "period": {
       "today": "Hoy",
       "last7": "Últimos 7 Días",
-      "custom": "Fecha Personalizada"
+      "custom": "Fecha Personalizada",
+      "from": "Desde",
+      "to": "Hasta",
+      "apply": "Aplicar"
     },
     "kpi": {
       "avg-occupancy": "Ocupación Promedio",

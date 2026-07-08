@@ -72,7 +72,7 @@
     </div>
 
     <footer class="dialog-footer">
-      <button class="fav-btn" [class.fav-btn--active]="isFavorite" (click)="toggleFavorite()" type="button">
+      <button class="fav-btn" [class.fav-btn--active]="isFavorite" (click)="toggleFavorite()" type="button" [attr.data-state]="isFavorite ? 'saved' : 'unsaved'">
         <mat-icon>{{ isFavorite ? 'bookmark' : 'bookmark_border' }}</mat-icon>
         {{ isFavorite ? ('dashboard.reservation.saved' | translate) : ('dashboard.reservation.save' | translate) }}
       </button>
@@ -131,6 +131,8 @@
       <div *ngFor="let spot of spots()"
            class="spot-item"
            [ngClass]="spot.status"
+           [attr.data-spot-id]="spot.id"
+           [attr.data-status]="spot.status"
            role="button"
            tabindex="0"
            (click)="selectSpot(spot)"

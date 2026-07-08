@@ -14,14 +14,15 @@ Frontend de SpotGo en Angular. Consume directamente el backend Spring Boot con J
 ```
 src/app/
   modules/
-    monitoring/   dashboard, mapa en tiempo real, analytics
-    parking/      reservas, historial
-    payment/      suscripciones, recibos
-    profiles/     croquis (blueprints), configuración, favoritos
+    iam/            autenticacion, registro, forgot-password
+    monitoring/     dashboard, mapa en tiempo real, analytics
+    parking/        reservas, historial
+    payment/        suscripciones, recibos
+    profiles/       croquis (blueprints), configuracion, favoritos
   shared/         servicios, interceptores y componentes comunes
 ```
 
-Cada módulo se carga con lazy loading desde `app.routes.ts`.
+Cada modulo se carga con lazy loading desde `app.routes.ts`.
 
 ## Auth Y API
 
@@ -33,7 +34,7 @@ Cada módulo se carga con lazy loading desde `app.routes.ts`.
 
 ## Rutas Principales
 
-- Auth público:
+- Auth publico:
   - `/sign-in`
   - `/sign-up`
   - `/forgot-password`
@@ -63,7 +64,6 @@ En desarrollo, `src/environments/environment.development.ts` apunta a `http://lo
 
 Para probar login seed, usa una cuenta del `db.json` del backend con password `Password123!`.
 
-
 ## Deploy
 
-Desplegado en Vercel (`vercel.json`). El frontend se sirve como sitio estático y depende del backend desplegado para los datos y la autenticación.
+Desplegado en Vercel (`vercel.json`). El frontend se sirve como sitio estatico y depende del backend desplegado para los datos y la autenticacion.

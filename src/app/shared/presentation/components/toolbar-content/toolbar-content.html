@@ -50,39 +50,6 @@
     </div>
 
     <!--
-      search-box is the center search section of the toolbar.
-
-      It contains:
-      - a Material search icon
-      - a normal HTML input
-
-      The class "search-box" is used in CSS to style the whole search container.
-    -->
-    <div class="search-box">
-
-      <!--
-        mat-icon shows an Angular Material icon.
-
-        The text "search" tells Angular Material to show the search icon.
-      -->
-      <mat-icon class="search-icon">search</mat-icon>
-
-      <!--
-        This input lets the user type a search.
-
-        This is a normal HTML input, not an Angular Material input.
-
-        [placeholder] means Angular calculates the placeholder value.
-
-        'toolbar.search-placeholder' is a translation key.
-
-        | translate replaces that key with the text from the active language file.
-      -->
-      <input type="text" [placeholder]="'toolbar.search-placeholder' | translate" />
-
-    </div>
-
-    <!--
       toolbar-actions is the right section of the toolbar.
 
       It contains:

@@ -44,13 +44,11 @@ export interface WeeklyTrendPointResource extends BaseResource {
 
 export interface SpotUtilizationResource extends BaseResource {
   id: string;
-  parkingId: string;
   spotId: string;
-  spotCode: string;
+  spotName: string;
   zone: string;
   type: string;
   status: string;
-  isActive: boolean;
   dailyTurnover: number;
   peakUtilization: number;
   revenueImpact: number;
@@ -58,4 +56,24 @@ export interface SpotUtilizationResource extends BaseResource {
 
 export interface SpotUtilizationResponse extends BaseResponse {
   parkingSpots: SpotUtilizationResource[];
+}
+
+export interface AnalyticsResource extends BaseResource {
+  id: string;
+  adminId: string;
+  name: string;
+  totalSpaces: number;
+  availableSpaces: number;
+  averageOccupancy: number;
+  occupancyTrendPercent: number;
+  peakHour: string;
+  totalRevenue: number;
+  revenueTrendPercent: number;
+  systemStatus: string;
+  totalCapacity: number;
+  efficiencyIndex: number;
+  maintenanceSpotsCount: number;
+  occupancyByHour: OccupancyPointResource[];
+  weeklyTrends: WeeklyTrendPointResource[];
+  mostUtilizedSpots: SpotUtilizationResource[];
 }

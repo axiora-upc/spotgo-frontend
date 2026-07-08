@@ -56,8 +56,8 @@ export class MonitoringApi {
     return this.parkingsEndpoint.getAll();
   }
 
-  getAnalytics(parkingId: string): Observable<ParkingAnalytics> {
-    return this.analyticsEndpoint.getByParkingId(parkingId);
+  getAnalytics(period: 'today' | 'last7' | 'custom', from?: string | null, to?: string | null): Observable<ParkingAnalytics> {
+    return this.analyticsEndpoint.getByPeriod(period, from, to);
   }
 
   getDetectedSpots(): Observable<DetectedSpotSummary[]> {
