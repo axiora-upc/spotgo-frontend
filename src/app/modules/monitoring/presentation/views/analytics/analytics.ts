@@ -1,11 +1,10 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { NgClass, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { MonitoringStore } from '../../../application/monitoring.store';
 import { SpotUtilization } from '../../../domain/model/analytics.entity';
-import { CurrentUserService } from '../../../../../shared/services/current-user.service';
 
 const INITIAL_SPOTS_SHOWN = 3;
 
@@ -17,9 +16,10 @@ const INITIAL_SPOTS_SHOWN = 3;
 })
 export class Analytics implements OnInit {
   protected readonly store       = inject(MonitoringStore);
-  private  readonly currentUser  = inject(CurrentUserService);
 
   protected selectedPeriod = signal<'today' | 'last7' | 'custom'>('today');
+  protected customFrom = signal(this.formatDateInput(new Date(Date.now() - 6 * 24 * 60 * 60 * 1000)));
+  protected customTo = signal(this.formatDateInput(new Date()));
 
   /* ─── Paginación de la tabla ─────────────────────────────────────────────── */
 
@@ -52,22 +52,40 @@ export class Analytics implements OnInit {
   /* ─── Ciclo de vida ──────────────────────────────────────────────────────── */
 
   ngOnInit(): void {
-    /*
-      Solicita los datos al store en cuanto el componente se monta.
-      El store llama a la API solo una vez; si analytics() ya tiene
-      data (por navegación de vuelta), la vista la reutiliza.
-    */
-    this.store.loadAnalytics(this.currentUser.parkingId);
+    this.reloadAnalytics();
   }
 
   /* ─── Acciones de la UI ──────────────────────────────────────────────────── */
 
   protected retry(): void {
-    this.store.loadAnalytics(this.currentUser.parkingId);
+    this.reloadAnalytics();
   }
 
   protected selectPeriod(period: 'today' | 'last7' | 'custom'): void {
     this.selectedPeriod.set(period);
+    this.spotsShown.set(INITIAL_SPOTS_SHOWN);
+    if (period !== 'custom') {
+      this.reloadAnalytics();
+    }
+  }
+
+  protected updateCustomFrom(value: string): void {
+    this.customFrom.set(value);
+  }
+
+  protected updateCustomTo(value: string): void {
+    this.customTo.set(value);
+  }
+
+  protected applyCustomRange(): void {
+    if (!this.canApplyCustomRange()) return;
+    this.reloadAnalytics();
+  }
+
+  protected canApplyCustomRange(): boolean {
+    const from = this.customFrom();
+    const to = this.customTo();
+    return !!from && !!to && from <= to;
   }
 
   /* Muestra INITIAL_SPOTS_SHOWN filas adicionales en la tabla. */
@@ -128,6 +146,20 @@ export class Analytics implements OnInit {
     return intensity === max;
   }
 
+  protected occupancyBarHeight(intensity: number): number {
+    const analytics = this.store.analytics();
+    if (!analytics || analytics.occupancyByHour.length === 0) return 0;
+
+    const max = Math.max(...analytics.occupancyByHour.map((p) => p.intensity));
+    if (max <= 0) return 0;
+
+    return Math.max(10, (intensity / max) * 100);
+  }
+
+  protected occupancyTooltip(hour: string, intensity: number): string {
+    return `${hour} - ${(intensity * 100).toFixed(1)}% occupancy`;
+  }
+
   /*
     Convierte el array weeklyTrends en una cadena de puntos SVG para
     el elemento <polyline>. El viewBox del SVG es 280 × 80.
@@ -137,15 +169,61 @@ export class Analytics implements OnInit {
   protected weeklyPolyline(): string {
     const analytics = this.store.analytics();
     if (!analytics || analytics.weeklyTrends.length === 0) return '';
+    if (analytics.weeklyTrends.length === 1) return `140,${this.weeklyPointY(analytics.weeklyTrends[0].value)}`;
 
     const points = analytics.weeklyTrends;
     const w = 280;
-    const h = 80;
     const step = w / (points.length - 1);
 
     return points
-      .map((p, i) => `${i * step},${h - p.value * h}`)
+      .map((p, i) => `${i * step},${this.weeklyPointY(p.value)}`)
       .join(' ');
+  }
+
+  protected weeklyPointX(index: number, total: number): number {
+    if (total <= 1) return 140;
+    return index * (280 / (total - 1));
+  }
+
+  protected weeklyPointY(value: number): number {
+    const analytics = this.store.analytics();
+    if (!analytics || analytics.weeklyTrends.length === 0) return 80;
+
+    const values = analytics.weeklyTrends.map((point) => point.value);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const chartHeight = 80;
+    const topPadding = 8;
+    const bottomPadding = 10;
+    const drawableHeight = chartHeight - topPadding - bottomPadding;
+
+    if (max <= min) {
+      return chartHeight / 2;
+    }
+
+    const normalized = (value - min) / (max - min);
+    return chartHeight - bottomPadding - normalized * drawableHeight;
+  }
+
+  protected shouldShowHourLabel(index: number, total: number): boolean {
+    if (total <= 8) return true;
+    return index === 0 || index === 6 || index === 12 || index === 18 || index === total - 1;
+  }
+
+  private reloadAnalytics(): void {
+    const period = this.selectedPeriod();
+    this.store.loadAnalytics(
+      period,
+      period === 'custom' ? this.customFrom() : null,
+      period === 'custom' ? this.customTo() : null,
+    );
+  }
+
+  private formatDateInput(date: Date): string {
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, '0');
+    const day = `${date.getDate()}`.padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }
 

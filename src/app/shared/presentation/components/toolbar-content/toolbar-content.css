@@ -44,7 +44,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  flex: 1;
+  flex: 0 0 auto;
 }
 
 /*
@@ -95,49 +95,6 @@
   The icon color should be handled in styles.scss using Angular Material.
   Here we only style the box around the search.
 */
-.search-box {
-  flex: 0 1 530px;
-  width: 100%;
-  max-width: 620px;
-  height: 34px;
-
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  margin: 0 auto;
-  background-color: #f8fafc;
-  border-radius: 10px;
-  padding: 0 12px;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
-}
-
-/*
-  This styles the normal HTML input inside search-box.
-
-  This input is NOT Angular Material.
-  That is why its text color, placeholder, border, and background
-  are styled here with normal CSS.
-*/
-.search-box input {
-  width: 100%;
-  border: none;
-  outline: none;
-  background: transparent;
-  color: #5f6673;
-  font-size: 16px;
-}
-
-/*
-  This styles the placeholder text of the normal HTML input.
-
-  Example placeholder:
-  Search parking locations...
-*/
-.search-box input::placeholder {
-  color: #5f6673;
-}
-
 /*
   toolbar-actions is the right section.
 
@@ -153,7 +110,8 @@
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  flex: 1;
+  flex: 1 1 auto;
+  margin-left: auto;
 }
 
 /*
@@ -207,21 +165,6 @@
   height: 24px;
   font-size: 24px;
   line-height: 24px;
-}
-
-/*
-  This styles the search icon inside the search box.
-
-  The search icon is inside an absolute positioned container, so it just
-  needs its size and flex centering.
-*/
-.search-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  font-size: 22px;
 }
 
 /*

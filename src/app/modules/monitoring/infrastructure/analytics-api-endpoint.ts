@@ -9,131 +9,57 @@
   - mostUtilizedSpots → reservations agrupadas por spot code, ordenadas por frecuencia
   - peakHour         → hora con mayor intensidad según occupancyByHour
 */
-import { HttpClient } from '@angular/common/http';
-import { Observable, forkJoin, map, catchError, throwError } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, map, catchError, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
   OccupancyPoint,
   ParkingAnalytics,
-  SpotStatus,
-  SpotType,
   SpotUtilization,
   WeeklyTrendPoint,
 } from '../domain/model/analytics.entity';
 import {
-  OccupancyPointResource,
-  ParkingResource,
-  WeeklyTrendPointResource,
+  AnalyticsResource,
 } from './analytics-response';
-import { ParkingAnalyticsAssembler } from './parking-analytics-assembler';
-
-interface ReservationResource {
-  id: string;
-  parkingId: string;
-  spot: string;
-  status: string;
-  amount: number;
-  baseAmount: number;
-}
-
-interface DetectedSpotResource {
-  id: string;
-  parkingId: string;
-  row: number;
-  col: number;
-  status?: string;
-}
 
 export class AnalyticsApiEndpoint {
-  private readonly parkingUrl      = `${environment.apiUrl}/parkings`;
-  private readonly occupancyUrl    = `${environment.apiUrl}/occupancyByHour`;
-  private readonly trendsUrl       = `${environment.apiUrl}/weeklyTrends`;
-  private readonly reservationsUrl = `${environment.apiUrl}/reservations`;
-  private readonly spotsUrl        = `${environment.apiUrl}/detectedSpots`;
-  private readonly parkingAssembler = new ParkingAnalyticsAssembler();
+  private readonly analyticsUrl = `${environment.apiUrl}/analytics`;
 
   constructor(private readonly http: HttpClient) {}
 
-  getByParkingId(parkingId: string): Observable<ParkingAnalytics> {
-    const parking$      = this.http.get<ParkingResource>(`${this.parkingUrl}/${parkingId}`);
-    const occupancy$    = this.http.get<OccupancyPointResource[]>(`${this.occupancyUrl}?parkingId=${parkingId}`);
-    const trends$       = this.http.get<WeeklyTrendPointResource[]>(`${this.trendsUrl}?parkingId=${parkingId}`);
-    const reservations$ = this.http.get<ReservationResource[]>(`${this.reservationsUrl}?parkingId=${parkingId}`);
-    const spots$        = this.http.get<DetectedSpotResource[]>(`${this.spotsUrl}?parkingId=${parkingId}`);
+  getByPeriod(period: 'today' | 'last7' | 'custom', from?: string | null, to?: string | null): Observable<ParkingAnalytics> {
+    let params = new HttpParams().set('period', period);
+    if (from) params = params.set('from', from);
+    if (to) params = params.set('to', to);
 
-    return forkJoin([parking$, occupancy$, trends$, reservations$, spots$]).pipe(
-      map(([parkingResource, occupancyPoints, trendPoints, reservations, detectedSpots]) => {
-
-        // ── Revenue: misma fórmula que el real-time map ─────────────────────
-        const totalRevenue = Math.round(
-          reservations
-            .filter(r => r.status !== 'cancelled')
-            .reduce((sum, r) => sum + r.baseAmount, 0) * 100
-        ) / 100;
-
-        // ── Salud del sistema: derivada de spots en mantenimiento ────────────
-        const maintenanceSpotsCount = detectedSpots.filter(s => s.status === 'maintenance').length;
-        const systemStatus = maintenanceSpotsCount > 0 ? 'maintenance' : 'active';
-
-        // ── Hora pico: el punto de mayor intensidad en occupancyByHour ───────
-        const peakHour = occupancyPoints.length > 0
-          ? occupancyPoints.reduce((max, p) => p.intensity > max.intensity ? p : max, occupancyPoints[0]).hour
-          : parkingResource.peakHour;
-
-        // ── Espacios más utilizados: agrupados desde reservations ─────────────
-        // Construir mapa spot-code → { count, revenue }
-        const spotMap = new Map<string, { count: number; revenue: number }>();
-        reservations
-          .filter(r => r.status !== 'cancelled')
-          .forEach(r => {
-            const cur = spotMap.get(r.spot) ?? { count: 0, revenue: 0 };
-            spotMap.set(r.spot, {
-              count:   cur.count + 1,
-              revenue: Math.round((cur.revenue + r.baseAmount) * 100) / 100,
-            });
-          });
-
-        // Lookup de estado actual por código de spot (row/col → "A1", "B3", etc.)
-        const statusByCode = new Map<string, string>();
-        detectedSpots.forEach(s => {
-          const code = `${String.fromCharCode(65 + s.row)}${s.col + 1}`;
-          statusByCode.set(code, s.status ?? 'available');
+    return this.http.get<AnalyticsResource>(this.analyticsUrl, { params }).pipe(
+      map((resource) => {
+        const analytics = new ParkingAnalytics({
+          parkingId: resource.id,
+          parkingName: resource.name,
+          averageOccupancy: resource.averageOccupancy,
+          occupancyTrendPercent: resource.occupancyTrendPercent ?? 0,
+          peakHour: resource.peakHour,
+          totalRevenue: resource.totalRevenue,
+          revenueTrendPercent: resource.revenueTrendPercent ?? 0,
+          systemStatus: resource.systemStatus,
+          totalCapacity: resource.totalCapacity ?? resource.totalSpaces,
+          efficiencyIndex: resource.efficiencyIndex ?? 0,
+          occupancyByHour: resource.occupancyByHour.map((p) => new OccupancyPoint({ hour: p.hour, intensity: p.intensity })),
+          weeklyTrends: resource.weeklyTrends.map((p) => new WeeklyTrendPoint({ day: p.day, value: p.value })),
+          mostUtilizedSpots: resource.mostUtilizedSpots.map((spot) => new SpotUtilization({
+            id: spot.id,
+            spotId: spot.spotId,
+            spotName: spot.spotName,
+            zone: spot.zone,
+            type: spot.type as 'standard' | 'ev',
+            status: spot.status as 'available' | 'occupied' | 'maintenance',
+            dailyTurnover: spot.dailyTurnover,
+            peakUtilization: spot.peakUtilization,
+            revenueImpact: spot.revenueImpact,
+          })),
+          maintenanceSpotsCount: resource.maintenanceSpotsCount ?? 0,
         });
-
-        const maxCount = spotMap.size > 0
-          ? Math.max(...Array.from(spotMap.values()).map(v => v.count))
-          : 1;
-
-        const mostUtilizedSpots: SpotUtilization[] = Array.from(spotMap.entries())
-          .sort((a, b) => b[1].count - a[1].count)
-          .map(([spotCode, stats], idx) => new SpotUtilization({
-            id:             `su-${idx + 1}`,
-            spotId:         spotCode,
-            spotName:       spotCode,
-            zone:           `Level ${spotCode.charAt(0)}`,
-            type:           'standard' as SpotType,
-            status:         (statusByCode.get(spotCode) ?? 'available') as SpotStatus,
-            dailyTurnover:  stats.count,
-            peakUtilization: Math.round((stats.count / maxCount) * 100),
-            revenueImpact:  stats.revenue,
-          }));
-
-        // ── Ensamblar la entidad ──────────────────────────────────────────────
-        const analytics = this.parkingAssembler.toEntityFromResource({
-          ...parkingResource,
-          totalRevenue,
-          systemStatus,
-          peakHour,
-        });
-
-        analytics.maintenanceSpotsCount = maintenanceSpotsCount;
-        analytics.mostUtilizedSpots     = mostUtilizedSpots;
-        analytics.occupancyByHour       = occupancyPoints.map(p =>
-          new OccupancyPoint({ hour: p.hour, intensity: p.intensity })
-        );
-        analytics.weeklyTrends          = trendPoints.map(p =>
-          new WeeklyTrendPoint({ day: p.day, value: p.value })
-        );
 
         return analytics;
       }),

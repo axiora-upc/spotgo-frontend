@@ -145,55 +145,6 @@
     </section>
   </div>
 
-  <div class="overview__bottom">
-    <div class="overview__card overview__peak">
-      <h3 class="overview__card-title">
-        <mat-icon>trending_up</mat-icon>
-        {{ 'realtime-map.overview.peak-hours-today' | translate }}
-      </h3>
-      <div class="overview__chart">
-        @for (bar of snapshot.stats.peakHours; track bar.hour) {
-          <div class="overview__chart-col">
-            <span
-              class="overview__chart-bar"
-              [class.overview__chart-bar--active]="bar.intensity > 0.75"
-              [style.height.%]="bar.intensity * 100"></span>
-            <span class="overview__chart-label">{{ bar.hour }}</span>
-          </div>
-        }
-      </div>
-    </div>
-
-    <div class="overview__card overview__revenue">
-      <h3 class="overview__card-title">
-        <mat-icon>credit_card</mat-icon>
-        {{ 'realtime-map.overview.revenue-yield' | translate }}
-      </h3>
-      <p class="overview__revenue-value">
-        {{ snapshot.stats.revenueYield | currency:'S/.':'symbol':'1.2-2' }}
-        <span class="overview__revenue-trend">
-          +{{ snapshot.stats.revenueTrendPercent }}%
-        </span>
-      </p>
-      <p class="overview__revenue-desc">
-        {{ 'realtime-map.overview.revenue-description' | translate }}
-      </p>
-    </div>
-
-    <div class="overview__card overview__help">
-      <span class="overview__help-icon"><mat-icon>support_agent</mat-icon></span>
-      <h3 class="overview__card-title overview__card-title--centered">
-        {{ 'realtime-map.overview.need-help' | translate }}
-      </h3>
-      <p class="overview__help-desc">
-        {{ 'realtime-map.overview.help-description' | translate }}
-      </p>
-      <a class="overview__help-link" href="#" (click)="$event.preventDefault()">
-        {{ 'realtime-map.overview.open-ticket' | translate }}
-      </a>
-    </div>
-  </div>
-
   @if (selectedSpot(); as selected) {
     <div class="spot-modal__backdrop" (click)="closeSpotDetails()">
       <section class="spot-modal" role="dialog" aria-modal="true" aria-labelledby="spot-modal-title" (click)="$event.stopPropagation()">

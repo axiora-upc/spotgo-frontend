@@ -48,6 +48,22 @@
     </div>
   </div>
 
+  @if (selectedPeriod() === 'custom') {
+    <div class="analytics__custom-range">
+      <label class="analytics__custom-field">
+        <span>{{ 'analytics.period.from' | translate }}</span>
+        <input type="date" [value]="customFrom()" (change)="updateCustomFrom($any($event.target).value)" />
+      </label>
+      <label class="analytics__custom-field">
+        <span>{{ 'analytics.period.to' | translate }}</span>
+        <input type="date" [value]="customTo()" (change)="updateCustomTo($any($event.target).value)" />
+      </label>
+      <button class="analytics__custom-apply" type="button" [disabled]="!canApplyCustomRange()" (click)="applyCustomRange()">
+        {{ 'analytics.period.apply' | translate }}
+      </button>
+    </div>
+  }
+
   <div class="analytics__kpis">
     <div class="analytics__kpi-card">
       <p class="analytics__kpi-label">{{ 'analytics.kpi.avg-occupancy' | translate }}</p>
@@ -107,20 +123,17 @@
           <h2 class="analytics__chart-title">{{ 'analytics.charts.occupancy-title' | translate }}</h2>
           <p class="analytics__chart-sub">{{ 'analytics.charts.occupancy-sub' | translate }}</p>
         </div>
-        <button class="analytics__chart-menu" type="button">
-          <mat-icon>more_vert</mat-icon>
-        </button>
       </div>
 
       <div class="analytics__bar-chart">
-        @for (point of data.occupancyByHour; track point.hour) {
-          <div class="analytics__bar-col">
+        @for (point of data.occupancyByHour; let i = $index; track point.hour) {
+          <div class="analytics__bar-col" [attr.title]="occupancyTooltip(point.hour, point.intensity)">
             <div
               class="analytics__bar"
               [class.analytics__bar--peak]="isPeakBar(point.intensity)"
-              [style.height.%]="point.intensity * 100">
+              [style.height.%]="occupancyBarHeight(point.intensity)">
             </div>
-            <span class="analytics__bar-label">{{ point.hour }}</span>
+            <span class="analytics__bar-label" [class.analytics__bar-label--hidden]="!shouldShowHourLabel(i, data.occupancyByHour.length)">{{ point.hour }}</span>
           </div>
         }
       </div>
@@ -146,8 +159,8 @@
 
           @for (point of data.weeklyTrends; let i = $index; track point.day) {
             <circle
-              [attr.cx]="i * (280 / (data.weeklyTrends.length - 1))"
-              [attr.cy]="80 - point.value * 80"
+              [attr.cx]="weeklyPointX(i, data.weeklyTrends.length)"
+              [attr.cy]="weeklyPointY(point.value)"
               r="3.5"
               fill="#00e5a0" />
           }

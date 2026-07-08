@@ -13,7 +13,7 @@ export class SpotUtilizationAssembler
     return new SpotUtilization({
       id:               resource.id,
       spotId:           resource.spotId,
-      spotName:         resource.spotCode ?? resource.spotId,
+      spotName:         resource.spotName ?? resource.spotId,
       zone:             resource.zone,
       type:             resource.type as SpotType,
       status:           resource.status as SpotStatus,
@@ -27,13 +27,11 @@ export class SpotUtilizationAssembler
   toResourceFromEntity(entity: SpotUtilization): SpotUtilizationResource {
     return {
       id:               entity.id,
-      parkingId:        '',
       spotId:           entity.spotId,
-      spotCode:         entity.spotName,
+      spotName:         entity.spotName,
       zone:             entity.zone,
       type:             entity.type,
       status:           entity.status,
-      isActive:         entity.status !== 'maintenance',
       dailyTurnover:    entity.dailyTurnover,
       peakUtilization:  entity.peakUtilization,
       revenueImpact:    entity.revenueImpact,

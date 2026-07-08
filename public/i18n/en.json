@@ -622,7 +622,10 @@
     "period": {
       "today": "Today",
       "last7": "Last 7 Days",
-      "custom": "Custom Date"
+      "custom": "Custom Date",
+      "from": "From",
+      "to": "To",
+      "apply": "Apply"
     },
     "kpi": {
       "avg-occupancy": "Average Occupancy",

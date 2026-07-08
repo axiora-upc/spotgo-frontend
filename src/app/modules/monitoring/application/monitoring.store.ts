@@ -603,11 +603,11 @@ export class MonitoringStore {
     Carga el agregado completo de analytics para el parking dado.
     El componente lo llama en ngOnInit con el id del parking del admin.
   */
-  loadAnalytics(parkingId: string): void {
+  loadAnalytics(period: 'today' | 'last7' | 'custom', from?: string | null, to?: string | null): void {
     this.analyticsLoadingSignal.set(true);
     this.errorSignal.set(null);
 
-    this.monitoringApi.getAnalytics(parkingId).subscribe({
+    this.monitoringApi.getAnalytics(period, from, to).subscribe({
       next: (data) => {
         this.analyticsSignal.set(data);
         this.analyticsLoadingSignal.set(false);
