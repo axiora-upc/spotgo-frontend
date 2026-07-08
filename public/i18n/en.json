@@ -166,6 +166,7 @@
   },
 
   "dashboard": {
+    "loading": "Loading...",
     "stats": {
       "spotsAvailableNearby": "Spots Nearby",
       "activeReservations": "Active Reservations",
