@@ -39,7 +39,7 @@
 
           alt describes the image for accessibility.
         -->
-        <img src="./assets/spotgo-logo.png" alt="SpotGo logo" class="logo-image" />
+        <img src="assets/spotgo-logo.png" alt="SpotGo logo" class="logo-image" />
 
       </div>
 
@@ -86,20 +86,10 @@
       toolbar-actions is the right section of the toolbar.
 
       It contains:
-      - notification button
       - user account button (with view mode menu)
       - language switcher
     -->
     <div class="toolbar-actions">
-
-      <!--
-        Notification button.
-
-        mat-button gives this button Angular Material button behavior.
-      -->
-      <button mat-icon-button class="icon-button" type="button" aria-label="Notifications">
-        <mat-icon>notifications</mat-icon>
-      </button>
 
       <!--
         User account button.
@@ -111,7 +101,7 @@
         mat-icon-button
         class="icon-button"
         type="button"
-        aria-label="Account"
+        [attr.aria-label]="'toolbar.account' | translate"
         [matMenuTriggerFor]="accountMenu">
         <mat-icon>account_circle</mat-icon>
       </button>

@@ -102,7 +102,10 @@ export class BlueprintStorageService {
             totalSpaces:     total,
             availableSpaces: total,
             totalFloors:     1,
-          }).subscribe();
+          }).subscribe({
+            next: () => {},
+            error: (err) => console.error('Failed to update parking stats after blueprint upload', err),
+          });
         }
       },
       error: () => callbacks?.onError?.('settings.blueprint.error-storage'),

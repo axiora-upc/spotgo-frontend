@@ -35,7 +35,9 @@ export class Dashboard implements OnInit {
     const availableNearby = parkings.reduce((acc, p) => acc + p.availableSpaces, 0);
 
     // Filter and count only active reservations in session
-    const activeReservations = this.store.userReservations().filter(r => r.status === 'active').length;
+    const activeReservations = this.store.userReservations().filter(
+      r => r.status !== 'cancelled' && r.status !== 'completed'
+    ).length;
 
     // Count of dynamic favorites from backend favorite-store
     const savedLocations = this.favoritesStore.favorites().length;

@@ -118,7 +118,7 @@
 <!-- ── Rating modal ──────────────────────────────────────────────── -->
 @if (ratingTarget(); as item) {
   <div class="modal-backdrop" (click)="onCancelRate()">
-    <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
 
       <h3 class="modal__title">{{ 'history.modal.rate.title' | translate }}</h3>
       <p class="modal__body">{{ item.parkingName }}</p>
@@ -156,7 +156,7 @@
 <!-- ── Report modal ──────────────────────────────────────────────── -->
 @if (reportTarget(); as item) {
   <div class="modal-backdrop" (click)="onCancelReport()">
-    <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
 
       <h3 class="modal__title">{{ 'history.modal.report.title' | translate }}</h3>
       <p class="modal__body">{{ item.parkingName }}</p>

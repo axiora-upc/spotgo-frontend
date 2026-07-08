@@ -67,6 +67,6 @@ export class SubscriptionsApiEndpoint extends BaseApiEndpoint<
   }
 
   patchSavedThisMonth(id: string, savedThisMonth: number, savingsMonth: string): Observable<void> {
-    return this.http.patch<void>(`${this.endpointUrl}/${id}`, { savedThisMonth, savingsMonth });
+    return this.http.patch<void>(`${this.endpointUrl}/${id}/savings`, { savedThisMonth, savingsMonth });
   }
 }

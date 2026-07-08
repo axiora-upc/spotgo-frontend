@@ -7,7 +7,7 @@
 <header class="auth-topbar">
   <div class="brand">
     <div class="logo-container">
-      <img src="./assets/spotgo-logo.png" alt="SpotGo logo" class="logo-image" />
+      <img src="assets/spotgo-logo.png" alt="SpotGo logo" class="logo-image" />
     </div>
     <span class="brand-name">SpotGo</span>
   </div>
@@ -42,7 +42,7 @@
             id="login-email"
             type="email"
             formControlName="email"
-            placeholder="you@example.com"
+            [placeholder]="'iam.login.email-placeholder' | translate"
             autocomplete="email" />
         </div>
         @if (getError('email'); as errorKey) {

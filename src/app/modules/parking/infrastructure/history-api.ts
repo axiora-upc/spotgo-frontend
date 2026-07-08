@@ -56,11 +56,10 @@ export class HistoryApi {
   }
 
   /*
-    Persists the updated reservation (with the new rating) via PUT.
-    The full entity is sent so backend does not lose any fields.
+    Persists only the updated rating to the reservation via PATCH.
   */
-  rateReservation(reservation: ReservationRaw): Observable<ReservationRaw> {
-    return this.reservationsEndpoint.update(reservation, reservation.id);
+  rateReservation(reservationId: string, rating: number): Observable<ReservationRaw> {
+    return this.reservationsEndpoint.patchRating(reservationId, rating);
   }
 
   /*
@@ -68,6 +67,13 @@ export class HistoryApi {
   */
   updateReservation(reservation: ReservationRaw): Observable<ReservationRaw> {
     return this.reservationsEndpoint.update(reservation, reservation.id);
+  }
+
+  extendReservation(
+    reservationId: string,
+    details: { endDate: string; amount: number; baseAmount?: number; status?: string }
+  ): Observable<ReservationRaw> {
+    return this.reservationsEndpoint.patchDetails(reservationId, details);
   }
 
   /*

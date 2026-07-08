@@ -1,7 +1,7 @@
 <header class="auth-topbar">
   <div class="brand">
     <div class="logo-container">
-      <img src="./assets/spotgo-logo.png" alt="SpotGo logo" class="logo-image" />
+      <img src="assets/spotgo-logo.png" alt="SpotGo logo" class="logo-image" />
     </div>
     <span class="brand-name">SpotGo</span>
   </div>
@@ -33,7 +33,7 @@
             <label class="field-label" for="register-first-name">{{ 'iam.register.first-name' | translate }}</label>
             <div class="input-box" [class.invalid]="getError('firstName')">
               <mat-icon>person_outline</mat-icon>
-              <input id="register-first-name" type="text" formControlName="firstName" placeholder="John" autocomplete="given-name" />
+              <input id="register-first-name" type="text" formControlName="firstName" [placeholder]="'iam.register.first-name-placeholder' | translate" autocomplete="given-name" />
             </div>
             @if (getError('firstName'); as errorKey) {
               <span class="field-error">{{ errorKey | translate }}</span>
@@ -44,7 +44,7 @@
             <label class="field-label" for="register-last-name">{{ 'iam.register.last-name' | translate }}</label>
             <div class="input-box" [class.invalid]="getError('lastName')">
               <mat-icon>person_outline</mat-icon>
-              <input id="register-last-name" type="text" formControlName="lastName" placeholder="Doe" autocomplete="family-name" />
+              <input id="register-last-name" type="text" formControlName="lastName" [placeholder]="'iam.register.last-name-placeholder' | translate" autocomplete="family-name" />
             </div>
             @if (getError('lastName'); as errorKey) {
               <span class="field-error">{{ errorKey | translate }}</span>
@@ -59,7 +59,7 @@
             id="register-email"
             type="email"
             formControlName="email"
-            placeholder="you@example.com"
+            [placeholder]="'iam.login.email-placeholder' | translate"
             autocomplete="email" />
         </div>
         @if (getError('email'); as errorKey) {

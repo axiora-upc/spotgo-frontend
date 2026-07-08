@@ -11,8 +11,10 @@
     @for (tab of tabs; track tab.link) {
       <a
         class="realtime-map__tab"
-        [routerLink]="tab.link"
-        routerLinkActive="is-active">
+        role="tab"
+        routerLinkActive="is-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        [routerLink]="tab.link">
         {{ tab.label | translate }}
       </a>
     }

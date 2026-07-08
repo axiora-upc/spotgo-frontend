@@ -158,7 +158,7 @@ export class HistoryStore {
       raw.startDate, raw.endDate, raw.status, raw.amount, raw.baseAmount, stars,
     );
 
-    this.historyApi.rateReservation(updated).pipe(retry(1)).subscribe({
+    this.historyApi.rateReservation(reservationId, stars).pipe(retry(1)).subscribe({
       next: (saved) => {
         /* Step 3: update raw signal → history computed re-derives */
         this.rawReservationsSignal.update(raws =>

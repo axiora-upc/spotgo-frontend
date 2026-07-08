@@ -135,17 +135,23 @@ export class AuthStore {
     });
   }
 
-  /*
-    Used by the ForgotPassword view, reachable from the login page without
-    being authenticated — that's the whole point. See IamApi.resetPassword
-    for the mock-backend caveat (no email/token verification here).
-  */
-  resetPassword(
+  requestPasswordReset(
     email: string,
+    callbacks?: { onSuccess?: () => void; onError?: (messageKey: string) => void }
+  ): void {
+    this.iamApi.requestPasswordReset(email).subscribe({
+      next: () => callbacks?.onSuccess?.(),
+      error: (err) => callbacks?.onError?.(this.messageKeyFrom(err)),
+    });
+  }
+
+  confirmPasswordReset(
+    email: string,
+    code: string,
     newPassword: string,
     callbacks?: { onSuccess?: () => void; onError?: (messageKey: string) => void }
   ): void {
-    this.iamApi.resetPassword(email, newPassword).subscribe({
+    this.iamApi.confirmPasswordReset({ email, code, newPassword }).subscribe({
       next: () => callbacks?.onSuccess?.(),
       error: (err) => callbacks?.onError?.(this.messageKeyFrom(err)),
     });

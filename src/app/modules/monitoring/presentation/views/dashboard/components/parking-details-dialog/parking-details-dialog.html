@@ -7,7 +7,7 @@
     <h2 *ngIf="step() === 'confirm'">{{ 'dashboard.reservation.confirm-reservation' | translate }}</h2>
     <h2 *ngIf="step() === 'success'">{{ 'dashboard.reservation.reservation-confirmed' | translate }}</h2>
 
-    <button mat-icon-button (click)="close()" class="close-btn">
+    <button mat-icon-button (click)="close()" class="close-btn" [attr.aria-label]="'shared.close-dialog' | translate">
       <mat-icon>close</mat-icon>
     </button>
   </header>
@@ -17,7 +17,7 @@
     <div class="parking-info">
       <h3>{{ parking.name }}</h3>
       <div class="meta">
-        <mat-icon>location_on</mat-icon> 0.8 mi away • <mat-icon class="star">star</mat-icon> {{ parking.rating | number:'1.1-1' }}
+        <mat-icon>location_on</mat-icon> 0.8 {{ 'dashboard.reservation.miles-away' | translate }} • <mat-icon class="star">star</mat-icon> {{ parking.rating | number:'1.1-1' }}
       </div>
     </div>
 
@@ -27,11 +27,11 @@
         <span class="badge">{{ parking.availableSpaces }} {{ 'dashboard.parking.spots' | translate }}</span>
       </div>
       <div class="progress-container">
-        <div class="progress-bar" [style.width.%]="(parking.totalSpaces - parking.availableSpaces) / parking.totalSpaces * 100"></div>
+        <div class="progress-bar" [style.width.%]="occupancyPercent"></div>
       </div>
       <div class="availability-footer">
-        <span>{{ parking.totalSpaces - parking.availableSpaces }} {{ 'dashboard.reservation.occupied' | translate }}</span>
-        <span>{{ parking.totalSpaces }} {{ 'dashboard.parking.total' | translate }}</span>
+        <span>{{ occupiedSpaces }} {{ 'dashboard.reservation.occupied' | translate }}</span>
+        <span>{{ effectiveTotalSpaces }} {{ 'dashboard.parking.total' | translate }}</span>
       </div>
     </div>
 
@@ -41,7 +41,7 @@
         <div class="info-text">
           <span class="label">{{ 'dashboard.reservation.price' | translate }}</span>
           <span class="value">
-            {{ parking.pricePerHour | currency:'S/.':'symbol':'1.2-2' }}/hr
+            {{ parking.pricePerHour | currency:'S/.':'symbol':'1.2-2' }}{{ 'dashboard.reservation.per-hour' | translate }}
             @if (discountPercent > 0) {
               <span class="discount-tag">-{{ discountPercent }}%</span>
             }
@@ -60,7 +60,7 @@
     <div class="services">
       <h4>{{ 'dashboard.reservation.services' | translate }}</h4>
       <div class="service-badge">
-        <mat-icon>wb_sunny</mat-icon> Open Air
+        <mat-icon>wb_sunny</mat-icon> {{ 'dashboard.reservation.open-air' | translate }}
       </div>
     </div>
 
@@ -74,7 +74,7 @@
     <footer class="dialog-footer">
       <button class="fav-btn" [class.fav-btn--active]="isFavorite" (click)="toggleFavorite()" type="button">
         <mat-icon>{{ isFavorite ? 'bookmark' : 'bookmark_border' }}</mat-icon>
-        {{ isFavorite ? 'Saved' : 'Save' }}
+        {{ isFavorite ? ('dashboard.reservation.saved' | translate) : ('dashboard.reservation.save' | translate) }}
       </button>
       <button class="primary-btn" (click)="goToReserve()">{{ 'dashboard.reservation.reserve-a-spot' | translate }}</button>
     </footer>
@@ -131,7 +131,11 @@
       <div *ngFor="let spot of spots()"
            class="spot-item"
            [ngClass]="spot.status"
-           (click)="selectSpot(spot)">
+           role="button"
+           tabindex="0"
+           (click)="selectSpot(spot)"
+           (keydown.enter)="selectSpot(spot)"
+           (keydown.space)="selectSpot(spot)">
         <mat-icon *ngIf="spot.status !== 'empty'">directions_car</mat-icon>
       </div>
     </div>

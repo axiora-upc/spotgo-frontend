@@ -9,20 +9,28 @@
   The view never talks to FavoritesApi or FavoritesStore internals directly.
 */
 import { Component, OnInit, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FavoritesStore } from '../../../application/favorites.store';
 import { CurrentUserService } from '../../../../../shared/services/current-user.service';
+import { MonitoringStore } from '../../../../monitoring/application/monitoring.store';
+import { ParkingDetailsDialog } from '../../../../monitoring/presentation/views/dashboard/components/parking-details-dialog/parking-details-dialog';
+import { ParkingResource } from '../../../../monitoring/infrastructure/monitoring-api';
 
 @Component({
   selector: 'app-favorites',
   standalone: true,
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, MatDialogModule],
   templateUrl: './favorites.component.html',
   styleUrl: './favorites.component.css',
 })
 export class FavoritesComponent implements OnInit {
   protected readonly store      = inject(FavoritesStore);
   private  readonly currentUser = inject(CurrentUserService);
+  private  readonly router      = inject(Router);
+  private  readonly dialog      = inject(MatDialog);
+  private  readonly parkingStore = inject(MonitoringStore);
 
   ngOnInit(): void {
     this.store.loadFavoritesByClientId(this.currentUser.clientId);
@@ -30,6 +38,36 @@ export class FavoritesComponent implements OnInit {
 
   protected onRemove(id: string): void {
     this.store.removeFavorite(id);
+  }
+
+  protected onNavigate(): void {
+    this.router.navigate(['/dashboard']);
+  }
+
+  protected onReserve(fav: any): void {
+    const parking: ParkingResource = {
+      id: fav.parkingId,
+      adminId: '',
+      name: fav.name,
+      address: fav.address,
+      city: '',
+      totalSpaces: 0,
+      availableSpaces: fav.availableSpots,
+      totalFloors: 1,
+      averageOccupancy: 0,
+      peakHour: '',
+      totalRevenue: 0,
+      systemStatus: '',
+      rating: fav.rating,
+      pricePerHour: fav.pricePerHour,
+    };
+
+    this.dialog.open(ParkingDetailsDialog, {
+      data: parking,
+      width: '450px',
+      maxWidth: '95vw',
+      panelClass: 'custom-dialog-container',
+    });
   }
 
   /*

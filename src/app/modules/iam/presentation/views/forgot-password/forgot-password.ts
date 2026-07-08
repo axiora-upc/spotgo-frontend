@@ -13,16 +13,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { AuthStore } from '../../../application/auth.store';
 import { LanguageSwitcher } from '../../../../../shared/presentation/components/language-switcher/language-switcher';
 
-/*
-  ForgotPassword is the "I don't have my password anymore" path — as
-  opposed to ChangePasswordDialog, which requires knowing the current one.
-
-  See IamApi.resetPassword for why this is a single-step form (email +
-  new password) instead of a real email-based reset flow: this mock
-  backend has no email service to send a reset link through. It still
-  checks the email actually belongs to an existing account before
-  touching anything.
-*/
 @Component({
   selector: 'app-forgot-password',
   imports: [ReactiveFormsModule, RouterLink, MatIcon, TranslatePipe, LanguageSwitcher],
@@ -35,6 +25,7 @@ export class ForgotPassword {
   protected readonly loading = signal(false);
   protected readonly serverError = signal<string | null>(null);
   protected readonly success = signal(false);
+  protected readonly codeRequested = signal(false);
 
   protected readonly showNew = signal(false);
   protected readonly showConfirm = signal(false);
@@ -53,19 +44,21 @@ export class ForgotPassword {
   protected readonly form = new FormGroup(
     {
       email: new FormControl('', [Validators.required, Validators.email]),
+      code: new FormControl('', [Validators.required, Validators.minLength(6)]),
       newPassword: new FormControl('', [Validators.required, Validators.minLength(6)]),
       confirmPassword: new FormControl('', [Validators.required]),
     },
     { validators: (group) => this.passwordsMatch(group) }
   );
 
-  protected getError(field: 'email' | 'newPassword' | 'confirmPassword'): string | null {
+  protected getError(field: 'email' | 'code' | 'newPassword' | 'confirmPassword'): string | null {
     const control = this.form.get(field);
     if (!control || !control.touched) return null;
 
     if (control.invalid) {
       if (control.hasError('required')) return 'iam.errors.required';
       if (control.hasError('email')) return 'iam.errors.email-invalid';
+      if (control.hasError('minlength') && field === 'code') return 'iam.errors.code-invalid';
       if (control.hasError('minlength')) return 'iam.errors.password-min';
     }
 
@@ -74,6 +67,28 @@ export class ForgotPassword {
     }
 
     return null;
+  }
+
+  protected requestCode(): void {
+    const emailControl = this.form.get('email');
+    if (!emailControl || emailControl.invalid) {
+      emailControl?.markAsTouched();
+      return;
+    }
+
+    this.serverError.set(null);
+    this.loading.set(true);
+
+    this.authStore.requestPasswordReset(emailControl.value!, {
+      onSuccess: () => {
+        this.loading.set(false);
+        this.codeRequested.set(true);
+      },
+      onError: (messageKey) => {
+        this.loading.set(false);
+        this.serverError.set(messageKey);
+      },
+    });
   }
 
   protected onSubmit(): void {
@@ -85,9 +100,9 @@ export class ForgotPassword {
     this.serverError.set(null);
     this.loading.set(true);
 
-    const { email, newPassword } = this.form.getRawValue();
+    const { email, code, newPassword } = this.form.getRawValue();
 
-    this.authStore.resetPassword(email!, newPassword!, {
+    this.authStore.confirmPasswordReset(email!, code!, newPassword!, {
       onSuccess: () => {
         this.loading.set(false);
         this.success.set(true);

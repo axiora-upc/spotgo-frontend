@@ -68,8 +68,8 @@
             }
             @if (isEditing()) {
               <div class="info-name-inputs">
-                <input class="info-input" [(ngModel)]="editBuffer.firstName"  placeholder="First name" />
-                <input class="info-input" [(ngModel)]="editBuffer.lastName"   placeholder="Last name" />
+                <input class="info-input" [(ngModel)]="editBuffer.firstName"  [placeholder]="'settings.info.first-name-placeholder' | translate" />
+                <input class="info-input" [(ngModel)]="editBuffer.lastName"   [placeholder]="'settings.info.last-name-placeholder' | translate" />
               </div>
             }
           </div>
@@ -186,7 +186,7 @@
 
     @if (selectedBlueprint()) {
       <div class="blueprint-preview">
-        <img class="blueprint-preview-img" [src]="selectedBlueprint()" alt="Blueprint" />
+        <img class="blueprint-preview-img" [src]="selectedBlueprint()" [attr.alt]="'settings.blueprint.alt' | translate" />
       </div>
     }
 

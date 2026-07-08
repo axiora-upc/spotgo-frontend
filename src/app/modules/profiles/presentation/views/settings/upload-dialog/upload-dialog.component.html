@@ -31,7 +31,7 @@
   -->
   @if (previewUrl()) {
     <div class="preview-container">
-      <img class="preview-image" [src]="previewUrl()" alt="Preview" />
+      <img class="preview-image" [src]="previewUrl()" [attr.alt]="'settings.blueprint.preview-alt' | translate" />
     </div>
   }
 

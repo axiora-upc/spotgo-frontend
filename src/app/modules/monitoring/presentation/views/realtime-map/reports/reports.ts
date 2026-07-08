@@ -52,6 +52,7 @@ export class Reports implements OnInit {
   private readonly http = inject(HttpClient);
 
   readonly reports = signal<AdminReportView[]>([]);
+  readonly loading = signal(true);
   readonly currentPage = signal(1);
   readonly pageSize = 5;
 
@@ -99,7 +100,9 @@ export class Reports implements OnInit {
 
         this.reports.set(filtered);
         this.currentPage.set(1);
+        this.loading.set(false);
       },
+      error: () => this.loading.set(false),
     });
   }
 
@@ -147,6 +150,9 @@ export class Reports implements OnInit {
             )
             .sort((a, b) => this.compareReports(a, b))
         );
+      },
+      error: (err) => {
+        console.error('Failed to resolve report', err);
       },
     });
   }
