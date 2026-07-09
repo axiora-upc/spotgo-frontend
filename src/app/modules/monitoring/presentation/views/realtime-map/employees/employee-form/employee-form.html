@@ -53,6 +53,16 @@
     </div>
 
     <mat-form-field appearance="outline" class="employee-form__field">
+      <mat-label>{{ 'realtime-map.employees.form.assigned-spot' | translate }}</mat-label>
+      <mat-select formControlName="assignedSpot">
+        <mat-option value="">{{ 'realtime-map.employees.form.no-assigned-spot' | translate }}</mat-option>
+        @for (spot of spotOptions; track spot) {
+          <mat-option [value]="spot">{{ spot }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="employee-form__field">
       <mat-label>{{ 'realtime-map.employees.form.status' | translate }}</mat-label>
       <mat-select formControlName="status" required>
         @for (status of statuses; track status) {

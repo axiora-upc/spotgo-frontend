@@ -67,6 +67,7 @@ export class BlueprintsApi {
                   .map(sr => ({
                     id:     sr.id,
                     code:   sr.code,
+                    parkingId: sr.parkingId,
                     row:    sr.row,
                     col:    sr.col,
                     x_pct: sr.x_pct,
@@ -74,6 +75,8 @@ export class BlueprintsApi {
                     w_pct: sr.w_pct,
                     h_pct: sr.h_pct,
                     status: (sr.status ?? 'available') as DetectedSpot['status'],
+                    assignedEmployeeId: sr.assignedEmployeeId ?? null,
+                    assignedEmployeeName: sr.assignedEmployeeName ?? null,
                   }));
                 return blueprint;
               })

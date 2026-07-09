@@ -11,17 +11,19 @@
   spots and add metadata.
 */
 
-export type ParkingSpotStatus = 'available' | 'occupied' | 'maintenance' | 'empty';
+export type ParkingSpotStatus = 'available' | 'occupied' | 'reserved' | 'maintenance' | 'empty';
 
 export class ParkingSpot {
   private _id: string;
   private _status: ParkingSpotStatus;
   private _dbId?: number;
+  private _assignedEmployeeName?: string | null;
 
-  constructor(props: { id: string; status: ParkingSpotStatus; dbId?: number }) {
+  constructor(props: { id: string; status: ParkingSpotStatus; dbId?: number; assignedEmployeeName?: string | null }) {
     this._id = props.id;
     this._status = props.status;
     this._dbId = props.dbId;
+    this._assignedEmployeeName = props.assignedEmployeeName;
   }
 
   get id(): string {
@@ -48,6 +50,14 @@ export class ParkingSpot {
 
   set dbId(value: number | undefined) {
     this._dbId = value;
+  }
+
+  get assignedEmployeeName(): string | null | undefined {
+    return this._assignedEmployeeName;
+  }
+
+  set assignedEmployeeName(value: string | null | undefined) {
+    this._assignedEmployeeName = value;
   }
 }
 

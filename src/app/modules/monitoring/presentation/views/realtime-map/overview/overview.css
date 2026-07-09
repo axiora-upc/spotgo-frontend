@@ -231,6 +231,7 @@
 
 .overview__legend-swatch--available { background-color: #10b981; }
 .overview__legend-swatch--occupied { background-color: #ef4444; }
+.overview__legend-swatch--reserved { background-color: #2563eb; }
 .overview__legend-swatch--maintenance { background-color: #f5b400; }
 
 .overview__map {
@@ -323,6 +324,7 @@
 
 .overview__spot--available   { background-color: #10b981; }
 .overview__spot--occupied    { background-color: #ef4444; }
+.overview__spot--reserved    { background-color: #2563eb; }
 .overview__spot--maintenance { background-color: #f5b400; }
 /* Placeholder invisible: reserva el espacio del hueco sin dibujar nada */
 .overview__spot--empty       { visibility: hidden; pointer-events: none; box-shadow: none; }

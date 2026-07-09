@@ -120,7 +120,7 @@ export class BlueprintStorageService {
 
     Si la petición tiene éxito, el croquis se quita del signal.
   */
-  remove(name: string, callbacks?: { onSuccess?: () => void; onError?: () => void }): void {
+  remove(name: string, callbacks?: { onSuccess?: () => void; onError?: (message?: string) => void }): void {
     const target = this.blueprintsSignal().find(
       (b) => b.name.toLowerCase() === name.toLowerCase()
     );
@@ -134,7 +134,10 @@ export class BlueprintStorageService {
         this.blueprintsSignal.update((current) => current.filter((b) => b.id !== target.id));
         callbacks?.onSuccess?.();
       },
-      error: () => callbacks?.onError?.(),
+      error: (err) => {
+        const message = err?.error?.message || err?.message;
+        callbacks?.onError?.(message);
+      },
     });
   }
 }

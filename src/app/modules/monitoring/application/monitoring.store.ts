@@ -194,9 +194,12 @@ export class MonitoringStore {
         const now = Date.now();
 
         const maintenanceByParking = new Map<string, number>();
+        const reservedByParking = new Map<string, number>();
         detectedSpots.forEach(s => {
           if (s.status === 'maintenance')
             maintenanceByParking.set(s.parkingId, (maintenanceByParking.get(s.parkingId) ?? 0) + 1);
+          else if (s.status === 'reserved')
+            reservedByParking.set(s.parkingId, (reservedByParking.get(s.parkingId) ?? 0) + 1);
         });
 
         const reconciled = parkings.map(p => {
@@ -208,6 +211,7 @@ export class MonitoringStore {
                  new Date(r.endDate).getTime() > now
           ).length;
           const maintenance = maintenanceByParking.get(p.id) ?? 0;
+          const reserved = reservedByParking.get(p.id) ?? 0;
           const ratedForParking = reservations.filter(
             r => r.parkingId === p.id && r.rating !== null
           );
@@ -216,7 +220,7 @@ export class MonitoringStore {
             : Math.round(
                 ratedForParking.reduce((sum, r) => sum + (r.rating ?? 0), 0) / ratedForParking.length * 10
               ) / 10;
-          return { ...p, availableSpaces: Math.max(0, p.totalSpaces - occupied - maintenance), rating };
+          return { ...p, availableSpaces: Math.max(0, p.totalSpaces - occupied - maintenance - reserved), rating };
         });
         this.parkingsSignal.set(reconciled);
         this.loadingSignal.set(false);
@@ -475,6 +479,7 @@ export class MonitoringStore {
           id:     `${rowLabel}${col + 1}`,
           status: detected ? (detected.status ?? 'available') : 'empty',
           dbId:   detected?.code,
+          assignedEmployeeName: detected?.assignedEmployeeName ?? null,
         }));
       }
 

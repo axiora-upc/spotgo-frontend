@@ -173,6 +173,7 @@
 
 .mini-spot.available { background: #bbf7d0; }
 .mini-spot.occupied  { background: #e5e7eb; }
+.mini-spot.reserved  { background: #dbeafe; }
 .mini-spot.maintenance { background: #fde68a; }
 .mini-spot.empty     { background: transparent; }
 
@@ -239,6 +240,7 @@
 
 .spot-item.available { background: #d1fae5; color: #065f46; }
 .spot-item.occupied  { background: #f3f4f6; color: #9ca3af; cursor: not-allowed; }
+.spot-item.reserved  { background: #dbeafe; color: #1d4ed8; cursor: not-allowed; }
 .spot-item.maintenance { background: #fef3c7; color: #92400e; cursor: not-allowed; }
 .spot-item.selected  { background: #2563eb; color: white; }
 .spot-item.empty     { background: transparent; pointer-events: none; border: none; }
@@ -260,8 +262,19 @@
 .dot { width: 8px; height: 8px; border-radius: 50%; }
 .dot.available { background: #10b981; }
 .dot.occupied { background: #9ca3af; }
+.dot.reserved { background: #2563eb; }
 .dot.maintenance { background: #f59e0b; }
 .dot.selected { background: #2563eb; }
+
+.blocked-spot-message {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 13px;
+  font-weight: 600;
+}
 
 /* Summary Card */
 .summary-card {

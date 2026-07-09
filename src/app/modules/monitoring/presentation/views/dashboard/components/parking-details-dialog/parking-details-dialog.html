@@ -145,9 +145,14 @@
     <div class="legend">
       <div class="legend-item"><span class="dot available"></span> {{ 'dashboard.reservation.available' | translate }}</div>
       <div class="legend-item"><span class="dot occupied"></span> {{ 'dashboard.reservation.occupied' | translate }}</div>
+      <div class="legend-item"><span class="dot reserved"></span> {{ 'dashboard.reservation.reserved' | translate }}</div>
       <div class="legend-item"><span class="dot maintenance"></span> {{ 'dashboard.reservation.maintenance' | translate }}</div>
       <div class="legend-item"><span class="dot selected"></span> {{ 'dashboard.reservation.selected' | translate }}</div>
     </div>
+
+    @if (blockedSpotMessage(); as blockedMessage) {
+      <p class="blocked-spot-message">{{ blockedMessage }}</p>
+    }
 
     <footer class="dialog-footer split">
       <button class="secondary-btn" (click)="goBack()">{{ 'dashboard.reservation.back' | translate }}</button>

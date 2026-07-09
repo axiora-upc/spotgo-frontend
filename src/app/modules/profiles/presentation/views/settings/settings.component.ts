@@ -17,7 +17,8 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
-import { TranslatePipe } from '@ngx-translate/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 /*
   BlueprintStorageService gestiona los croquis del admin en la base de datos.
@@ -63,6 +64,8 @@ export class SettingsComponent implements OnInit {
   blueprintStorage    = inject(BlueprintStorageService);
   readonly profilesStore  = inject(ProfilesStore);
   private currentUser     = inject(CurrentUserService);
+  private snackBar        = inject(MatSnackBar);
+  private translate       = inject(TranslateService);
 
   // ─── Estado de edición ────────────────────────────────────────────────────
 
@@ -196,6 +199,14 @@ export class SettingsComponent implements OnInit {
           de un croquis que ya fue eliminado.
         */
         onSuccess: () => this.selectedBlueprint.set(null),
+        onError: (message) => {
+          const close = this.translate.instant('shared.snackbar.close');
+          this.snackBar.open(
+            message || this.translate.instant('settings.blueprint.delete-active-reservations'),
+            close,
+            { duration: 5000, panelClass: ['snackbar', 'snackbar--error'] },
+          );
+        },
       });
     });
   }

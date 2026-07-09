@@ -52,6 +52,7 @@ interface SpotReservationView {
 interface SelectedSpotView {
   spot: ParkingSpot;
   reservation: SpotReservationView | null;
+  assignedEmployeeName?: string | null;
 }
 
 @Component({
@@ -173,6 +174,7 @@ export class Overview implements OnInit, OnDestroy {
     this.selectedSpot.set({
       spot,
       reservation: reservation ? this.toSpotReservationView(reservation) : null,
+      assignedEmployeeName: spot.assignedEmployeeName ?? null,
     });
   }
 
@@ -242,6 +244,7 @@ export class Overview implements OnInit, OnDestroy {
     this.selectedSpot.set({
       spot: new ParkingSpot({ id: spotId, status, dbId: selected.spot.dbId }),
       reservation: null,
+      assignedEmployeeName: null,
     });
   }
 
