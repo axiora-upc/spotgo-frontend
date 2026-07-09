@@ -20,6 +20,7 @@ import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 
 import { Employee } from '../../../../domain/model/employee.entity';
 import { MonitoringStore } from '../../../../application/monitoring.store';
+import { MonitoringApi } from '../../../../infrastructure/monitoring-api';
 import { EmployeeForm, EmployeeFormData } from './employee-form/employee-form';
 import {
   ConfirmDialog,
@@ -37,8 +38,10 @@ export class Employees implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
+  private readonly monitoringApi = inject(MonitoringApi);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = 5;
+  private readonly spotOptions = signal<string[]>([]);
 
   protected readonly totalPages = computed(() =>
     Math.max(1, Math.ceil(this.store.employees().length / this.pageSize))
@@ -65,10 +68,24 @@ export class Employees implements OnInit {
 
   ngOnInit(): void {
     this.store.loadEmployees();
+    this.monitoringApi.getDetectedSpots().subscribe({
+      next: (spots) => {
+        const codes = spots
+          .filter((spot) => spot.row != null && spot.col != null)
+          .map((spot) => `${String.fromCharCode(65 + (spot.row ?? 0))}${(spot.col ?? 0) + 1}`)
+          .sort((left, right) => {
+            const leftRow = left.charCodeAt(0);
+            const rightRow = right.charCodeAt(0);
+            if (leftRow !== rightRow) return leftRow - rightRow;
+            return Number.parseInt(left.slice(1), 10) - Number.parseInt(right.slice(1), 10);
+          });
+        this.spotOptions.set(codes);
+      },
+    });
   }
 
   protected openCreateDialog(): void {
-    const data: EmployeeFormData = { mode: 'create' };
+    const data: EmployeeFormData = { mode: 'create', spotOptions: this.spotOptions() };
 
     this.dialog
       .open<EmployeeForm, EmployeeFormData, Employee>(EmployeeForm, {
@@ -92,7 +109,7 @@ export class Employees implements OnInit {
   }
 
   protected openEditDialog(employee: Employee): void {
-    const data: EmployeeFormData = { mode: 'edit', employee };
+    const data: EmployeeFormData = { mode: 'edit', employee, spotOptions: this.spotOptions() };
 
     this.dialog
       .open<EmployeeForm, EmployeeFormData, Employee>(EmployeeForm, {
@@ -151,7 +168,10 @@ export class Employees implements OnInit {
   }
 
   private showError(key: string): void {
-    const message = this.translate.instant(key);
+    const backendMessage = this.store.error();
+    const message = backendMessage && !backendMessage.startsWith('Failed to')
+      ? backendMessage
+      : this.translate.instant(key);
     const close = this.translate.instant('shared.snackbar.close');
     this.snackBar.open(message, close, {
       duration: 5000,

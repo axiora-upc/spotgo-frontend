@@ -27,6 +27,7 @@ export class EmployeeAssembler
       schedule: resource.schedule as EmployeeSchedule,
       shiftStart: resource.shiftStart,
       shiftEnd: resource.shiftEnd,
+      assignedSpot: resource.assignedSpot ?? null,
       status: resource.status as EmployeeStatus,
     });
   }
@@ -44,6 +45,7 @@ export class EmployeeAssembler
       schedule: entity.schedule,
       shiftStart: entity.shiftStart,
       shiftEnd: entity.shiftEnd,
+      assignedSpot: entity.assignedSpot,
       status: entity.status,
     } as EmployeesResource;
   }

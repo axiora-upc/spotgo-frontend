@@ -51,7 +51,7 @@ export class WeeklyTrendPoint {
 
 /* ----- SpotUtilization entity ----- */
 
-export type SpotStatus = 'occupied' | 'available' | 'maintenance';
+export type SpotStatus = 'occupied' | 'available' | 'reserved' | 'maintenance';
 export type SpotType   = 'standard' | 'ev';
 
 export class SpotUtilization implements BaseEntity {

@@ -91,6 +91,10 @@
             {{ 'realtime-map.overview.occupied' | translate }}
           </li>
           <li>
+            <span class="overview__legend-swatch overview__legend-swatch--reserved"></span>
+            {{ 'realtime-map.overview.reserved' | translate }}
+          </li>
+          <li>
             <span class="overview__legend-swatch overview__legend-swatch--maintenance"></span>
             {{ 'realtime-map.overview.maintenance' | translate }}
           </li>
@@ -185,11 +189,25 @@
           </div>
         } @else {
           <div class="spot-modal__empty">
-            <mat-icon>event_available</mat-icon>
-            <h3>{{ 'realtime-map.overview.spot-modal.empty-title' | translate }}</h3>
-            <p>{{ 'realtime-map.overview.spot-modal.empty-desc' | translate }}</p>
+            <mat-icon>{{ selected.spot.status === 'reserved' ? 'person_pin_circle' : 'event_available' }}</mat-icon>
+            <h3>
+              {{
+                (selected.spot.status === 'reserved'
+                  ? 'realtime-map.overview.spot-modal.reserved-title'
+                  : 'realtime-map.overview.spot-modal.empty-title') | translate
+              }}
+            </h3>
+            <p>
+              {{
+                (selected.spot.status === 'reserved'
+                  ? 'realtime-map.overview.spot-modal.reserved-desc'
+                  : 'realtime-map.overview.spot-modal.empty-desc')
+                  | translate: { employeeName: selected.assignedEmployeeName || ('realtime-map.overview.spot-modal.employee-fallback' | translate) }
+              }}
+            </p>
           </div>
 
+          @if (selected.spot.status !== 'reserved') {
           <footer class="spot-modal__actions">
             @if (selected.spot.status === 'maintenance') {
               <button class="spot-modal__btn spot-modal__btn--primary" type="button" (click)="setSelectedSpotAvailable()">
@@ -201,6 +219,7 @@
               </button>
             }
           </footer>
+          }
         }
       </section>
     </div>

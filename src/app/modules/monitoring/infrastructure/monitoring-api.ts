@@ -20,8 +20,13 @@ import { ParkingAnalytics } from '../domain/model/analytics.entity';
 export type { ParkingResource };
 
 export interface DetectedSpotSummary {
+  id: string;
   parkingId: string;
-  status?: string;
+  row?: number;
+  col?: number;
+  status?: 'available' | 'occupied' | 'reserved' | 'maintenance';
+  assignedEmployeeId?: string | null;
+  assignedEmployeeName?: string | null;
 }
 
 @Injectable({ providedIn: 'root' })

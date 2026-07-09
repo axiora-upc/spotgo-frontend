@@ -22,7 +22,7 @@ describe('EmployeeForm', () => {
   /*
     Default dialog data: create mode.
   */
-  const dialogData: EmployeeFormData = { mode: 'create' };
+  const dialogData: EmployeeFormData = { mode: 'create', spotOptions: [] };
 
   beforeEach(async () => {
     /*

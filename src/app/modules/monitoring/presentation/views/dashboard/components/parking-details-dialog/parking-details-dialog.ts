@@ -17,12 +17,14 @@ import { DetectedSpot } from '../../../../../../../modules/profiles/domain/model
 import { FavoritesStore } from '../../../../../../../modules/profiles/application/favorites.store';
 import { CurrentUserService } from '../../../../../../../shared/services/current-user.service';
 import { PaymentStore } from '../../../../../../../modules/payment/application/payment.store';
+import { TranslateService } from '@ngx-translate/core';
 
 export type DialogStep = 'details' | 'reserve' | 'choose-spot' | 'confirm' | 'success';
 
 interface Spot {
   id: string;
-  status: 'available' | 'occupied' | 'maintenance' | 'selected' | 'empty';
+  status: 'available' | 'occupied' | 'reserved' | 'maintenance' | 'selected' | 'empty';
+  assignedEmployeeName?: string | null;
 }
 
 const GRID_COLS = 8;
@@ -49,6 +51,7 @@ export class ParkingDetailsDialog implements OnInit {
   private readonly api            = inject(BlueprintsApi);
   private readonly store          = inject(MonitoringStore);
   private readonly paymentStore   = inject(PaymentStore);
+  private readonly translate      = inject(TranslateService);
   protected readonly favStore     = inject(FavoritesStore);
   private readonly currentUser    = inject(CurrentUserService);
 
@@ -64,6 +67,7 @@ export class ParkingDetailsDialog implements OnInit {
   protected selectedSpotId = signal<string | null>(null);
   protected bookingCode    = signal<string>('');
   protected spots          = signal<Spot[]>([]);
+  protected readonly blockedSpotMessage = signal<string | null>(null);
 
   private blueprintId    = '';
   private blueprintSpots: DetectedSpot[] = [];
@@ -129,8 +133,9 @@ export class ParkingDetailsDialog implements OnInit {
         result.push({
           id:     `${rowLabel}${col + 1}`,
           status: detected
-            ? ((detected.status ?? 'available') as 'available' | 'occupied' | 'maintenance')
+            ? ((detected.status ?? 'available') as 'available' | 'occupied' | 'reserved' | 'maintenance')
             : 'empty',
+          assignedEmployeeName: detected?.assignedEmployeeName ?? null,
         });
       }
     }
@@ -188,8 +193,16 @@ export class ParkingDetailsDialog implements OnInit {
   }
 
   protected selectSpot(spot: Spot): void {
+    if (spot.status === 'reserved') {
+      this.blockedSpotMessage.set(this.translate.instant(
+        'dashboard.reservation.reserved-by-employee',
+        { employeeName: spot.assignedEmployeeName ?? this.translate.instant('dashboard.reservation.an-employee') }
+      ));
+      return;
+    }
     if (spot.status === 'occupied' || spot.status === 'maintenance' || spot.status === 'empty') return;
 
+    this.blockedSpotMessage.set(null);
     this.selectedSpotId.set(spot.id);
     this.spots.update(current =>
       current.map(s => ({

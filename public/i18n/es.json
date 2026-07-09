@@ -202,6 +202,7 @@
       "next": "Siguiente",
       "tap-available-spot": "Toca un espacio disponible en el Nivel 1",
       "available": "Disponible",
+      "reserved": "Reservado",
       "maintenance": "Mantenimiento",
       "selected": "Seleccionado",
       "back": "Atrás",
@@ -222,7 +223,9 @@
       "miles-away": "mi de distancia",
       "open-air": "Aire libre",
       "saved": "Guardado",
-      "save": "Guardar"
+      "save": "Guardar",
+      "reserved-by-employee": "Este espacio está reservado mientras {{ employeeName }} esté en turno.",
+      "an-employee": "un empleado"
     },
     "map": {
       "legend": {
@@ -259,6 +262,7 @@
       "status-legend": "LEYENDA DE ESTADO",
       "available": "Disponible",
       "occupied": "Ocupado",
+      "reserved": "Reservado",
       "maintenance": "Mantenimiento",
       "peak-hours-today": "Horas Pico Total",
       "revenue-yield": "Ingresos Estimados",
@@ -282,6 +286,9 @@
         "amount": "Monto",
         "empty-title": "Nadie ha reservado este spot aún",
         "empty-desc": "Puedes bloquearlo para mantenimiento. Los clientes no podrán seleccionarlo hasta que un admin lo libere.",
+        "reserved-title": "Spot reservado para empleado",
+        "reserved-desc": "Este spot permanece reservado mientras {{ employeeName }} esté en turno.",
+        "employee-fallback": "el empleado asignado",
         "unlock": "Liberar spot",
         "set-maintenance": "Poner en mantenimiento"
       }
@@ -294,6 +301,7 @@
       "booking-prefix": "Reserva",
       "client-prefix": "Cliente",
       "spot-prefix": "Spot",
+      "loading": "Cargando reportes...",
       "empty": "Aún no hay reportes de clientes para este estacionamiento.",
       "resolve-button": "Marcar resuelto",
       "resolved-button": "Resuelto",
@@ -321,12 +329,14 @@
       "subtitle": "Consulta a tus empleados, su spot de estacionamiento asignado si tienen uno y si están en turno o no.",
       "role-prefix": "Rol",
       "turn-prefix": "Turno",
+      "assigned-spot-prefix": "Spot asignado",
       "booking-prefix": "Reserva #",
       "add": "Agregar Empleado",
       "edit": "Editar",
       "delete": "Eliminar",
       "schedules": {
-        "all-week": "Toda la semana"
+        "all-week": "Toda la semana",
+        "weekdays": "Días laborales"
       },
       "roles": {
         "guard": "Vigilante",
@@ -344,12 +354,15 @@
         "schedule": "Horario",
         "shift-start": "Inicio de turno",
         "shift-end": "Fin de turno",
+        "assigned-spot": "Spot asignado",
+        "no-assigned-spot": "Sin spot asignado",
         "booking-code": "Código de reserva",
         "status": "Estado",
         "cancel": "Cancelar",
         "add": "Agregar",
         "save": "Guardar"
       },
+      "no-assigned-spot": "Sin spot asignado",
       "delete-confirm": {
         "title": "Eliminar empleado",
         "message": "Esta acción eliminará al empleado de la base de datos. No podrás deshacerla.",
@@ -598,6 +611,7 @@
       "error-type": "Solo se permiten imágenes PNG, JPG y WebP.",
       "error-size": "La imagen debe pesar menos de 1 MB.",
       "error-storage": "No se pudo guardar el croquis. Intenta de nuevo.",
+      "delete-active-reservations": "No se puede eliminar el croquis: el estacionamiento tiene reservas activas.",
       "delete-dialog-title": "Eliminar Croquis",
       "delete-dialog-subtitle": "Selecciona el croquis que deseas eliminar. Esta acción no se puede deshacer.",
       "select-label": "Croquis",

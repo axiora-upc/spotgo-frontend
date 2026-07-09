@@ -54,6 +54,11 @@
             {{ 'realtime-map.employees.turn-prefix' | translate }}:
             {{ employee.shiftStart }} - {{ employee.shiftEnd }}
           </span>
+          <span class="employees__dot">·</span>
+          <span class="employees__meta-item">
+            {{ 'realtime-map.employees.assigned-spot-prefix' | translate }}:
+            {{ employee.assignedSpot || ('realtime-map.employees.no-assigned-spot' | translate) }}
+          </span>
         </p>
 
       </div>

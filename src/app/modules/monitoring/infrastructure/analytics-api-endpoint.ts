@@ -53,7 +53,7 @@ export class AnalyticsApiEndpoint {
             spotName: spot.spotName,
             zone: spot.zone,
             type: spot.type as 'standard' | 'ev',
-            status: spot.status as 'available' | 'occupied' | 'maintenance',
+            status: spot.status as 'available' | 'occupied' | 'reserved' | 'maintenance',
             dailyTurnover: spot.dailyTurnover,
             peakUtilization: spot.peakUtilization,
             revenueImpact: spot.revenueImpact,

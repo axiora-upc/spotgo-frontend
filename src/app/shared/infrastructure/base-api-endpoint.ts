@@ -83,8 +83,15 @@ export abstract class BaseApiEndpoint< TEntity extends BaseEntity,
 
     return (error: HttpErrorResponse): Observable<never> => {
       let errorMessage = operation;
+      const apiDetails = typeof error.error?.details === 'string' && error.error.details.trim().length > 0
+        ? error.error.details.trim()
+        : typeof error.error?.message === 'string' && error.error.message.trim().length > 0
+          ? error.error.message.trim()
+          : null;
       if (error.status === 404) {
         errorMessage = `Resource not found: ${operation}`;
+      } else if (apiDetails) {
+        errorMessage = apiDetails;
       } else if (error.error instanceof ErrorEvent) {
         errorMessage = `An error occurred ${operation}: ${error.error.message}`;
       } else {

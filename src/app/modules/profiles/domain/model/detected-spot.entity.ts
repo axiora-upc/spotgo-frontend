@@ -16,6 +16,7 @@
 export interface DetectedSpot {
   id:      string;   // UUID persistido en backend
   code?:   number;   // codigo visible del spot en frontend
+  parkingId?: string;
   row:     number;   // fila en la que fue detectado (0, 1, 2...)
   col:     number;   // columna dentro de la fila (0, 1, 2...)
   x_pct:  number;   // posición X como % del ancho total de la imagen
@@ -24,5 +25,7 @@ export interface DetectedSpot {
   h_pct:  number;   // alto del spot como % del alto total de la imagen
   // Estado del spot: se actualiza en db.json cuando se reserva.
   // undefined equivale a 'available' (compatibilidad con registros anteriores).
-  status?: 'available' | 'occupied' | 'maintenance';
+  status?: 'available' | 'occupied' | 'reserved' | 'maintenance';
+  assignedEmployeeId?: string | null;
+  assignedEmployeeName?: string | null;
 }

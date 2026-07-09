@@ -22,6 +22,7 @@ export interface EmployeesResource extends BaseResource {
   schedule: string;
   shiftStart: string;
   shiftEnd: string;
+  assignedSpot?: string | null;
   status: string;
 }
 

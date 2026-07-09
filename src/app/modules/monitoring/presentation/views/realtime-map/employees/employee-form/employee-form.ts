@@ -37,6 +37,7 @@ import {
 export interface EmployeeFormData {
   mode: 'create' | 'edit';
   employee?: Employee;
+  spotOptions: string[];
 }
 
 @Component({
@@ -61,6 +62,7 @@ export class EmployeeForm {
   protected readonly roles: EmployeeRole[] = ['guard', 'cleaning-personnel'];
   protected readonly schedules: EmployeeSchedule[] = ['all-week'];
   protected readonly statuses: EmployeeStatus[] = ['on-duty', 'off-duty'];
+  protected readonly spotOptions = this.data.spotOptions;
 
   private readonly fb = inject(FormBuilder);
   protected readonly form = this.fb.nonNullable.group({
@@ -72,6 +74,7 @@ export class EmployeeForm {
     ],
     shiftStart: [this.data.employee?.shiftStart ?? '09:00', [Validators.required]],
     shiftEnd: [this.data.employee?.shiftEnd ?? '17:00', [Validators.required]],
+    assignedSpot: [this.data.employee?.assignedSpot ?? ''],
     status: [
       this.data.employee?.status ?? ('on-duty' as EmployeeStatus),
       [Validators.required],
@@ -97,6 +100,7 @@ export class EmployeeForm {
       schedule: value.schedule,
       shiftStart: value.shiftStart,
       shiftEnd: value.shiftEnd,
+      assignedSpot: value.assignedSpot.trim() ? value.assignedSpot.trim().toUpperCase() : null,
       status: value.status,
     });
 

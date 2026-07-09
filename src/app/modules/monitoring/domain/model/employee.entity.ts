@@ -27,6 +27,7 @@ export class Employee implements BaseEntity {
   private _schedule: EmployeeSchedule;
   private _shiftStart: string;
   private _shiftEnd: string;
+  private _assignedSpot: string | null;
   private _status: EmployeeStatus;
 
   constructor(props: {
@@ -37,6 +38,7 @@ export class Employee implements BaseEntity {
     schedule: EmployeeSchedule;
     shiftStart: string;
     shiftEnd: string;
+    assignedSpot: string | null;
     status: EmployeeStatus;
   }) {
     this._id = props.id;
@@ -46,6 +48,7 @@ export class Employee implements BaseEntity {
     this._schedule = props.schedule;
     this._shiftStart = props.shiftStart;
     this._shiftEnd = props.shiftEnd;
+    this._assignedSpot = props.assignedSpot;
     this._status = props.status;
   }
 
@@ -103,6 +106,14 @@ export class Employee implements BaseEntity {
 
   set shiftEnd(value: string) {
     this._shiftEnd = value;
+  }
+
+  get assignedSpot(): string | null {
+    return this._assignedSpot;
+  }
+
+  set assignedSpot(value: string | null) {
+    this._assignedSpot = value;
   }
 
   get status(): EmployeeStatus {

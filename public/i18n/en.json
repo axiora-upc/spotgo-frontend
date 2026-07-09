@@ -202,6 +202,7 @@
       "next": "Next",
       "tap-available-spot": "Tap an available spot on Level 1",
       "available": "Available",
+      "reserved": "Reserved",
       "maintenance": "Maintenance",
       "selected": "Selected",
       "back": "Back",
@@ -222,7 +223,9 @@
       "miles-away": "mi away",
       "open-air": "Open Air",
       "saved": "Saved",
-      "save": "Save"
+      "save": "Save",
+      "reserved-by-employee": "This spot is reserved while {{ employeeName }} is on duty.",
+      "an-employee": "an employee"
     },
     "map": {
       "legend": {
@@ -259,6 +262,7 @@
       "status-legend": "STATUS LEGEND",
       "available": "Available",
       "occupied": "Occupied",
+      "reserved": "Reserved",
       "maintenance": "Maintenance",
       "peak-hours-today": "Peak Total Hours",
       "revenue-yield": "Estimated Revenue",
@@ -282,6 +286,9 @@
         "amount": "Amount",
         "empty-title": "Nobody has reserved this spot yet",
         "empty-desc": "You can block it for maintenance. Clients will not be able to select it until an admin unlocks it.",
+        "reserved-title": "Spot reserved for employee",
+        "reserved-desc": "This spot stays reserved while {{ employeeName }} is on duty.",
+        "employee-fallback": "the assigned employee",
         "unlock": "Unlock spot",
         "set-maintenance": "Set maintenance"
       }
@@ -294,6 +301,7 @@
       "booking-prefix": "Booking",
       "client-prefix": "Client",
       "spot-prefix": "Spot",
+      "loading": "Loading reports...",
       "empty": "No client reports for this parking yet.",
       "resolve-button": "Mark resolved",
       "resolved-button": "Resolved",
@@ -321,12 +329,14 @@
       "subtitle": "Watch your employees, their assigned parking spot if they have one and whether they are on duty or off.",
       "role-prefix": "Role",
       "turn-prefix": "Turn",
+      "assigned-spot-prefix": "Assigned spot",
       "booking-prefix": "Booking #",
       "add": "Add Employee",
       "edit": "Edit",
       "delete": "Delete",
       "schedules": {
-        "all-week": "All week"
+        "all-week": "All week",
+        "weekdays": "Weekdays"
       },
       "roles": {
         "guard": "Guard",
@@ -344,12 +354,15 @@
         "schedule": "Schedule",
         "shift-start": "Shift start",
         "shift-end": "Shift end",
+        "assigned-spot": "Assigned spot",
+        "no-assigned-spot": "No assigned spot",
         "booking-code": "Booking code",
         "status": "Status",
         "cancel": "Cancel",
         "add": "Add",
         "save": "Save"
       },
+      "no-assigned-spot": "No assigned spot",
       "delete-confirm": {
         "title": "Delete employee",
         "message": "This action will remove the employee from the database. You will not be able to undo it.",
@@ -598,6 +611,7 @@
       "error-type": "Only PNG, JPG, and WebP images are allowed.",
       "error-size": "The image must be smaller than 1 MB.",
       "error-storage": "Could not save the blueprint. Please try again.",
+      "delete-active-reservations": "Cannot delete blueprint: parking has active reservations.",
       "delete-dialog-title": "Delete Blueprint",
       "delete-dialog-subtitle": "Select the blueprint you want to delete. This action cannot be undone.",
       "select-label": "Blueprint",

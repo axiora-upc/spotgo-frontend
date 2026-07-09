@@ -20,6 +20,8 @@ export interface DetectedSpotResource extends BaseResource {
   w_pct:       number;
   h_pct:       number;
   status?:     string;
+  assignedEmployeeId?: string | null;
+  assignedEmployeeName?: string | null;
 }
 
 export interface BlueprintResponse extends BaseResponse {
