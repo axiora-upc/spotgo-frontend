@@ -680,8 +680,8 @@
       "total-revenue": "Ingresos Estimados",
       "projected": "proyectado",
       "system-health": "Salud del Sistema",
-      "all-sensors": "Todos los espacios funcionan correctamente",
-      "sensors-warning": "Algunos espacios necesitan atención",
+      "all-spots": "Todos los espacios funcionan correctamente",
+      "spots-warning": "Algunos espacios necesitan atención",
       "spots-in-maintenance": "espacios en mantenimiento",
       "optimum": "Óptimo",
       "maintenance": "Mantenimiento"

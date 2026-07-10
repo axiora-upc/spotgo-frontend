@@ -680,8 +680,8 @@
       "total-revenue": "Estimated Revenue",
       "projected": "projected",
       "system-health": "System Health",
-      "all-sensors": "All spots operating normally",
-      "sensors-warning": "Some spots need attention",
+      "all-spots": "All spots operating normally",
+      "spots-warning": "Some spots need attention",
       "spots-in-maintenance": "spots in maintenance",
       "optimum": "Optimum",
       "maintenance": "Maintenance"
