@@ -14,8 +14,6 @@
   case they are needed in the future.
 */
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 
 /*
   environment.apiUrl resolves to:
@@ -49,17 +47,5 @@ export class ReceiptsApiEndpoint extends BaseApiEndpoint<
       `${environment.apiUrl}/receipts`,
       new ReceiptAssembler()
     );
-  }
-
-  deleteByBookingCode(code: string): Observable<void> {
-    return this.http
-      .get<ReceiptResource[]>(`${this.endpointUrl}?bookingCode=${code}`)
-      .pipe(
-        switchMap(receipts =>
-          receipts.length
-            ? this.http.delete<void>(`${this.endpointUrl}/${receipts[0].id}`)
-            : of(undefined as unknown as void)
-        )
-      );
   }
 }

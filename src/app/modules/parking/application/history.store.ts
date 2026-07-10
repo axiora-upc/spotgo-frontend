@@ -105,7 +105,7 @@ export class HistoryStore {
       3. Both signals are set → computed 'history' derives automatically
       4. The view re-renders with the joined list
   */
-  loadHistoryByClientId(clientId: string): void {
+  loadHistoryByClientId(_clientId: string): void {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
@@ -115,9 +115,7 @@ export class HistoryStore {
     }).subscribe({
       next: ({ reservations, parkings }) => {
         this.allReservationsSignal.set(reservations);
-        this.rawReservationsSignal.set(
-          reservations.filter(r => r.clientId === clientId)
-        );
+        this.rawReservationsSignal.set(reservations);
         this.parkingsSignal.set(parkings);
         this.loadingSignal.set(false);
       },

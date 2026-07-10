@@ -71,7 +71,7 @@ export class HistoryApi {
 
   extendReservation(
     reservationId: string,
-    details: { endDate: string; amount: number; baseAmount?: number; status?: string }
+    details: { endDate: string; status?: string }
   ): Observable<ReservationRaw> {
     return this.reservationsEndpoint.patchDetails(reservationId, details);
   }

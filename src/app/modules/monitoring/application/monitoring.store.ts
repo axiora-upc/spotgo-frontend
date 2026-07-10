@@ -34,17 +34,14 @@ import { Reservation, ReservationStatus } from '../domain/model/reservation.enti
 import { ParkingAnalytics } from '../domain/model/analytics.entity';
 
 import { HistoryApi } from '../../parking/infrastructure/history-api';
-import { PaymentApi } from '../../payment/infrastructure/payment-api';
 import { PaymentStore } from '../../payment/application/payment.store';
 import { ReservationRaw } from '../../parking/domain/model/reservation-raw.entity';
-import { Receipt } from '../../payment/domain/model/receipt.entity';
 import { CurrentUserService } from '../../../shared/services/current-user.service';
 
 @Injectable({ providedIn: 'root' })
 export class MonitoringStore {
   private readonly monitoringApi  = inject(MonitoringApi);
   private readonly historyApi     = inject(HistoryApi);
-  private readonly paymentApi     = inject(PaymentApi);
   private readonly paymentStore   = inject(PaymentStore);
   private readonly currentUser    = inject(CurrentUserService);
   private readonly adminParkingIdSignal = signal('');
@@ -261,42 +258,11 @@ export class MonitoringStore {
       null // unrated
     );
 
-    // 2. Construct transactional representation for receipts history (POST /receipts)
-    const invoiceId = `INV-${new Date().toISOString().split('T')[0].replace(/-/g, '')}-${reservation.code}`;
-    const matchedPkg = this.parkingsSignal().find(p => p.id === reservation.parkingId);
-    const pkgName = matchedPkg ? matchedPkg.name : 'SpotGo Parking';
-    const savings = Math.max(
-      0,
-      Math.round(((reservation.baseAmount ?? reservation.totalAmount) - reservation.totalAmount) * 100) / 100
-    );
-    
-    const finalReceipt = new Receipt({
-      id: '', // assigned by backend
-      clientId: this.currentUser.clientId,
-      invoiceNumber: invoiceId,
-      locationName: pkgName,
-      date: rawRes.startDate,
-      durationHours: Math.floor(reservation.duration),
-      durationMinutes: Math.round((reservation.duration % 1) * 60),
-      paymentMethod: 'Visa •• 4242',
-      bookingCode: reservation.code,
-      amount: reservation.totalAmount,
-      status: 'paid'
-    });
-
     this.historyApi.createReservation(rawRes).subscribe({
       next: (createdRaw) => {
         const createdReservation = this.mapRawToReservation(createdRaw);
         this.userReservationsSignal.update(current => [...current, createdReservation]);
-
-        if (savings > 0) {
-          this.paymentStore.addToSavedThisMonth(savings);
-        }
-
-        this.paymentApi.addReceipt(finalReceipt).subscribe({
-          next: () => {},
-          error: (err) => console.error('Failed to add receipt', err),
-        });
+        this.paymentStore.refreshSubscription();
 
         callbacks?.onSuccess?.(createdReservation);
       },
@@ -311,12 +277,8 @@ export class MonitoringStore {
     const startDateTime = this.buildReservationStartDateTime(reservation);
     const endDateTime = new Date(startDateTime.getTime() + reservation.duration * 60 * 60 * 1000);
     const endDate = this.toApiDateTime(endDateTime);
-    const baseAmount = reservation.baseAmount ?? reservation.totalAmount;
-
     this.historyApi.extendReservation(reservation.id, {
       endDate,
-      amount: reservation.totalAmount,
-      baseAmount,
       status: reservation.status,
     }).subscribe({
       next: (updatedRaw) => {
@@ -342,17 +304,7 @@ export class MonitoringStore {
         this.userReservationsSignal.update(current =>
           current.filter(r => r.id !== reservation.id)
         );
-
-        this.paymentApi.deleteReceiptByCode(reservation.code).subscribe({
-          next: () => {},
-          error: (err) => console.error('Failed to delete receipt', err),
-        });
-
-        const discountPct = this.paymentStore.currentDiscount();
-        if (discountPct > 0) {
-          const savings = Math.round(reservation.totalAmount * discountPct / (100 - discountPct) * 100) / 100;
-          this.paymentStore.subtractFromSavedThisMonth(savings);
-        }
+        this.paymentStore.refreshSubscription();
 
         callbacks?.onSuccess?.();
       },
@@ -365,9 +317,7 @@ export class MonitoringStore {
     this.historyApi.getReservations().subscribe({
       next: (rawReservations) => {
         const now = Date.now();
-        // Filter by client, ignore past reservations, map to domain structure
         const mapped = rawReservations
-          .filter(r => r.clientId === this.currentUser.clientId)
           .filter(r => r.status !== 'cancelled' && r.status !== 'completed' && new Date(r.endDate).getTime() > now)
           .map(r => this.mapRawToReservation(r));
           

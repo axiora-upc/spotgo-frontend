@@ -35,7 +35,7 @@ export class ReservationsApiEndpoint extends BaseApiEndpoint<
 
   patchDetails(
     id: string,
-    details: { endDate: string; amount: number; baseAmount?: number; status?: string }
+    details: { endDate: string; status?: string }
   ): Observable<ReservationRaw> {
     return this.http.patch<ReservationRawResource>(`${this.endpointUrl}/${id}`, details).pipe(
       map(resource => this.assembler.toEntityFromResource(resource)),

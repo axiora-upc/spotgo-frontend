@@ -18,34 +18,27 @@ export class ReservationRawAssembler
 {
   toEntityFromResource(r: ReservationRawResource): ReservationRaw {
     return new ReservationRaw(
-      r.id,
-      r.clientId,
+      r.id ?? '',
+      r.clientId ?? '',
       r.parkingId,
-      r.code,
+      r.code ?? '',
       r.spot,
       r.startDate,
       r.endDate,
-      r.status,
-      r.amount,
-      r.baseAmount ?? r.amount,
+      r.status ?? 'active',
+      r.amount ?? 0,
+      r.baseAmount ?? r.amount ?? 0,
       r.rating ?? null,
     );
   }
 
   toResourceFromEntity(e: ReservationRaw): ReservationRawResource {
     return {
-      id: e.id,
-      clientId: e.clientId,
       parkingId: e.parkingId,
-      code: e.code,
       spot: e.spot,
       startDate: e.startDate,
       endDate: e.endDate,
-      status: e.status,
-      amount: e.amount,
-      baseAmount: e.baseAmount,
-      rating: e.rating,
-    };
+    } as ReservationRawResource;
   }
 
   toEntitiesFromResponse(response: ReservationRawResponse): ReservationRaw[] {

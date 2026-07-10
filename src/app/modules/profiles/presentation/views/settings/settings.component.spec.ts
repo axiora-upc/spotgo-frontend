@@ -6,6 +6,7 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { signal } from '@angular/core';
 import { of } from 'rxjs';
+import { vi } from 'vitest';
 
 import { SettingsComponent } from './settings.component';
 import { ProfilesStore } from '../../../application/profiles.store';
@@ -53,14 +54,14 @@ describe('SettingsComponent', () => {
     admin:       adminSignal.asReadonly(),
     loading:     loadingSignal.asReadonly(),
     error:       errorSignal.asReadonly(),
-    loadAdmin:   jasmine.createSpy('loadAdmin'),
-    updateAdmin: jasmine.createSpy('updateAdmin'),
+    loadAdmin:   vi.fn(),
+    updateAdmin: vi.fn(),
   };
 
   // ── Dialog mock ────────────────────────────────────────────────────────────
 
   const dialogStub = {
-    open: jasmine.createSpy('open').and.returnValue({
+    open: vi.fn().mockReturnValue({
       afterClosed: () => of(undefined),
     }),
   };
@@ -68,9 +69,9 @@ describe('SettingsComponent', () => {
   // ── Setup ──────────────────────────────────────────────────────────────────
 
   beforeEach(async () => {
-    storeStub.loadAdmin.calls.reset();
-    storeStub.updateAdmin.calls.reset();
-    dialogStub.open.calls.reset();
+    storeStub.loadAdmin.mockReset();
+    storeStub.updateAdmin.mockReset();
+    dialogStub.open.mockClear();
 
     // Start every test with a loaded admin and no pending state.
     adminSignal.set(makeAdmin());
@@ -107,7 +108,8 @@ describe('SettingsComponent', () => {
   // ══════════════════════════════════════════════════════════════════════════
 
   it('should call profilesStore.loadAdmin with "usr-001" on init', () => {
-    expect(storeStub.loadAdmin).toHaveBeenCalledOnceWith('usr-001');
+    expect(storeStub.loadAdmin).toHaveBeenCalledOnce();
+    expect(storeStub.loadAdmin).toHaveBeenCalledWith('usr-001');
   });
 
   it('should expose the admin from the store via the admin getter', () => {
@@ -126,7 +128,7 @@ describe('SettingsComponent', () => {
   // ══════════════════════════════════════════════════════════════════════════
 
   it('should start in read mode (isEditing = false)', () => {
-    expect(component.isEditing()).toBeFalse();
+    expect(component.isEditing()).toBe(false);
   });
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -135,7 +137,7 @@ describe('SettingsComponent', () => {
 
   it('startEditing should set isEditing to true', () => {
     component.startEditing();
-    expect(component.isEditing()).toBeTrue();
+    expect(component.isEditing()).toBe(true);
   });
 
   it('startEditing should copy current admin fields into editBuffer', () => {
@@ -160,7 +162,7 @@ describe('SettingsComponent', () => {
     adminSignal.set(null);
     component.startEditing();
     // isEditing must remain false: no data to populate the buffer.
-    expect(component.isEditing()).toBeFalse();
+    expect(component.isEditing()).toBe(false);
   });
 
   it('startEditing should reset editBuffer with latest data on repeated calls', () => {
@@ -180,7 +182,7 @@ describe('SettingsComponent', () => {
   it('cancelEditing should set isEditing to false', () => {
     component.startEditing();
     component.cancelEditing();
-    expect(component.isEditing()).toBeFalse();
+    expect(component.isEditing()).toBe(false);
   });
 
   it('cancelEditing should NOT call store.updateAdmin', () => {
@@ -212,14 +214,9 @@ describe('SettingsComponent', () => {
 
     component.saveChanges();
 
-    expect(storeStub.updateAdmin).toHaveBeenCalledOnceWith(
-      jasmine.objectContaining({
-        // Admin class exposes these via getters.
-      } as any),
-      jasmine.any(Object) // callbacks
-    );
+    expect(storeStub.updateAdmin).toHaveBeenCalledOnce();
 
-    const [updatedAdmin] = storeStub.updateAdmin.calls.mostRecent().args as [Admin, unknown];
+    const [updatedAdmin] = storeStub.updateAdmin.mock.calls.at(-1) as [Admin, unknown];
     expect(updatedAdmin.firstName).toBe('Nuevo');
     expect(updatedAdmin.lastName).toBe('Apellido');
     expect(updatedAdmin.email).toBe('nuevo@test.com');
@@ -234,19 +231,19 @@ describe('SettingsComponent', () => {
     component.saveChanges();
 
     // Simulate the store calling onSuccess.
-    const callbacks = storeStub.updateAdmin.calls.mostRecent().args[1] as {
+    const callbacks = storeStub.updateAdmin.mock.calls.at(-1)?.[1] as {
       onSuccess?: () => void;
     };
     callbacks.onSuccess?.();
 
-    expect(component.isEditing()).toBeFalse();
+    expect(component.isEditing()).toBe(false);
   });
 
   it('saveChanges should keep isEditing true when no onSuccess is invoked (API pending)', () => {
     component.startEditing();
     component.saveChanges();
     // onSuccess has not been called yet → still editing.
-    expect(component.isEditing()).toBeTrue();
+    expect(component.isEditing()).toBe(true);
   });
 
   it('saveChanges should do nothing when admin is null', () => {
