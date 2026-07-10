@@ -106,7 +106,7 @@
         [class.analytics__kpi-note--maintenance]="!data.isSystemHealthy">
         <mat-icon>{{ data.isSystemHealthy ? 'check_circle' : 'warning' }}</mat-icon>
         @if (data.isSystemHealthy) {
-          {{ 'analytics.kpi.all-sensors' | translate }}
+          {{ 'analytics.kpi.all-spots' | translate }}
         } @else {
           {{ data.maintenanceSpotsCount }} {{ 'analytics.kpi.spots-in-maintenance' | translate }}
         }

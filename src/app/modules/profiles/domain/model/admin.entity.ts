@@ -3,8 +3,7 @@ import { BaseEntity } from '../../../../shared/domain/model/base-entity';
 /*
   Admin entity – represents the parking-lot owner / administrator.
   Only the fields that are displayed and editable in the Settings view
-  are modelled here. The rest (password, sensors, etc.) travel through
-  the API but are ignored by this bounded context.
+  are modelled here. The rest travel through the API but are ignored by this bounded context.
 */
 export class Admin implements BaseEntity {
   private _id: string;
