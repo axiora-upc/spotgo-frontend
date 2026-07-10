@@ -70,6 +70,7 @@ import { AuthStore } from '../../../../modules/iam/application/auth.store';
   itself is shared across the whole authenticated app.
 */
 import { ChangePasswordDialog } from '../../../../modules/iam/presentation/views/change-password-dialog/change-password-dialog';
+import { EditVehicleDialog } from '../../../../modules/profiles/presentation/views/edit-vehicle-dialog/edit-vehicle-dialog';
 
 @Component({
   /*
@@ -143,9 +144,8 @@ export class ToolbarContent {
   currentUser = this.authStore.currentUser;
 
   /*
-    logout clears the session (AuthStore + the sessionStorage keys shared
-    with CurrentUserService/ViewModeService) and sends the user back to
-    the login page.
+    logout clears the persisted authentication data and sends the user back
+    to the login page.
   */
   logout(): void {
     this.authStore.logout();
@@ -159,6 +159,10 @@ export class ToolbarContent {
   */
   openChangePassword(): void {
     this.dialog.open(ChangePasswordDialog, { width: '420px' });
+  }
+
+  openEditVehicle(): void {
+    this.dialog.open(EditVehicleDialog, { width: '420px' });
   }
 
 }

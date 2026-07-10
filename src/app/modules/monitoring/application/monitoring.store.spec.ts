@@ -85,8 +85,8 @@ describe('MonitoringStore', () => {
       reservation.parkingId,
       reservation.code,
       reservation.spotId,
-      '2026-07-07T12:00:00.000Z',
-      '2026-07-07T13:30:00.000Z',
+      '2026-07-07T12:00:00.000-05:00',
+      '2026-07-07T13:30:00.000-05:00',
       'active',
       reservation.totalAmount,
       reservation.baseAmount ?? reservation.totalAmount,
@@ -97,6 +97,11 @@ describe('MonitoringStore', () => {
     paymentApiStub.addReceipt.mockReturnValue(of({}));
 
     store.completeReservation(reservation, { onSuccess });
+
+    expect(historyApiStub.createReservation).toHaveBeenCalledWith(expect.objectContaining({
+      startDate: '2026-07-07T12:00:00.000-05:00',
+      endDate: '2026-07-07T13:30:00.000-05:00',
+    }));
 
     expect(store.userReservations().length).toBe(1);
     expect(store.userReservations()[0].status).toBe('active');

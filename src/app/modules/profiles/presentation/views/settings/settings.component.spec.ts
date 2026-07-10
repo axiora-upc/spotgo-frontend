@@ -11,6 +11,7 @@ import { vi } from 'vitest';
 import { SettingsComponent } from './settings.component';
 import { ProfilesStore } from '../../../application/profiles.store';
 import { Admin } from '../../../domain/model/admin.entity';
+import { BlueprintsApi } from '../../../infrastructure/blueprints-api';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -20,7 +21,7 @@ import { Admin } from '../../../domain/model/admin.entity';
  */
 function makeAdmin(overrides: Partial<{
   id: string; firstName: string; lastName: string;
-  email: string; phone: string; parkingName: string; city: string;
+  email: string; phone: string; parkingName: string; parkingId: string | null;
 }> = {}): Admin {
   return new Admin({
     id:          overrides.id          ?? 'usr-001',
@@ -29,7 +30,7 @@ function makeAdmin(overrides: Partial<{
     email:       overrides.email       ?? 'piero.quiroz@spotgo.com',
     phone:       overrides.phone       ?? '+51 999 111 222',
     parkingName: overrides.parkingName ?? 'Parking Central Lima',
-    city:        overrides.city        ?? 'Lima',
+    parkingId:   overrides.parkingId   ?? 'park-001',
   });
 }
 
@@ -66,12 +67,22 @@ describe('SettingsComponent', () => {
     }),
   };
 
+  const blueprintsApiStub = {
+    getParking: vi.fn().mockReturnValue(of({ id: 'park-001', city: 'Lima', pricePerHour: 5 })),
+    updateParkingStats: vi.fn().mockReturnValue(of(null)),
+  };
+
   // ── Setup ──────────────────────────────────────────────────────────────────
 
   beforeEach(async () => {
     storeStub.loadAdmin.mockReset();
     storeStub.updateAdmin.mockReset();
     dialogStub.open.mockClear();
+    blueprintsApiStub.getParking.mockReset();
+    blueprintsApiStub.updateParkingStats.mockReset();
+    blueprintsApiStub.getParking.mockReturnValue(of({ id: 'park-001', city: 'Lima', pricePerHour: 5 }));
+    blueprintsApiStub.updateParkingStats.mockReturnValue(of(null));
+    localStorage.setItem('spotgo:authUser', JSON.stringify({ id: 'usr-001', role: 'admin', parkingId: 'park-001' }));
 
     // Start every test with a loaded admin and no pending state.
     adminSignal.set(makeAdmin());
@@ -86,6 +97,7 @@ describe('SettingsComponent', () => {
         provideTranslateHttpLoader({ prefix: './i18n/', suffix: '.json' }),
         { provide: ProfilesStore, useValue: storeStub },
         { provide: MatDialog,     useValue: dialogStub },
+        { provide: BlueprintsApi,  useValue: blueprintsApiStub },
       ],
     }).compileComponents();
 
@@ -144,9 +156,10 @@ describe('SettingsComponent', () => {
     const a = makeAdmin({
       firstName: 'Carlos', lastName: 'Mendoza',
       email: 'carlos@test.com', phone: '+51 900 000 000',
-      parkingName: 'Mi Parking', city: 'Miraflores',
+      parkingName: 'Mi Parking',
     });
     adminSignal.set(a);
+    component.parkingCity.set('Miraflores');
 
     component.startEditing();
 
@@ -155,7 +168,7 @@ describe('SettingsComponent', () => {
     expect(component.editBuffer.email).toBe('carlos@test.com');
     expect(component.editBuffer.phone).toBe('+51 900 000 000');
     expect(component.editBuffer.parkingName).toBe('Mi Parking');
-    expect(component.editBuffer.city).toBe('Miraflores');
+    expect(component.editBuffer.parkingCity).toBe('Miraflores');
   });
 
   it('startEditing should do nothing when admin is null', () => {
@@ -210,7 +223,8 @@ describe('SettingsComponent', () => {
     component.editBuffer.email       = 'nuevo@test.com';
     component.editBuffer.phone       = '+51 111 222 333';
     component.editBuffer.parkingName = 'Nuevo Parking';
-    component.editBuffer.city        = 'San Isidro';
+    component.editBuffer.parkingCity = 'San Isidro';
+    component.editBuffer.pricePerHour = 7.5;
 
     component.saveChanges();
 
@@ -222,8 +236,11 @@ describe('SettingsComponent', () => {
     expect(updatedAdmin.email).toBe('nuevo@test.com');
     expect(updatedAdmin.phone).toBe('+51 111 222 333');
     expect(updatedAdmin.parkingName).toBe('Nuevo Parking');
-    expect(updatedAdmin.city).toBe('San Isidro');
     expect(updatedAdmin.id).toBe('usr-001'); // id must be preserved
+    expect(blueprintsApiStub.updateParkingStats).toHaveBeenCalledWith('park-001', {
+      city: 'San Isidro',
+      pricePerHour: 7.5,
+    });
   });
 
   it('saveChanges should pass onSuccess callback that sets isEditing to false', () => {

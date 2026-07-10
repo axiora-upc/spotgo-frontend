@@ -1,0 +1,84 @@
+<h2 mat-dialog-title class="evd-title">
+  <mat-icon class="evd-icon">directions_car</mat-icon>
+  {{ 'profiles.vehicle.title' | translate }}
+</h2>
+
+<mat-dialog-content class="evd-content">
+  @if (loading()) {
+    <div class="evd-state">
+      <p>{{ 'profiles.vehicle.loading' | translate }}</p>
+    </div>
+  } @else if (success()) {
+    <div class="evd-success">
+      <mat-icon class="evd-success-icon">check_circle</mat-icon>
+      <p>{{ 'profiles.vehicle.success' | translate }}</p>
+    </div>
+  } @else if (!vehicle()) {
+    <div class="evd-state">
+      <mat-icon class="evd-state-icon">directions_car_off</mat-icon>
+      <p>{{ 'profiles.vehicle.empty' | translate }}</p>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label class="field-label" for="evd-license-plate">{{ 'profiles.vehicle.license-plate' | translate }}</label>
+      <div class="input-box" [class.invalid]="getError('licensePlate')">
+        <mat-icon>pin</mat-icon>
+        <input id="evd-license-plate" formControlName="licensePlate" autocomplete="off" />
+      </div>
+      @if (getError('licensePlate'); as errorKey) {
+        <span class="field-error">{{ errorKey | translate }}</span>
+      }
+
+      <label class="field-label" for="evd-type">{{ 'profiles.vehicle.vehicle-type' | translate }}</label>
+      <div class="input-box" [class.invalid]="getError('vehicleType')">
+        <mat-icon>category</mat-icon>
+        <input id="evd-type" formControlName="vehicleType" autocomplete="off" />
+      </div>
+      @if (getError('vehicleType'); as errorKey) {
+        <span class="field-error">{{ errorKey | translate }}</span>
+      }
+
+      <label class="field-label" for="evd-brand">{{ 'profiles.vehicle.brand' | translate }}</label>
+      <div class="input-box" [class.invalid]="getError('brand')">
+        <mat-icon>branding_watermark</mat-icon>
+        <input id="evd-brand" formControlName="brand" autocomplete="off" />
+      </div>
+      @if (getError('brand'); as errorKey) {
+        <span class="field-error">{{ errorKey | translate }}</span>
+      }
+
+      <label class="field-label" for="evd-model">{{ 'profiles.vehicle.model' | translate }}</label>
+      <div class="input-box" [class.invalid]="getError('model')">
+        <mat-icon>commute</mat-icon>
+        <input id="evd-model" formControlName="model" autocomplete="off" />
+      </div>
+      @if (getError('model'); as errorKey) {
+        <span class="field-error">{{ errorKey | translate }}</span>
+      }
+
+      @if (serverError(); as errorKey) {
+        <div class="form-error">{{ errorKey | translate }}</div>
+      }
+    </form>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="evd-actions">
+  @if (success()) {
+    <button mat-flat-button color="primary" type="button" (click)="close()">
+      {{ 'shared.confirm-dialog.confirm' | translate }}
+    </button>
+  } @else {
+    <button mat-button type="button" (click)="close()">
+      {{ 'shared.confirm-dialog.cancel' | translate }}
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      [disabled]="loading() || submitting() || !vehicle()"
+      (click)="onSubmit()">
+      {{ 'profiles.vehicle.submit' | translate }}
+    </button>
+  }
+</mat-dialog-actions>

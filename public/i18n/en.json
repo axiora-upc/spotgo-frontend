@@ -7,10 +7,29 @@
 
   "toolbar": {
     "search-placeholder": "Search for parking spots...",
+    "edit-vehicle": "Edit vehicle",
     "change-password": "Change password",
     "logout": "Log out",
     "notifications": "Notifications",
     "account": "Account"
+  },
+
+  "profiles": {
+    "vehicle": {
+      "title": "Edit vehicle",
+      "loading": "Loading vehicle details...",
+      "empty": "You do not have a registered vehicle.",
+      "license-plate": "License plate",
+      "vehicle-type": "Vehicle type",
+      "brand": "Brand",
+      "model": "Model",
+      "submit": "Save vehicle",
+      "success": "Vehicle details were updated.",
+      "errors": {
+        "load": "Could not load vehicle details.",
+        "save": "Could not save vehicle details."
+      }
+    }
   },
 
   "iam": {
@@ -61,13 +80,15 @@
       "subtitle": "Fill in your details below to continue.",
       "first-name": "First name",
       "last-name": "Last name",
+      "phone": "Phone",
       "confirm-password": "Confirm password",
       "create-account": "Create account",
       "create-account-as": "Create account as",
       "already-have-account": "Already have an account?",
       "sign-in": "Sign in",
       "first-name-placeholder": "John",
-      "last-name-placeholder": "Doe"
+      "last-name-placeholder": "Doe",
+      "phone-placeholder": "+51 999 111 222"
     },
     "forgot-password": {
       "title": "Reset your password",
@@ -96,12 +117,16 @@
       "email-taken": "This email is already registered.",
       "email-not-found": "No account found with that email.",
       "code-invalid": "Enter a valid 6-digit code.",
-      "password-min": "Password must be at least 6 characters.",
+      "password-min": "Password must be at least 8 characters.",
+      "password-policy": "Password must be at least 8 characters and include uppercase, lowercase, number, and symbol.",
       "password-mismatch": "Passwords do not match.",
       "name-min": "Must be at least 2 characters.",
       "no-role": "This account has no role assigned.",
       "current-password-invalid": "Your current password is incorrect.",
       "password-reset-invalid": "The code is invalid or has expired.",
+      "password-reset": {
+        "invalid": "The code is invalid or has expired."
+      },
       "google-unavailable": "Google sign-in is not available in this demo.",
       "generic": "Something went wrong. Please try again."
     },
@@ -585,7 +610,7 @@
     "title": "Settings",
     "subtitle": "Manage your personal information and parking lot blueprints.",
     "info": {
-      "title": "Personal Information",
+      "title": "Personal & Parking Information",
       "edit": "Edit",
       "save": "Save",
       "cancel": "Cancel",
@@ -594,8 +619,9 @@
       "email": "Email",
       "verified": "Verified",
       "business-name": "Business Name",
+      "price-per-hour": "Price per Hour",
       "phone": "Phone",
-      "district": "District",
+      "business-city": "Business City",
       "first-name-placeholder": "First name",
       "last-name-placeholder": "Last name"
     },

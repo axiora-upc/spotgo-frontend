@@ -8,6 +8,20 @@ import { BlueprintAssembler } from './blueprint-assembler';
 import { BlueprintResource, DetectedSpotResource } from './blueprint-response';
 import { DetectedSpot } from '../domain/model/detected-spot.entity';
 
+interface ParkingResource {
+  id: string;
+  city: string;
+  pricePerHour: number;
+}
+
+interface ParkingUpdateResource {
+  totalSpaces?: number;
+  availableSpaces?: number;
+  totalFloors?: number;
+  city?: string;
+  pricePerHour?: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class BlueprintsApi {
   private readonly blueprintsEndpoint: BlueprintsApiEndpoint;
@@ -92,9 +106,13 @@ export class BlueprintsApi {
     });
   }
 
+  getParking(parkingId: string): Observable<ParkingResource> {
+    return this.http.get<ParkingResource>(`${environment.apiUrl}/parkings/${parkingId}`);
+  }
+
   updateParkingStats(
     parkingId: string,
-    stats: { totalSpaces: number; availableSpaces: number; totalFloors: number }
+    stats: ParkingUpdateResource
   ): Observable<unknown> {
     return this.http.patch(`${environment.apiUrl}/parkings/${parkingId}`, stats).pipe(
       catchError(() => of(null))

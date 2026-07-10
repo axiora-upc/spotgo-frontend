@@ -13,7 +13,6 @@ export interface UserResource extends BaseResource {
   lastName: string;
   email: string;
   phone: string;
-  city: string;
   role: 'admin' | 'client';
   parkingName: string;
   parkingId: string | null;

@@ -9,6 +9,7 @@ import { User, Role } from '../domain/model/user.entity';
 export interface RegisterPayload {
   firstName: string;
   lastName: string;
+  phone: string;
   email: string;
   password: string;
   role?: Role;
@@ -48,6 +49,7 @@ export class IamApi {
       .post<AuthenticatedUserResource>(`${environment.apiUrl}/authentication/sign-up`, {
         firstName: payload.firstName.trim(),
         lastName: payload.lastName.trim(),
+        phone: payload.phone.trim(),
         email: this.normalizeEmail(payload.email),
         password: payload.password,
       })
@@ -91,7 +93,6 @@ export class IamApi {
       lastName: resource.lastName,
       email: resource.email,
       phone: resource.phone,
-      city: resource.city,
       parkingName: resource.parkingName,
       parkingId: resource.parkingId,
       role: resource.role,

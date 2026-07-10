@@ -59,6 +59,7 @@ export class Register {
     {
       firstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
       lastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
+      phone: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
       confirmPassword: new FormControl('', [Validators.required]),
@@ -73,7 +74,7 @@ export class Register {
     'iam.login.feature-driver-4',
   ];
 
-  protected getError(field: 'firstName' | 'lastName' | 'email' | 'password' | 'confirmPassword'): string | null {
+  protected getError(field: 'firstName' | 'lastName' | 'phone' | 'email' | 'password' | 'confirmPassword'): string | null {
     const control = this.form.get(field);
     if (!control || !control.touched) return null;
 
@@ -98,10 +99,10 @@ export class Register {
       return;
     }
 
-    const { firstName, lastName, email, password } = this.form.getRawValue();
+    const { firstName, lastName, phone, email, password } = this.form.getRawValue();
 
     this.authStore.register(
-      { firstName: firstName!, lastName: lastName!, email: email!, password: password! },
+      { firstName: firstName!, lastName: lastName!, phone: phone!, email: email!, password: password! },
       { onSuccess: (user) => this.router.navigateByUrl(defaultRouteForRole(user.role)) }
     );
   }

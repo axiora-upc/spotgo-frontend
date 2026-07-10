@@ -26,7 +26,6 @@ export class User implements BaseEntity {
   private _lastName: string;
   private _email: string;
   private _phone: string;
-  private _city: string;
   private _role: Role;
   private _parkingId: string | null;
   private _parkingName: string;
@@ -37,7 +36,6 @@ export class User implements BaseEntity {
     lastName: string;
     email: string;
     phone?: string;
-    city?: string;
     role: Role;
     parkingId?: string | null;
     parkingName?: string;
@@ -47,7 +45,6 @@ export class User implements BaseEntity {
     this._lastName    = props.lastName;
     this._email       = props.email;
     this._phone       = props.phone ?? '';
-    this._city        = props.city ?? '';
     this._role        = props.role;
     this._parkingId   = props.parkingId ?? null;
     this._parkingName = props.parkingName ?? '';
@@ -59,7 +56,6 @@ export class User implements BaseEntity {
   get fullName(): string { return `${this._firstName} ${this._lastName}`.trim(); }
   get email(): string { return this._email; }
   get phone(): string { return this._phone; }
-  get city(): string { return this._city; }
   get role(): Role { return this._role; }
   get parkingId(): string | null { return this._parkingId; }
   get parkingName(): string { return this._parkingName; }

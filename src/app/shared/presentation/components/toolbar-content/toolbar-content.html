@@ -90,6 +90,13 @@
           </div>
         }
 
+        @if (currentUser()?.isClient) {
+          <button mat-menu-item (click)="openEditVehicle()">
+            <mat-icon>directions_car</mat-icon>
+            <span>{{ 'toolbar.edit-vehicle' | translate }}</span>
+          </button>
+        }
+
         <!--
           Change password option.
 
@@ -105,10 +112,8 @@
         <!--
           Logout option.
 
-          Clicking this calls logout(), which clears the session
-          (AuthStore + the sessionStorage keys shared with
-          CurrentUserService/ViewModeService) and navigates back to
-          the login page.
+          Clicking this calls logout(), which clears the persisted auth
+          data and navigates back to the login page.
         -->
         <button mat-menu-item (click)="logout()">
           <mat-icon>logout</mat-icon>

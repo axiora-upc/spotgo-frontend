@@ -18,7 +18,6 @@ export class AdminAssembler
       lastName:    resource.lastName,
       email:       resource.email,
       phone:       resource.phone,
-      city:        resource.city,
       parkingName: resource.parkingName,
       parkingId:   resource.parkingId,
     });
@@ -31,7 +30,6 @@ export class AdminAssembler
       lastName:    entity.lastName,
       email:       entity.email,
       phone:       entity.phone,
-      city:        entity.city,
       parkingName: entity.parkingName,
       parkingId:   entity.parkingId,
     };
