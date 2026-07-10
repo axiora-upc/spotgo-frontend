@@ -89,24 +89,8 @@ export class PaymentApi {
 
   /*
     Receipts are read-only from the client's perspective.
-    The store filters the full list by clientId after loading.
   */
   getReceipts(): Observable<Receipt[]> {
     return this.receiptsEndpoint.getAll();
-  }
-
-  /*
-    Creates a new receipt in the database via POST.
-  */
-  addReceipt(receipt: Receipt): Observable<Receipt> {
-    return this.receiptsEndpoint.create(receipt);
-  }
-
-  patchSubscriptionSaved(id: string, savedThisMonth: number, savingsMonth: string): Observable<void> {
-    return this.subscriptionsEndpoint.patchSavedThisMonth(id, savedThisMonth, savingsMonth);
-  }
-
-  deleteReceiptByCode(code: string): Observable<void> {
-    return this.receiptsEndpoint.deleteByBookingCode(code);
   }
 }

@@ -56,7 +56,6 @@ export class ReceiptsComponent implements OnInit {
       const searchableText = [
         r.locationName,
         r.invoiceNumber,
-        r.bookingCode,
         r.paymentMethod,
         r.status,
         this.formatDate(r.date),
@@ -243,7 +242,7 @@ export class ReceiptsComponent implements OnInit {
       'SpotGo Digital Receipt',
       '',
       `Invoice: ${receipt.invoiceNumber}`,
-      `Booking: ${receipt.bookingCode}`,
+      `Reservation: ${receipt.reservationId}`,
       `Location: ${receipt.locationName}`,
       `Date: ${dateTime}`,
       `Duration: ${this.formatDuration(receipt.durationHours, receipt.durationMinutes)}`,

@@ -21,8 +21,8 @@ export class SubscriptionAssembler
   */
   toEntityFromResource(resource: SubscriptionResource): Subscription {
     return new Subscription({
-      id: resource.id,
-      clientId: resource.clientId,
+      id: resource.id ?? '',
+      clientId: resource.clientId ?? '',
       planId: resource.planId,
       /**
        * "as" is a TypeScript type assertion
@@ -31,15 +31,15 @@ export class SubscriptionAssembler
        *  of type SubscriptionStatus.
        */
       status: resource.status.toLowerCase() as SubscriptionStatus,
-      renewsOn: resource.renewsOn,
-      pricePerMonth: resource.pricePerMonth,
-      sessions: resource.sessions,
-      savedThisMonth: resource.savedThisMonth,
+      renewsOn: resource.renewsOn ?? '',
+      pricePerMonth: resource.pricePerMonth ?? 0,
+      sessions: resource.sessions ?? 0,
+      savedThisMonth: resource.savedThisMonth ?? 0,
       savingsMonth: resource.savingsMonth ?? '',
-      memberSince: resource.memberSince,
+      memberSince: resource.memberSince ?? '',
       autoRenewal: resource.autoRenewal,
-      paymentMethodLastFour: resource.paymentMethodLastFour,
-      paymentMethodExpiry: resource.paymentMethodExpiry,
+      paymentMethodLastFour: resource.paymentMethodLastFour ?? '',
+      paymentMethodExpiry: resource.paymentMethodExpiry ?? '',
     });
   }
 
@@ -50,16 +50,7 @@ export class SubscriptionAssembler
   */
   toResourceFromEntity(entity: Subscription): SubscriptionResource {
     return {
-      id: entity.id,
-      clientId: entity.clientId,
       planId: entity.planId,
-      status: entity.status,
-      renewsOn: entity.renewsOn,
-      pricePerMonth: entity.pricePerMonth,
-      sessions: entity.sessions,
-      savedThisMonth: entity.savedThisMonth,
-      savingsMonth: entity.savingsMonth,
-      memberSince: entity.memberSince,
       autoRenewal: entity.autoRenewal,
       paymentMethodLastFour: entity.paymentMethodLastFour,
       paymentMethodExpiry: entity.paymentMethodExpiry,

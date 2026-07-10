@@ -83,6 +83,7 @@ export abstract class BaseApiEndpoint< TEntity extends BaseEntity,
 
     return (error: HttpErrorResponse): Observable<never> => {
       let errorMessage = operation;
+      const errorCode = typeof error.error?.code === 'string' ? error.error.code : null;
       const apiDetails = typeof error.error?.details === 'string' && error.error.details.trim().length > 0
         ? error.error.details.trim()
         : typeof error.error?.message === 'string' && error.error.message.trim().length > 0
@@ -97,7 +98,10 @@ export abstract class BaseApiEndpoint< TEntity extends BaseEntity,
       } else {
         errorMessage = `${operation}: ${error.statusText || 'Unexpected error'}`;
       }
-      return throwError(()=> new Error(errorMessage));
+      const apiError = new Error(errorMessage) as Error & { status?: number; code?: string };
+      apiError.status = error.status;
+      apiError.code = errorCode ?? undefined;
+      return throwError(()=> apiError);
     }
   }
   /*

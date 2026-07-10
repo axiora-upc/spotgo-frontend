@@ -156,7 +156,7 @@
   "sidebar": {
     "dashboard": "Dashboard",
     "reservations": "Reservations",
-    "subscription": "Subscriptions",
+    "subscription": "Subscription",
     "receipts": "Receipts",
     "favorites": "Favorites",
     "history": "History",
@@ -187,7 +187,7 @@
       "confirm-reservation": "Confirm Reservation",
       "reservation-confirmed": "Reservation Confirmed!",
       "availability": "Availability",
-      "occupied": "occupied",
+      "occupied": "Occupied",
       "price": "Price",
       "hours": "Hours",
       "services": "Services",
@@ -291,6 +291,9 @@
         "employee-fallback": "the assigned employee",
         "unlock": "Unlock spot",
         "set-maintenance": "Set maintenance"
+      },
+      "snackbar": {
+        "status-error": "Could not update spot status. Please try again."
       }
     },
     "reports": {
@@ -336,7 +339,8 @@
       "delete": "Delete",
       "schedules": {
         "all-week": "All week",
-        "weekdays": "Weekdays"
+        "weekdays": "Weekdays",
+        "weekends": "Weekends"
       },
       "roles": {
         "guard": "Guard",

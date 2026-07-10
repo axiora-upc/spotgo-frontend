@@ -39,7 +39,7 @@
       <div class="stats">
         <div class="stats__item">
           <span class="stats__label">{{ 'subscription.stats.saved' | translate }}</span>
-          <span class="stats__value stats__value--green">S/.{{ sub.savedThisMonth }}</span>
+          <span class="stats__value stats__value--green">S/.{{ sub.savedThisMonth | number:'1.2-2' }}</span>
         </div>
         <div class="stats__item">
           <span class="stats__label">{{ 'subscription.stats.member-since' | translate }}</span>

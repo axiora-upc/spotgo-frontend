@@ -3,7 +3,8 @@ import { CurrencyPipe, DecimalPipe, NgClass } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
-import { TranslatePipe } from '@ngx-translate/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
 
 import { environment } from '../../../../../../../environments/environment';
@@ -68,6 +69,8 @@ export class Overview implements OnInit, OnDestroy {
   private  readonly historyApi    = inject(HistoryApi);
   private  readonly currentUser   = inject(CurrentUserService);
   private  readonly http          = inject(HttpClient);
+  private  readonly snackBar      = inject(MatSnackBar);
+  private  readonly translate     = inject(TranslateService);
 
   protected readonly refreshing = signal(false);
   protected readonly selectedSpot = signal<SelectedSpotView | null>(null);
@@ -219,32 +222,35 @@ export class Overview implements OnInit, OnDestroy {
     if (!selected || !this.activeBlueprint) return;
 
     const spotId = selected.spot.id;
-    const updatedSpots = this.activeBlueprint.spots.map(s => {
-      const sId = `${String.fromCharCode(65 + s.row)}${s.col + 1}`;
-      return sId === spotId ? { ...s, status } : s;
-    });
+    const detectedSpot = this.activeBlueprint.spots.find(s =>
+      `${String.fromCharCode(65 + s.row)}${s.col + 1}` === spotId
+    );
+    if (!detectedSpot) return;
 
-    this.activeBlueprint.spots = updatedSpots;
-    this.blueprintsApi.patchBlueprintSpots(this.activeBlueprint.id, updatedSpots).subscribe({
-      next: () => {},
-      error: (err) => console.error('Failed to patch blueprint spots', err),
-    });
-
-    const availableCount = updatedSpots.filter(s => (s.status ?? 'available') === 'available').length;
-    this.blueprintsApi.updateParkingStats(this.activeBlueprint.parkingId, {
-      totalSpaces: updatedSpots.length,
-      availableSpaces: availableCount,
-      totalFloors: 1,
-    }).subscribe({
-      next: () => {},
-      error: (err) => console.error('Failed to update parking stats', err),
-    });
-    this.store.updateParkingAvailableSpaces(this.activeBlueprint.parkingId, availableCount);
-    this.store.loadBlueprintSnapshot(updatedSpots, this.activeParkingName);
-    this.selectedSpot.set({
-      spot: new ParkingSpot({ id: spotId, status, dbId: selected.spot.dbId }),
-      reservation: null,
-      assignedEmployeeName: null,
+    this.blueprintsApi.updateSpotStatus(detectedSpot.id, status).subscribe({
+      next: () => {
+        const updatedSpots = this.activeBlueprint!.spots.map(s =>
+          s.id === detectedSpot.id ? { ...s, status } : s
+        );
+        this.activeBlueprint!.spots = updatedSpots;
+        this.store.loadBlueprintSnapshot(updatedSpots, this.activeParkingName);
+        this.selectedSpot.set({
+          spot: new ParkingSpot({ id: spotId, status, dbId: selected.spot.dbId }),
+          reservation: null,
+          assignedEmployeeName: null,
+        });
+      },
+      error: (err) => {
+        this.store.clearParkingSnapshot();
+        console.error('Failed to update spot status', err);
+        this.loadForCurrentParking();
+        const msg = this.translate.instant('realtime-map.overview.snackbar.status-error');
+        const close = this.translate.instant('shared.snackbar.close');
+        this.snackBar.open(msg, close, {
+          duration: 5000,
+          panelClass: ['snackbar', 'snackbar--error'],
+        });
+      },
     });
   }
 

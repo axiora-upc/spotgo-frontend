@@ -60,7 +60,7 @@ export class EmployeeForm {
   protected readonly data = inject<EmployeeFormData>(MAT_DIALOG_DATA);
 
   protected readonly roles: EmployeeRole[] = ['guard', 'cleaning-personnel'];
-  protected readonly schedules: EmployeeSchedule[] = ['all-week'];
+  protected readonly schedules: EmployeeSchedule[] = ['all-week', 'weekdays', 'weekends'];
   protected readonly statuses: EmployeeStatus[] = ['on-duty', 'off-duty'];
   protected readonly spotOptions = this.data.spotOptions;
 

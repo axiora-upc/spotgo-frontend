@@ -20,13 +20,13 @@ import { BaseResource, BaseResponse } from '../../../shared/infrastructure/base-
 export interface ReceiptResource extends BaseResource {
   id: string;
   clientId: string;
+  reservationId: string;
   invoiceNumber: string;
   locationName: string;
   date: string;
   durationHours: number;
   durationMinutes: number;
   paymentMethod: string;
-  bookingCode: string;
   amount: number;
   status: string;   // raw string from the API; cast to ReceiptStatus in the assembler
 }

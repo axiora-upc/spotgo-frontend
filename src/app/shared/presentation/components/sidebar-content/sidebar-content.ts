@@ -136,7 +136,7 @@ export class SidebarContent {
       Subscriptions: part of the payment module.
       Manages user subscription plans and memberships.
     */
-    { link: '/subscriptions', label: 'sidebar.subscription', icon: 'workspace_premium' },
+    { link: '/subscription', label: 'sidebar.subscription', icon: 'workspace_premium' },
 
     /*
       Receipts: part of the payment module.

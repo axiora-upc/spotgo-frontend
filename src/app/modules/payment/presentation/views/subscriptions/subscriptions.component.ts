@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, computed, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { DecimalPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { PaymentStore } from '../../../application/payment.store';
 import { ClientPlan } from '../../../domain/model/client-plan.entity';
@@ -8,7 +9,7 @@ import { CurrentUserService } from '../../../../../shared/services/current-user.
 @Component({
   selector: 'app-subscriptions',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslatePipe],
+  imports: [ReactiveFormsModule, DecimalPipe, TranslatePipe],
   templateUrl: './subscriptions.component.html',
   styleUrl: './subscriptions.component.css',
 })

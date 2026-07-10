@@ -25,13 +25,13 @@ export class ReceiptAssembler
     return new Receipt({
       id:              resource.id,
       clientId:        resource.clientId,
+      reservationId:   resource.reservationId,
       invoiceNumber:   resource.invoiceNumber,
       locationName:    resource.locationName,
       date:            resource.date,
       durationHours:   resource.durationHours,
       durationMinutes: resource.durationMinutes,
       paymentMethod:   resource.paymentMethod,
-      bookingCode:     resource.bookingCode,
       amount:          resource.amount,
       status:          resource.status as ReceiptStatus,
     });
@@ -47,13 +47,13 @@ export class ReceiptAssembler
     return {
       id:              entity.id,
       clientId:        entity.clientId,
+      reservationId:   entity.reservationId,
       invoiceNumber:   entity.invoiceNumber,
       locationName:    entity.locationName,
       date:            entity.date,
       durationHours:   entity.durationHours,
       durationMinutes: entity.durationMinutes,
       paymentMethod:   entity.paymentMethod,
-      bookingCode:     entity.bookingCode,
       amount:          entity.amount,
       status:          entity.status,
     } as ReceiptResource;

@@ -10,7 +10,6 @@
     3. The assembler (translator between raw JSON and domain entity)
 */
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 
 /*
   environment.apiUrl builds the base URL automatically:
@@ -66,7 +65,4 @@ export class SubscriptionsApiEndpoint extends BaseApiEndpoint<
     );
   }
 
-  patchSavedThisMonth(id: string, savedThisMonth: number, savingsMonth: string): Observable<void> {
-    return this.http.patch<void>(`${this.endpointUrl}/${id}/savings`, { savedThisMonth, savingsMonth });
-  }
 }
