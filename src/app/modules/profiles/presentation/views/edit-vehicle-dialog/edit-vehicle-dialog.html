@@ -13,11 +13,6 @@
       <mat-icon class="evd-success-icon">check_circle</mat-icon>
       <p>{{ 'profiles.vehicle.success' | translate }}</p>
     </div>
-  } @else if (!vehicle()) {
-    <div class="evd-state">
-      <mat-icon class="evd-state-icon">directions_car_off</mat-icon>
-      <p>{{ 'profiles.vehicle.empty' | translate }}</p>
-    </div>
   } @else {
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <label class="field-label" for="evd-license-plate">{{ 'profiles.vehicle.license-plate' | translate }}</label>
@@ -76,7 +71,7 @@
       mat-flat-button
       color="primary"
       type="button"
-      [disabled]="loading() || submitting() || !vehicle()"
+      [disabled]="loading() || submitting()"
       (click)="onSubmit()">
       {{ 'profiles.vehicle.submit' | translate }}
     </button>
