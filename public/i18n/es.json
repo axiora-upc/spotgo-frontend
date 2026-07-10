@@ -156,7 +156,7 @@
   "sidebar": {
     "dashboard": "Paneles",
     "reservations": "Reservas",
-    "subscription": "Suscripciones",
+    "subscription": "Suscripción",
     "receipts": "Recibos",
     "favorites": "Favoritos",
     "history": "Historial",
@@ -187,7 +187,7 @@
       "confirm-reservation": "Confirmar Reserva",
       "reservation-confirmed": "¡Reserva Confirmada!",
       "availability": "Disponibilidad",
-      "occupied": "ocupados",
+      "occupied": "Ocupado",
       "price": "Precio",
       "hours": "Horario",
       "services": "Servicios",
@@ -291,6 +291,9 @@
         "employee-fallback": "el empleado asignado",
         "unlock": "Liberar spot",
         "set-maintenance": "Poner en mantenimiento"
+      },
+      "snackbar": {
+        "status-error": "No se pudo actualizar el estado del spot. Por favor, intenta de nuevo."
       }
     },
     "reports": {
@@ -336,7 +339,8 @@
       "delete": "Eliminar",
       "schedules": {
         "all-week": "Toda la semana",
-        "weekdays": "Días laborales"
+        "weekdays": "Días laborables",
+        "weekends": "Fines de semana"
       },
       "roles": {
         "guard": "Vigilante",

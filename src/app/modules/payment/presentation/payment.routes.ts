@@ -40,8 +40,8 @@ const subscriptions = () =>
 const receipts = () =>
   import('./views/receipts/receipts.component').then((m) => m.ReceiptsComponent);
 
-/* Payment routes mounted at the root level: `/subscriptions`, `/receipts`. */
+/* Payment routes mounted at the root level: `/subscription`, `/receipts`. */
 export const PAYMENT_ROUTES: Routes = [
-  { path: 'subscriptions', loadComponent: subscriptions, canActivate: [roleGuard], data: { roles: ['client'] } },
+  { path: 'subscription', loadComponent: subscriptions, canActivate: [roleGuard], data: { roles: ['client'] } },
   { path: 'receipts', loadComponent: receipts, canActivate: [roleGuard], data: { roles: ['client'] } },
 ];

@@ -86,15 +86,10 @@ export class BlueprintsApi {
       );
   }
 
-  patchBlueprintSpots(blueprintId: string, spots: DetectedSpot[]): Observable<unknown> {
-    const patches = spots.map(s =>
-      this.http
-        .patch(`${this.spotsUrl}/${s.id}/status`, null, {
-          params: { status: s.status ?? 'available' },
-        })
-        .pipe(catchError(() => of(null)))
-    );
-    return forkJoin(patches).pipe(catchError(() => of(null)));
+  updateSpotStatus(spotId: string, status: NonNullable<DetectedSpot['status']>): Observable<void> {
+    return this.http.patch<void>(`${this.spotsUrl}/${spotId}/status`, null, {
+      params: { status },
+    });
   }
 
   updateParkingStats(

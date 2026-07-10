@@ -17,7 +17,7 @@ import {BaseEntity} from '../../../../shared/domain/model/base-entity';
 
 export type EmployeeRole = 'guard' | 'cleaning-personnel';
 export type EmployeeStatus = 'on-duty' | 'off-duty';
-export type EmployeeSchedule = 'all-week';
+export type EmployeeSchedule = 'all-week' | 'weekdays' | 'weekends';
 
 export class Employee implements BaseEntity {
   private _id: string;
