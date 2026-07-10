@@ -20,6 +20,10 @@ export interface UpdateVehiclePayload {
   model: string;
 }
 
+export interface CreateVehiclePayload extends UpdateVehiclePayload {
+  clientId: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class VehiclesApi {
   constructor(private readonly http: HttpClient) {}
@@ -28,6 +32,12 @@ export class VehiclesApi {
     return this.http.get<VehicleResource[]>(`${environment.apiUrl}/vehicles`).pipe(
       map((vehicles) => vehicles[0] ?? null),
       catchError((err) => throwError(() => this.toError(err, 'profiles.vehicle.errors.load')))
+    );
+  }
+
+  createVehicle(payload: CreateVehiclePayload): Observable<VehicleResource> {
+    return this.http.post<VehicleResource>(`${environment.apiUrl}/vehicles`, payload).pipe(
+      catchError((err) => throwError(() => this.toError(err, 'profiles.vehicle.errors.save')))
     );
   }
 

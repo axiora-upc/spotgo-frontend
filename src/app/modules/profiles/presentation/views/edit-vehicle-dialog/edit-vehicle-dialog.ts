@@ -5,6 +5,7 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
 import { VehicleResource, VehiclesApi } from '../../../infrastructure/vehicles-api';
+import { CurrentUserService } from '../../../../../shared/services/current-user.service';
 
 @Component({
   selector: 'app-edit-vehicle-dialog',
@@ -15,6 +16,7 @@ import { VehicleResource, VehiclesApi } from '../../../infrastructure/vehicles-a
 export class EditVehicleDialog {
   private readonly vehiclesApi = inject(VehiclesApi);
   private readonly dialogRef = inject(MatDialogRef<EditVehicleDialog>);
+  private readonly currentUser = inject(CurrentUserService);
 
   protected readonly loading = signal(true);
   protected readonly submitting = signal(false);
@@ -41,8 +43,6 @@ export class EditVehicleDialog {
   }
 
   protected onSubmit(): void {
-    const vehicle = this.vehicle();
-    if (!vehicle) return;
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -52,12 +52,24 @@ export class EditVehicleDialog {
     this.submitting.set(true);
 
     const value = this.form.getRawValue();
-    this.vehiclesApi.updateVehicle(vehicle.id, {
-      licensePlate: value.licensePlate!.trim(),
-      vehicleType: value.vehicleType!.trim(),
-      brand: value.brand!.trim(),
-      model: value.model!.trim(),
-    }).subscribe({
+    const vehicle = this.vehicle();
+
+    const request$ = vehicle
+      ? this.vehiclesApi.updateVehicle(vehicle.id, {
+          licensePlate: value.licensePlate!.trim(),
+          vehicleType: value.vehicleType!.trim(),
+          brand: value.brand!.trim(),
+          model: value.model!.trim(),
+        })
+      : this.vehiclesApi.createVehicle({
+          clientId: this.currentUser.clientId,
+          licensePlate: value.licensePlate!.trim(),
+          vehicleType: value.vehicleType!.trim(),
+          brand: value.brand!.trim(),
+          model: value.model!.trim(),
+        });
+
+    request$.subscribe({
       next: (updated) => {
         this.vehicle.set(updated);
         this.form.patchValue(updated);
