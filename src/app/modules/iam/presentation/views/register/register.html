@@ -52,6 +52,20 @@
           </div>
         </div>
 
+        <label class="field-label" for="register-phone">{{ 'iam.register.phone' | translate }}</label>
+        <div class="input-box" [class.invalid]="getError('phone')">
+          <mat-icon>phone</mat-icon>
+          <input
+            id="register-phone"
+            type="tel"
+            formControlName="phone"
+            [placeholder]="'iam.register.phone-placeholder' | translate"
+            autocomplete="tel" />
+        </div>
+        @if (getError('phone'); as errorKey) {
+          <span class="field-error">{{ errorKey | translate }}</span>
+        }
+
         <label class="field-label" for="register-email">{{ 'iam.login.email' | translate }}</label>
         <div class="input-box" [class.invalid]="getError('email')">
           <mat-icon>mail_outline</mat-icon>

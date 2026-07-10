@@ -7,10 +7,29 @@
 
   "toolbar": {
     "search-placeholder": "Buscar estacionamientos...",
+    "edit-vehicle": "Editar vehículo",
     "change-password": "Cambiar contraseña",
     "logout": "Cerrar sesión",
     "notifications": "Notificaciones",
     "account": "Cuenta"
+  },
+
+  "profiles": {
+    "vehicle": {
+      "title": "Editar vehículo",
+      "loading": "Cargando datos del vehículo...",
+      "empty": "No tienes un vehículo registrado.",
+      "license-plate": "Placa",
+      "vehicle-type": "Tipo de vehículo",
+      "brand": "Marca",
+      "model": "Modelo",
+      "submit": "Guardar vehículo",
+      "success": "Los datos del vehículo fueron actualizados.",
+      "errors": {
+        "load": "No se pudieron cargar los datos del vehículo.",
+        "save": "No se pudieron guardar los datos del vehículo."
+      }
+    }
   },
 
   "iam": {
@@ -61,13 +80,15 @@
       "subtitle": "Rellena tus datos a continuación para continuar.",
       "first-name": "Nombre",
       "last-name": "Apellido",
+      "phone": "Teléfono",
       "confirm-password": "Confirmar contraseña",
       "create-account": "Crear cuenta",
       "create-account-as": "Crear cuenta como",
       "already-have-account": "¿Ya tienes una cuenta?",
       "sign-in": "Iniciar sesión",
       "first-name-placeholder": "Juan",
-      "last-name-placeholder": "Pérez"
+      "last-name-placeholder": "Pérez",
+      "phone-placeholder": "+51 999 111 222"
     },
     "forgot-password": {
       "title": "Restablece tu contraseña",
@@ -96,12 +117,16 @@
       "email-taken": "Este correo ya está registrado.",
       "email-not-found": "No se encontró ninguna cuenta con ese correo.",
       "code-invalid": "Ingresa un codigo valido de 6 digitos.",
-      "password-min": "La contraseña debe tener al menos 6 caracteres.",
+      "password-min": "La contraseña debe tener al menos 8 caracteres.",
+      "password-policy": "La contraseña debe tener al menos 8 caracteres, mayúscula, minúscula, número y símbolo.",
       "password-mismatch": "Las contraseñas no coinciden.",
       "name-min": "Debe tener al menos 2 caracteres.",
       "no-role": "Esta cuenta no tiene un rol asignado.",
       "current-password-invalid": "Tu contraseña actual es incorrecta.",
       "password-reset-invalid": "El codigo es invalido o ha expirado.",
+      "password-reset": {
+        "invalid": "El codigo es invalido o ha expirado."
+      },
       "google-unavailable": "El inicio de sesión con Google no está disponible en esta demo.",
       "generic": "Algo salió mal. Inténtalo de nuevo."
     },
@@ -585,7 +610,7 @@
     "title": "Configuración",
     "subtitle": "Gestiona tu información personal y los croquis de tu estacionamiento.",
     "info": {
-      "title": "Información Personal",
+      "title": "Información Personal y del Parking",
       "edit": "Editar",
       "save": "Guardar",
       "cancel": "Cancelar",
@@ -594,8 +619,9 @@
       "email": "Correo Electrónico",
       "verified": "Verificado",
       "business-name": "Nombre del Negocio",
+      "price-per-hour": "Precio por Hora",
       "phone": "Teléfono",
-      "district": "Distrito",
+      "business-city": "Business City",
       "first-name-placeholder": "Nombre",
       "last-name-placeholder": "Apellido"
     },

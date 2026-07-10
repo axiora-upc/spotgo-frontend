@@ -90,6 +90,13 @@
           </div>
         }
 
+        @if (currentUser()?.isClient) {
+          <button mat-menu-item (click)="openEditVehicle()">
+            <mat-icon>directions_car</mat-icon>
+            <span>{{ 'toolbar.edit-vehicle' | translate }}</span>
+          </button>
+        }
+
         <!--
           Change password option.
 

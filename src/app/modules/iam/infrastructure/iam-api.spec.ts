@@ -24,7 +24,6 @@ describe('IamApi', () => {
       lastName: 'Lovelace',
       email: 'ada@example.com',
       phone: '',
-      city: '',
       role: 'client',
       parkingId: null,
       parkingName: '',
@@ -34,6 +33,7 @@ describe('IamApi', () => {
     api.register({
       firstName: '  Ada ',
       lastName: ' Lovelace ',
+      phone: ' +51 999 111 222 ',
       email: ' ADA@EXAMPLE.COM ',
       password: 'secret123',
       role: 'admin',
@@ -44,6 +44,7 @@ describe('IamApi', () => {
     expect(httpStub.post.mock.calls[0][1]).toEqual({
       firstName: 'Ada',
       lastName: 'Lovelace',
+      phone: '+51 999 111 222',
       email: 'ada@example.com',
       password: 'secret123',
     });

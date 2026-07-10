@@ -96,22 +96,6 @@
 
         <div class="info-divider"></div>
 
-        <!-- Nombre del negocio -->
-        <div class="info-row">
-          <div class="info-icon-box"><mat-icon>business</mat-icon></div>
-          <div class="info-content">
-            <span class="info-label">{{ 'settings.info.business-name' | translate }}</span>
-            @if (!isEditing()) {
-              <span class="info-value">{{ admin.parkingName }}</span>
-            }
-            @if (isEditing()) {
-              <input class="info-input" [(ngModel)]="editBuffer.parkingName" />
-            }
-          </div>
-        </div>
-
-        <div class="info-divider"></div>
-
         <!-- Teléfono -->
         <div class="info-row">
           <div class="info-icon-box"><mat-icon>phone</mat-icon></div>
@@ -128,20 +112,51 @@
 
         <div class="info-divider"></div>
 
-        <!-- Ciudad / Distrito -->
+        <!-- Nombre del negocio -->
         <div class="info-row">
-          <div class="info-icon-box"><mat-icon>location_on</mat-icon></div>
+          <div class="info-icon-box"><mat-icon>business</mat-icon></div>
           <div class="info-content">
-            <span class="info-label">{{ 'settings.info.district' | translate }}</span>
+            <span class="info-label">{{ 'settings.info.business-name' | translate }}</span>
             @if (!isEditing()) {
-              <span class="info-value">{{ admin.city }}</span>
+              <span class="info-value">{{ admin.parkingName }}</span>
             }
             @if (isEditing()) {
-              <input class="info-input" [(ngModel)]="editBuffer.city" />
+              <input class="info-input" [(ngModel)]="editBuffer.parkingName" />
             }
           </div>
         </div>
 
+        <div class="info-divider"></div>
+
+        <!-- Ciudad del negocio -->
+        <div class="info-row">
+          <div class="info-icon-box"><mat-icon>location_on</mat-icon></div>
+          <div class="info-content">
+            <span class="info-label">{{ 'settings.info.business-city' | translate }}</span>
+            @if (!isEditing()) {
+              <span class="info-value">{{ parkingCity() }}</span>
+            }
+            @if (isEditing()) {
+              <input class="info-input" [(ngModel)]="editBuffer.parkingCity" />
+            }
+          </div>
+        </div>
+
+        <div class="info-divider"></div>
+
+        <!-- Precio por hora -->
+        <div class="info-row">
+          <div class="info-icon-box"><mat-icon>payments</mat-icon></div>
+          <div class="info-content">
+            <span class="info-label">{{ 'settings.info.price-per-hour' | translate }}</span>
+            @if (!isEditing()) {
+              <span class="info-value">S/ {{ parkingPrice() ?? '-' }}</span>
+            }
+            @if (isEditing()) {
+              <input class="info-input" [(ngModel)]="editBuffer.pricePerHour" type="number" min="0" step="0.1" />
+            }
+          </div>
+        </div>
       </div>
     }
   </section>

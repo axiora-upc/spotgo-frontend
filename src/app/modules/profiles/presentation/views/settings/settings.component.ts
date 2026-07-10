@@ -26,6 +26,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { BlueprintStorageService } from '../../../application/blueprint-storage.service';
 import { ProfilesStore } from '../../../application/profiles.store';
 import { Admin } from '../../../domain/model/admin.entity';
+import { BlueprintsApi } from '../../../infrastructure/blueprints-api';
 import { CurrentUserService } from '../../../../../shared/services/current-user.service';
 import { UploadDialogComponent, UploadDialogResult } from './upload-dialog/upload-dialog.component';
 import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
@@ -40,7 +41,8 @@ interface EditBuffer {
   email: string;
   parkingName: string;
   phone: string;
-  city: string;
+  parkingCity: string;
+  pricePerHour: number | null;
 }
 
 @Component({
@@ -64,6 +66,7 @@ export class SettingsComponent implements OnInit {
   blueprintStorage    = inject(BlueprintStorageService);
   readonly profilesStore  = inject(ProfilesStore);
   private currentUser     = inject(CurrentUserService);
+  private blueprintsApi   = inject(BlueprintsApi);
   private snackBar        = inject(MatSnackBar);
   private translate       = inject(TranslateService);
 
@@ -84,8 +87,12 @@ export class SettingsComponent implements OnInit {
     email:       '',
     parkingName: '',
     phone:       '',
-    city:        '',
+    parkingCity: '',
+    pricePerHour: null,
   };
+
+  parkingPrice = signal<number | null>(null);
+  parkingCity = signal('');
 
   // ─── Inicialización ───────────────────────────────────────────────────────
 
@@ -95,6 +102,7 @@ export class SettingsComponent implements OnInit {
       El store actualiza su signal admin() cuando la respuesta llega.
     */
     this.profilesStore.loadAdmin(this.currentUser.adminId);
+    this.loadParkingPrice();
 
     /*
       Carga los croquis guardados en la base de datos para este admin.
@@ -128,7 +136,8 @@ export class SettingsComponent implements OnInit {
       email:       a.email,
       parkingName: a.parkingName,
       phone:       a.phone,
-      city:        a.city,
+      parkingCity: this.parkingCity(),
+      pricePerHour: this.parkingPrice(),
     };
     this.isEditing.set(true);
   }
@@ -148,12 +157,20 @@ export class SettingsComponent implements OnInit {
       lastName:    this.editBuffer.lastName,
       email:       this.editBuffer.email,
       phone:       this.editBuffer.phone,
-      city:        this.editBuffer.city,
       parkingName: this.editBuffer.parkingName,
     });
 
+    this.blueprintsApi.updateParkingStats(current.parkingId ?? this.currentUser.parkingId, {
+      city: this.editBuffer.parkingCity,
+      pricePerHour: this.editBuffer.pricePerHour ?? 0,
+    }).subscribe();
+
     this.profilesStore.updateAdmin(updated, {
-      onSuccess: () => this.isEditing.set(false),
+      onSuccess: () => {
+        this.parkingCity.set(this.editBuffer.parkingCity);
+        this.parkingPrice.set(this.editBuffer.pricePerHour ?? 0);
+        this.isEditing.set(false);
+      },
       // En caso de error el modo edición se mantiene abierto
       // para que el usuario pueda corregir o reintentar.
     });
@@ -161,6 +178,16 @@ export class SettingsComponent implements OnInit {
 
   cancelEditing(): void {
     this.isEditing.set(false);
+  }
+
+  private loadParkingPrice(): void {
+    const parkingId = this.currentUser.parkingId;
+    if (!parkingId) return;
+
+    this.blueprintsApi.getParking(parkingId).subscribe(parking => {
+      this.parkingCity.set(parking.city);
+      this.parkingPrice.set(parking.pricePerHour);
+    });
   }
 
   blueprintError = signal('');

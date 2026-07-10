@@ -19,7 +19,6 @@ interface StoredUser {
   lastName: string;
   email: string;
   phone: string;
-  city: string;
   parkingName: string;
   parkingId: string | null;
   role: Role;
@@ -159,7 +158,6 @@ export class AuthStore {
       lastName: user.lastName,
       email: user.email,
       phone: user.phone,
-      city: user.city,
       parkingName: user.parkingName,
       parkingId: user.parkingId,
       role: user.role,

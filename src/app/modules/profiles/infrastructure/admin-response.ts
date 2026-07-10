@@ -6,7 +6,6 @@ export interface AdminResource extends BaseResource {
   lastName: string;
   email: string;
   phone: string;
-  city: string;
   parkingName: string;
   parkingId: string | null;
 }

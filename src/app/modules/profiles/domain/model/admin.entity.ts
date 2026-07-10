@@ -12,7 +12,6 @@ export class Admin implements BaseEntity {
   private _lastName: string;
   private _email: string;
   private _phone: string;
-  private _city: string;
   private _parkingName: string;
   private _parkingId: string | null;
 
@@ -22,7 +21,6 @@ export class Admin implements BaseEntity {
     lastName: string;
     email: string;
     phone: string;
-    city: string;
     parkingName: string;
     parkingId?: string | null;
   }) {
@@ -31,7 +29,6 @@ export class Admin implements BaseEntity {
     this._lastName    = props.lastName;
     this._email       = props.email;
     this._phone       = props.phone;
-    this._city        = props.city;
     this._parkingName = props.parkingName;
     this._parkingId   = props.parkingId ?? null;
   }
@@ -52,9 +49,6 @@ export class Admin implements BaseEntity {
 
   get phone(): string               { return this._phone; }
   set phone(v: string)              { this._phone = v; }
-
-  get city(): string                { return this._city; }
-  set city(v: string)               { this._city = v; }
 
   get parkingName(): string         { return this._parkingName; }
   set parkingName(v: string)        { this._parkingName = v; }

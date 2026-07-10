@@ -56,10 +56,22 @@ export class ChangePasswordDialog {
       : null;
   }
 
+  private passwordPolicy(control: AbstractControl): ValidationErrors | null {
+    const value = control.value as string | null;
+    if (!value) return null;
+    return value.length >= 8
+      && /[A-Z]/.test(value)
+      && /[a-z]/.test(value)
+      && /\d/.test(value)
+      && /[^A-Za-z0-9]/.test(value)
+      ? null
+      : { passwordPolicy: true };
+  }
+
   protected readonly form = new FormGroup(
     {
       currentPassword: new FormControl('', [Validators.required]),
-      newPassword: new FormControl('', [Validators.required, Validators.minLength(6)]),
+      newPassword: new FormControl('', [Validators.required, (control) => this.passwordPolicy(control)]),
       confirmPassword: new FormControl('', [Validators.required]),
     },
     { validators: (group) => this.passwordsMatch(group) }
@@ -71,7 +83,7 @@ export class ChangePasswordDialog {
 
     if (control.invalid) {
       if (control.hasError('required')) return 'iam.errors.required';
-      if (control.hasError('minlength')) return 'iam.errors.password-min';
+      if (control.hasError('passwordPolicy')) return 'iam.errors.password-policy';
     }
 
     if (field === 'confirmPassword' && this.form.hasError('passwordMismatch') && control.value) {
