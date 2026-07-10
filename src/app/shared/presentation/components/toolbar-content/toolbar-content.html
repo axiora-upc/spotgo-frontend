@@ -105,10 +105,8 @@
         <!--
           Logout option.
 
-          Clicking this calls logout(), which clears the session
-          (AuthStore + the sessionStorage keys shared with
-          CurrentUserService/ViewModeService) and navigates back to
-          the login page.
+          Clicking this calls logout(), which clears the persisted auth
+          data and navigates back to the login page.
         -->
         <button mat-menu-item (click)="logout()">
           <mat-icon>logout</mat-icon>

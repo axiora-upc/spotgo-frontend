@@ -26,10 +26,10 @@ import { MatIcon } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
 
 /*
-  ViewModeService is a shared service that reflects the authenticated
-  user's role in the sidebar (`user` or `admin`).
+  AuthStore exposes the authenticated user, including the role used by the
+  sidebar to choose between user and admin navigation.
 */
-import { ViewModeService } from '../../services/view-mode.service';
+import { AuthStore } from '../../../../modules/iam/application/auth.store';
 
 /*
   Shape of one sidebar navigation option.
@@ -96,13 +96,12 @@ interface SidebarOption {
 export class SidebarContent {
 
   /*
-    inject(ViewModeService) gives this component access to the
-    shared service that tracks whether the app is in 'user' or 'admin' mode.
+    inject(AuthStore) gives this component access to the authenticated user.
 
-    When the mode changes in the toolbar, this component reacts automatically
-    because options is a computed signal that depends on viewMode.mode().
+    When the logged-in user changes, this component reacts automatically
+    because options is a computed signal that depends on currentUser().
   */
-  private viewMode = inject(ViewModeService);
+  private authStore = inject(AuthStore);
 
   /*
     userOptions contains the sidebar navigation items shown
@@ -194,16 +193,16 @@ export class SidebarContent {
     A computed signal recalculates its value automatically
     whenever the signals it reads change.
 
-    In this case, options reads viewMode.mode().
+    In this case, options reads currentUser().role.
 
-    When mode() is 'admin', options returns adminOptions.
-    When mode() is 'user', options returns userOptions.
+    When role is 'admin', options returns adminOptions.
+    Otherwise, options returns userOptions.
 
     This means the sidebar updates instantly when the user
-    switches between views in the toolbar account menu.
+    signs in or out.
   */
   options = computed(() =>
-    this.viewMode.mode() === 'admin' ? this.adminOptions() : this.userOptions()
+    this.authStore.currentUser()?.role === 'admin' ? this.adminOptions() : this.userOptions()
   );
 
 }

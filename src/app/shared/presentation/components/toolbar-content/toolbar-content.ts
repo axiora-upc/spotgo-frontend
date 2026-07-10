@@ -143,9 +143,8 @@ export class ToolbarContent {
   currentUser = this.authStore.currentUser;
 
   /*
-    logout clears the session (AuthStore + the sessionStorage keys shared
-    with CurrentUserService/ViewModeService) and sends the user back to
-    the login page.
+    logout clears the persisted authentication data and sends the user back
+    to the login page.
   */
   logout(): void {
     this.authStore.logout();
